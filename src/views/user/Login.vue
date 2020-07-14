@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="main">
-      <div class="login-projectName">上海尚禾信息技术有限公司</div>
+      <div class="login-projectName">上海法院运维综合管理平台</div>
       <div class="login-main">
         <h4 class="login-title">用户登录</h4>
         <a-form :form="form" class="user-layout-login" ref="formLogin" id="formLogin">

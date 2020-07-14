@@ -3,8 +3,8 @@
     <router-link :to="{name:'dashboard'}">
 
       <!-- update-begin- author:sunjianlei --- date:20190814 --- for: logo颜色根据主题颜色变化 -->
-      <img v-if="navTheme === 'dark'" src="~@/assets/logo_s.png" alt="logo">
-      <img v-else src="~@/assets/logo_s.png" alt="logo">
+      <img v-if="navTheme === 'dark'" src="~@/assets/logo.png" alt="logo">
+      <img v-else src="~@/assets/logo.png" alt="logo">
       <!-- update-begin- author:sunjianlei --- date:20190814 --- for: logo颜色根据主题颜色变化 -->
 
       <h1 v-if="showTitle">{{ title }}</h1>
@@ -21,7 +21,7 @@
     props: {
       title: {
         type: String,
-        default: '尚 禾 信 息',
+        default: '上海法院运维',
         required: false
       },
       showTitle: {
