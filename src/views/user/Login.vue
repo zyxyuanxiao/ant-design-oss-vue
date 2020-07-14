@@ -260,11 +260,10 @@ import TwoStepCaptcha from '@/components/tools/TwoStepCaptcha'
 import { mapActions } from 'vuex'
 import { timeFix } from '@/utils/util'
 import Vue from 'vue'
-import { ACCESS_TOKEN, ENCRYPTED_STRING } from '@/store/mutation-types'
+import { ACCESS_TOKEN, ENCRYPTED_STRING , USER_INFO } from '@/store/mutation-types'
 import { putAction, postAction, getAction } from '@/api/manage'
 import { encryption, getEncryptedString } from '@/utils/encryption/aesEncrypt'
 import store from '@/store/'
-import { USER_INFO } from '@/store/mutation-types'
 
 export default {
   components: {
@@ -314,12 +313,12 @@ export default {
     this.getRouterData()
     this.handleChangeCheckCode()
     // update-begin- --- author:scott ------ date:20190805 ---- for:密码加密逻辑暂时注释掉，有点问题
-    //this.getEncrypte();
+    // this.getEncrypte();
     // update-end- --- author:scott ------ date:20190805 ---- for:密码加密逻辑暂时注释掉，有点问题
   },
   methods: {
     ...mapActions(['Login', 'Logout', 'PhoneLogin', 'ThirdLogin']),
-    //第三方登录
+    // 第三方登录
     onThirdLogin (source) {
       let url = window._CONFIG['domianURL'] + `/thirdLogin/render/${source}`
       window.open(url, `login ${source}`, 'height=500, width=500, top=0, left=0, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=n o, status=no')
@@ -364,8 +363,8 @@ export default {
           if (!err) {
             loginParams.username = values.username
             // update-begin- --- author:scott ------ date:20190805 ---- for:密码加密逻辑暂时注释掉，有点问题
-            //loginParams.password = md5(values.password)
-            //loginParams.password = encryption(values.password,that.encryptedString.key,that.encryptedString.iv)
+            // loginParams.password = md5(values.password)
+            // loginParams.password = encryption(values.password,that.encryptedString.key,that.encryptedString.iv)
             loginParams.password = values.password
             loginParams.remember_me = values.rememberMe
             // update-begin- --- author:scott ------ date:20190805 ---- for:密码加密逻辑暂时注释掉，有点问题
@@ -665,8 +664,9 @@ export default {
   }
 
 </style>
+<!--
 <style>
   .valid-error .ant-select-selection__placeholder {
     color: #f5222d;
   }
-</style>
+</style> -->

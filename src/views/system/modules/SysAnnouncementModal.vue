@@ -30,7 +30,7 @@
                 v-decorator="[ 'msgCategory', validatorRules.msgCategory]"
                 placeholder="请选择消息类型"
                 :disabled="disableSubmit"
-                :getPopupContainer = "(target) => target.parentNode">
+                :getPopupContainer="(target) => target.parentNode">
                 <a-select-option value="1">通知公告</a-select-option>
                 <a-select-option value="2">系统消息</a-select-option>
               </a-select>
@@ -43,7 +43,9 @@
               :labelCol="labelCol"
               :wrapperCol="wrapperCol"
               label="开始时间:">
-              <j-date style="width: 100%" :getCalendarContainer="node => node.parentNode" v-decorator="[ 'startTime', validatorRules.startTime]" placeholder="请选择开始时间" showTime dateFormat="YYYY-MM-DD HH:mm:ss" ></j-date>
+              <j-date style="width: 100%" :getCalendarContainer="node => node.parentNode"
+                      v-decorator="[ 'startTime', validatorRules.startTime]" placeholder="请选择开始时间" showTime
+                      dateFormat="YYYY-MM-DD HH:mm:ss"></j-date>
             </a-form-item>
           </a-col>
           <a-col :span="24/2">
@@ -52,7 +54,9 @@
               :wrapperCol="wrapperCol"
               label="结束时间"
               class="endTime">
-              <j-date style="width: 100%" :getCalendarContainer="node => node.parentNode" v-decorator="[ 'endTime', validatorRules.endTime]" placeholder="请选择结束时间" showTime dateFormat="YYYY-MM-DD HH:mm:ss"></j-date>
+              <j-date style="width: 100%" :getCalendarContainer="node => node.parentNode"
+                      v-decorator="[ 'endTime', validatorRules.endTime]" placeholder="请选择结束时间" showTime
+                      dateFormat="YYYY-MM-DD HH:mm:ss"></j-date>
             </a-form-item>
           </a-col>
         </a-row>
@@ -66,7 +70,7 @@
                 v-decorator="[ 'priority', {}]"
                 placeholder="请选择优先级"
                 :disabled="disableSubmit"
-                :getPopupContainer = "(target) => target.parentNode">
+                :getPopupContainer="(target) => target.parentNode">
                 <a-select-option value="L">低</a-select-option>
                 <a-select-option value="M">中</a-select-option>
                 <a-select-option value="H">高</a-select-option>
@@ -83,7 +87,7 @@
                 placeholder="请选择通告类型"
                 :disabled="disableSubmit"
                 @change="chooseMsgType"
-                :getPopupContainer = "(target) => target.parentNode">
+                :getPopupContainer="(target) => target.parentNode">
                 <a-select-option value="USER">指定用户</a-select-option>
                 <a-select-option value="ALL">全体用户</a-select-option>
               </a-select>
@@ -96,7 +100,7 @@
               :labelCol="labelCol"
               :wrapperCol="wrapperCol"
               label="摘要">
-              <a-textarea placeholder="请输入摘要" v-decorator="['msgAbstract',validatorRules.msgAbstract]" />
+              <a-textarea placeholder="请输入摘要" v-decorator="['msgAbstract',validatorRules.msgAbstract]"/>
             </a-form-item>
           </a-col>
           <a-col :span="24/2">
@@ -133,200 +137,197 @@
 </template>
 
 <script>
-  import { httpAction } from '@/api/manage'
-  import pick from 'lodash.pick'
-  import { getAction } from '@/api/manage'
-  import JDate from '@/components/jeecg/JDate'
-  import JEditor from '@/components/jeecg/JEditor'
-  import SelectUserListModal from "./SelectUserListModal";
-  import moment from 'moment'
+import { httpAction } from '@/api/manage'
+import pick from 'lodash.pick'
+import { getAction } from '@/api/manage'
+import JDate from '@/components/jeecg/JDate'
+import JEditor from '@/components/jeecg/JEditor'
+import SelectUserListModal from './SelectUserListModal'
+import moment from 'moment'
 
-  export default {
-    components: { JEditor, JDate, SelectUserListModal},
-    name: "SysAnnouncementModal",
-    data () {
-      return {
-        title:"操作",
-        visible: false,
-        disableSubmit:false,
-        model: {},
-        labelCol: {
-          xs: { span: 24 },
-          sm: { span: 6 },
-        },
-        wrapperCol: {
-          xs: { span: 24 },
-          sm: { span: 18 },
-        },
-        labelColX1: {
-          xs: { span: 24 },
-          sm: { span: 3 },
-        },
-        wrapperColX1: {
-          xs: { span: 24 },
-          sm: { span: 21 },
-        },
+export default {
+  components: { JEditor, JDate, SelectUserListModal },
+  name: 'SysAnnouncementModal',
+  data () {
+    return {
+      title: '操作',
+      visible: false,
+      disableSubmit: false,
+      model: {},
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 6 }
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 18 }
+      },
+      labelColX1: {
+        xs: { span: 24 },
+        sm: { span: 3 }
+      },
+      wrapperColX1: {
+        xs: { span: 24 },
+        sm: { span: 21 }
+      },
 
-        confirmLoading: false,
-        form: this.$form.createForm(this),
-        validatorRules:{
-          title:{rules: [{ required: true, message: '请输入标题!' }]},
-          msgCategory:{rules: [{ required: true, message: '请选择消息类型!' }]},
-          msgType:{rules: [{ required: true, message: '请选择通告对象类型!' }]},
-          endTime:{rules:[{ required: true, message: '请选择结束时间!'} ,{validator: this.endTimeValidate}]},
-          startTime:{rules:[{required: true, message: '请选择开始时间!'},{validator: this.startTimeValidate}]},
-          msgAbstract:{rules: [{ required: true, message: '请输入摘要!' }]},
-        },
-        url: {
-          queryByIds: "/sys/user/queryByIds",
-          add: "/sys/annountCement/add",
-          edit: "/sys/annountCement/edit",
-        },
-        userType:false,
-        userIds:[],
-        selectedUser:[],
-        disabled:false,
-        msgContent:"",
-      }
+      confirmLoading: false,
+      form: this.$form.createForm(this),
+      validatorRules: {
+        title: { rules: [{ required: true, message: '请输入标题!' }] },
+        msgCategory: { rules: [{ required: true, message: '请选择消息类型!' }] },
+        msgType: { rules: [{ required: true, message: '请选择通告对象类型!' }] },
+        endTime: { rules: [{ required: true, message: '请选择结束时间!' }, { validator: this.endTimeValidate }] },
+        startTime: { rules: [{ required: true, message: '请选择开始时间!' }, { validator: this.startTimeValidate }] },
+        msgAbstract: { rules: [{ required: true, message: '请输入摘要!' }] }
+      },
+      url: {
+        queryByIds: '/sys/user/queryByIds',
+        add: '/sys/annountCement/add',
+        edit: '/sys/annountCement/edit'
+      },
+      userType: false,
+      userIds: [],
+      selectedUser: [],
+      disabled: false,
+      msgContent: ''
+    }
+  },
+  created () {
+  },
+  methods: {
+    add () {
+      this.edit({})
     },
-    created () {
+    edit (record) {
+      this.form.resetFields()
+      this.model = {}
+      this.disable = false
+      this.visible = true
+      this.getUser(record)
     },
-    methods: {
-      add () {
-        this.edit({});
-      },
-      edit (record) {
-        this.form.resetFields();
-        this.model = {}
-        this.disable = false;
-        this.visible = true;
-        this.getUser(record);
-      },
-      getUser(record){
-        this.model = Object.assign({}, record);
-        // 指定用户
-        if(record&&record.msgType === "USER"){
-          this.userType =  true;
-          this.userIds = record.userIds;
-          getAction(this.url.queryByIds,{userIds:this.userIds}).then((res)=>{
-            if(res.success){
-              for(var i=0;i<res.result.length;i++){
-                this.selectedUser.push(res.result[i].realname);
-              }
-              this.$refs.UserListModal.edit(res.result,this.userIds);
+    getUser (record) {
+      this.model = Object.assign({}, record)
+      // 指定用户
+      if (record && record.msgType === 'USER') {
+        this.userType = true
+        this.userIds = record.userIds
+        getAction(this.url.queryByIds, { userIds: this.userIds }).then((res) => {
+          if (res.success) {
+            for (var i = 0; i < res.result.length; i++) {
+              this.selectedUser.push(res.result[i].realname)
             }
-          });
-        }
-        this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model,'endTime','startTime','titile','msgContent','sender','priority','msgCategory','msgType','sendStatus','delFlag','msgAbstract'))
-        });
-      },
-      close () {
-        this.$emit('close');
-        this.selectedUser = [];
-        this.visible = false;
-      },
-      handleOk () {
-        const that = this;
-        //当设置指定用户类型，但用户为空时，后台报错
-        if(this.userType &&!(this.userIds!=null && this.userIds.length >0)){
-            this.$message.warning('指定用户不能为空！')
-            return;
-          }
-        // 触发表单验证
-        this.form.validateFields((err, values) => {
-          if (!err) {
-            that.confirmLoading = true;
-            let httpurl = '';
-            let method = '';
-            if(!this.model.id){
-              httpurl+=this.url.add;
-              method = 'post';
-            }else{
-              httpurl+=this.url.edit;
-               method = 'put';
-            }
-            let formData = Object.assign(this.model, values);
-            if(this.userType){
-              formData.userIds =  this.userIds;
-            }
-            console.log(formData)
-            httpAction(httpurl,formData,method).then((res)=>{
-              if(res.success){
-                that.$message.success(res.message);
-                that.$emit('ok');
-                that.resetUser();
-              }else{
-                that.$message.warning(res.message);
-              }
-            }).finally(() => {
-              that.confirmLoading = false;
-              that.close();
-            })
-
-
-
+            this.$refs.UserListModal.edit(res.result, this.userIds)
           }
         })
-      },
-      handleCancel () {
-        this.visible = false;
-        this.$emit('close');
-        this.resetUser();
-      },
-      resetUser (){
-        this.userType =  false;
-        this.userIds = [];
-        this.selectedUser = [];
-        this.disabled = false;
-        this.$refs.UserListModal.edit(null,null);
-      },
-      selectUserIds() {
-        this.$refs.UserListModal.add(this.selectedUser,this.userIds);
-      },
-      chooseMsgType(value) {
-        if("USER" == value) {
-          this.userType = true;
-        } else {
-          this.userType = false;
-          this.selectedUser = [];
-          this.userIds = [];
-        }
-      },
-      // 子modal回调
-      choseUser:function(userList){
-        this.selectedUser = [];
-        this.userIds = [];
-        for(var i=0;i<userList.length;i++){
-          this.selectedUser.push(userList[i].realname);
-          this.userIds += userList[i].id+","
-        }
-      },
-      startTimeValidate(rule,value,callback){
-        let endTime = this.form.getFieldValue("endTime")
-        if(!value || !endTime){
-          callback()
-        }else if(moment(value).isBefore(endTime)){
-          callback()
-        }else{
-          callback("开始时间需小于结束时间")
-        }
-      },
-      endTimeValidate(rule,value,callback){
-        let startTime = this.form.getFieldValue("startTime")
-        if(!value || !startTime){
-          callback()
-        }else if(moment(startTime).isBefore(value)){
-          callback()
-        }else{
-          callback("结束时间需大于开始时间")
-        }
       }
+      this.$nextTick(() => {
+        this.form.setFieldsValue(pick(this.model, 'endTime', 'startTime', 'titile', 'msgContent', 'sender', 'priority', 'msgCategory', 'msgType', 'sendStatus', 'delFlag', 'msgAbstract'))
+      })
+    },
+    close () {
+      this.$emit('close')
+      this.selectedUser = []
+      this.visible = false
+    },
+    handleOk () {
+      const that = this
+      //当设置指定用户类型，但用户为空时，后台报错
+      if (this.userType && !(this.userIds != null && this.userIds.length > 0)) {
+        this.$message.warning('指定用户不能为空！')
+        return
+      }
+      // 触发表单验证
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          that.confirmLoading = true
+          let httpurl = ''
+          let method = ''
+          if (!this.model.id) {
+            httpurl += this.url.add
+            method = 'post'
+          } else {
+            httpurl += this.url.edit
+            method = 'put'
+          }
+          let formData = Object.assign(this.model, values)
+          if (this.userType) {
+            formData.userIds = this.userIds
+          }
+          console.log(formData)
+          httpAction(httpurl, formData, method).then((res) => {
+            if (res.success) {
+              that.$message.success(res.message)
+              that.$emit('ok')
+              that.resetUser()
+            } else {
+              that.$message.warning(res.message)
+            }
+          }).finally(() => {
+            that.confirmLoading = false
+            that.close()
+          })
 
+        }
+      })
+    },
+    handleCancel () {
+      this.visible = false
+      this.$emit('close')
+      this.resetUser()
+    },
+    resetUser () {
+      this.userType = false
+      this.userIds = []
+      this.selectedUser = []
+      this.disabled = false
+      this.$refs.UserListModal.edit(null, null)
+    },
+    selectUserIds () {
+      this.$refs.UserListModal.add(this.selectedUser, this.userIds)
+    },
+    chooseMsgType (value) {
+      if ('USER' == value) {
+        this.userType = true
+      } else {
+        this.userType = false
+        this.selectedUser = []
+        this.userIds = []
+      }
+    },
+    // 子modal回调
+    choseUser: function(userList) {
+      this.selectedUser = []
+      this.userIds = []
+      for (var i = 0; i < userList.length; i++) {
+        this.selectedUser.push(userList[i].realname)
+        this.userIds += userList[i].id + ','
+      }
+    },
+    startTimeValidate (rule, value, callback) {
+      let endTime = this.form.getFieldValue('endTime')
+      if (!value || !endTime) {
+        callback()
+      } else if (moment(value).isBefore(endTime)) {
+        callback()
+      } else {
+        callback('开始时间需小于结束时间')
+      }
+    },
+    endTimeValidate (rule, value, callback) {
+      let startTime = this.form.getFieldValue('startTime')
+      if (!value || !startTime) {
+        callback()
+      } else if (moment(startTime).isBefore(value)) {
+        callback()
+      } else {
+        callback('结束时间需大于开始时间')
+      }
     }
+
   }
+}
 </script>
 
 <style scoped>
-
 </style>
