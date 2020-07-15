@@ -93,11 +93,11 @@
           </a-dropdown>
         </span>
 
-        <span slot="desformName" slot-scope="text, record">
+        <span slot="desformName" slot-scope="text">
           <j-ellipsis :value="'工单【'+text+'】'" :length="15"/>
         </span>
         <!-- 字符串超长截取省略号显示-->
-        <span slot="bpmBizTitle" slot-scope="text, record">
+        <span slot="bpmBizTitle" slot-scope="text">
           <j-ellipsis :value="text" :length="15"/>
         </span>
 

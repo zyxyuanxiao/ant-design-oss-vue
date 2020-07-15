@@ -7,7 +7,7 @@
           <a-col :xl="24" :lg="24" :md="24" :sm="24" :xs="24">
             <a-card :loading="loading" title="常用流程" :style="{ marginTop: '24px',height:'auto' }" :headStyle="{ backgroundColor:'#eaeaea' }">
               <template v-for="des of commUseList">
-                <a-card-grid :style="{width:cardWidth}" @click="handleOk(des)">
+                <a-card-grid :style="{width:cardWidth}" @click="handleOk(des)"  :key="des.desformName">
                   <span class="bsSpan" v-if="screenWidth>700">
                     <a-icon v-if="des.desformIcon" :type="des.desformIcon" :style="style"/>
                     <a-icon v-else type="file-text" :style="style"/>
@@ -23,13 +23,13 @@
             </a-card>
           </a-col>
         </template>
-        <template v-for="item of processTypeDictOptions">
-            <a-col :xl="24" :lg="24" :md="24" :sm="24" :xs="24">
+        <template v-for="item of processTypeDictOptions" >
+            <a-col :xl="24" :lg="24" :md="24" :sm="24" :xs="24" :key="item.desformName">
               <a-card :loading="loading"  :title="item.text" :style="{ marginTop: '24px',height:'auto' }" :headStyle="{ backgroundColor:'#eaeaea' }">
                 <!--<a @click="viewMore(item.value)" slot="extra">查看更多</a>-->
                 <template v-for="des of desformList">
                   <template v-if="des.procType == item.value">
-                    <a-card-grid :style="{width:cardWidth}" @click="handleOk(des)">
+                    <a-card-grid :style="{width:cardWidth}" @click="handleOk(des)" :key="des.desformName">
                       <a-icon v-if="des.desformIcon" :type="des.desformIcon" :style="style"/>
                       <a-icon v-else type="file-text" :style="style"/>
                       <span class="bsSpan" v-if="screenWidth>700">
@@ -57,7 +57,7 @@
 <script>
   import { getAction,httpAction } from '@/api/manage'
   import {initDictOptions} from '@/components/dict/JDictSelectUtil'
-  import AutoDesformDataModal from "./modules/AutoDesformDataModal.vue";
+  import AutoDesformDataModal from "./modules/AutoDesformDataModal.vue"
   import BpmAutoDesformSetUse from './modules/BpmAutoDesformSetUse'
   import JEllipsis from '@/components/jeecg/JEllipsis'
 
@@ -161,7 +161,7 @@
       },
       /** bmp 选择 ok */
       handleOkBpmSelect(desform) {
-        var title = "表单【"+desform.desformName+"】发起申请";
+        var title = "表单【"+desform.desformName+"】发起申请"
         this.openDesformModal('add', desform, title)
       },
 

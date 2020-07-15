@@ -37,7 +37,6 @@
 
     <!-- table区域-begin -->
     <div>
-
       <a-table
         :scroll="{x: 1800}"
         ref="table"
@@ -240,7 +239,7 @@
       taskNotify(record){
         this.$refs.taskNotifyMeModal.notify(record);
         this.$refs.taskNotifyMeModal.title="催办提醒";
-      },
+      }
     }
   }
 </script>

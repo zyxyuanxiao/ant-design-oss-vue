@@ -119,11 +119,11 @@
   import ExtActProcessModal from './modules/ExtActProcessModal'
   import ExtActProcessConfigModal from './modules/ExtActProcessConfigModal'
   import { filterObj } from '@/utils/util'
-  import { deleteAction,getAction,putAction } from '@/api/manage'
+  import { deleteAction, getAction, putAction } from '@/api/manage'
   import ExtActProcessDeploymentModal from "./modules/ExtActProcessDeploymentModal";
   import ExtActProcessIconModal from "./modules/ExtActProcessIconModal";
-  import {initDictOptions, filterDictText} from '@/components/dict/JDictSelectUtil'
-  import {JeecgListMixin} from '@/mixins/JeecgListMixin'
+  import { initDictOptions, filterDictText } from '@/components/dict/JDictSelectUtil'
+  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
 
   export default {
     name: "ExtActProcessList",
@@ -262,38 +262,38 @@
       },
       handleAdd: function(){
         this.$refs.extActProcessModal.designer();
-        this.$refs.extActProcessModal.title="新增";
+        this.$refs.extActProcessModal.title="新增"
       },
       handleDeploymentList: function(record){
-        var processKey = record.processKey;
-        var processName = record.processName;
+        var processKey = record.processKey
+        var processName = record.processName
         this.$refs.extActProcessDeploymentModal.deploymentList(processKey);
-        this.$refs.extActProcessDeploymentModal.title="流程【"+processName+"】版本监控";
+        this.$refs.extActProcessDeploymentModal.title = "流程【"+processName+"】版本监控"
       },
       setProcessIcon: function(record){
         this.$refs.extActProcessIconModal.add(record);
-        this.$refs.extActProcessIconModal.title="流程【"+ record.processName +"】图标设置";
+        this.$refs.extActProcessIconModal.title="流程【"+ record.processName + "】图标设置"
       },
       uploadAction:function (id) {
-        return window._CONFIG['domianURL'] + this.url.uploadProcess+"?id="+id;
+        return window._CONFIG['domianURL'] + this.url.uploadProcess+"?id=" + id
       },
       handleChange(info) {
         if (info.file.status === 'done') {
           if (info.file.response.success) {
             this.$message.success(`流程上传成功`);
           } else {
-            this.$message.error(`${info.file.name} ${info.file.response.message}.`);
+            this.$message.error(`${info.file.name} ${info.file.response.message}.`)
           }
         } else if (info.file.status === 'error') {
-          this.$message.error(`流程上传失败: ${info.file.msg} `);
+          this.$message.error(`流程上传失败: ${info.file.msg} `)
         }
       },
       copyProcess: function(id){
-        var that = this;
+        var that = this
         this.$confirm({
           title:"确认复制流程",
           content:"是否复制该流程?",
-          onOk: function(){
+          onOk: function() {
             getAction(that.url.copyProcess, { id: id }).then((res) => {
               if (res.success) {
                 that.$message.success(res.message);
@@ -304,7 +304,7 @@
             })
           }
         });
-      },
+      }
     }
   }
 </script>

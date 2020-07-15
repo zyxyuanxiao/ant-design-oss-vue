@@ -64,7 +64,7 @@
         </span>
 
         <!-- 字符串超长截取省略号显示-->
-        <span slot="bpmBizTitle" slot-scope="text, record">
+        <span slot="bpmBizTitle" slot-scope="text">
           <j-ellipsis :value="text"/>
         </span>
 
