@@ -215,7 +215,7 @@
           return res
         }).then(res => {
           if (res.success) {
-            this.$emit('success', { res, dataId: res.result, target: _this })
+            this.$emit('success', { res, dataId: res.result, target: _this,desformDataJson: formData.desformDataJson })
             if (_this.alert === true) _this.$message.success('保存成功')
           } else {
             _this.$emit('error', { res, target: _this })
