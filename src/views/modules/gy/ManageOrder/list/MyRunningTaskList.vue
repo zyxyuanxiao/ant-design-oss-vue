@@ -54,14 +54,17 @@
             <a  @click="handleProcess(record)">
               办理
             </a>
-            <a-divider type="vertical" />
-            <a  @click="selectEntruster(record)">
+            <!-- <a-divider type="vertical" /> -->
+            <!-- <a  @click="selectEntruster(record)">
               委托
-            </a>
+            </a> -->
           </template>
           <template v-else>
-            <a  @click="handleClaim(record)" >
+            <!-- <a  @click="handleClaim(record)" >
               签收
+            </a> -->
+            <a  @click="handleProcessC(record)">
+              办理
             </a>
           </template>
 
@@ -85,8 +88,8 @@
 <script>
   import { filterObj } from '@/utils/util'
   import { deleteAction,getAction,postAction,putAction } from '@/api/manage'
-  import TaskDealModal from "../../../bpm/task/TaskDealModal";
-  import SelectEntrusterModal from "../../../bpm/task/form/SelectEntrusterModal";
+  import TaskDealModal from "./task/TaskDealModal1"
+  import SelectEntrusterModal from "../../../bpm/task/form/SelectEntrusterModal"
   import JEllipsis from '@/components/jeecg/JEllipsis'
   import {JeecgListMixin} from '@/mixins/JeecgListMixin'
   import {BpmNodeInfoMixin} from '@/views/modules/bpm/mixins/BpmNodeInfoMixin'
@@ -189,12 +192,25 @@
       handleSelect: function(){
         this.$refs.selectSingleUserModal.select();
       },
-      handleProcess(record){
+      handleProcess (record) {
         this.getProcessNodeInfo(record);
       },
-      handleClaim(record){
-        var that = this;
-        var params = {taskId:record.id};//查询条件
+      // 自动签收
+      handleProcessC (record) {
+        var that = this
+        var params = {taskId:record.id} // 查询条件
+        putAction(that.url.claim, params).then((res) => {
+          if (res.success) {
+            this.getProcessNodeInfo(record);
+          } else {
+            that.$message.warning(res.message);
+            that.loadData();
+          }
+        })
+      },
+      handleClaim (record) {
+        var that = this
+        var params = {taskId:record.id} // 查询条件
         this.$confirm({
           title:"确认签收吗",
           content:"是否签收该任务?",
