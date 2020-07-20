@@ -14,7 +14,7 @@ import 'ant-design-vue/dist/antd.less';  // or 'ant-design-vue/dist/antd.less'
 import '@/permission' // permission control
 import '@/utils/filter' // base filter
 import Print from 'vue-print-nb-jeecg'
-/*import '@babel/polyfill'*/
+import '@babel/polyfill'
 import preview from 'vue-photo-preview'
 import 'vue-photo-preview/dist/skin.css'
 
@@ -112,8 +112,9 @@ function getUrlUser(){
   }
   if (cs.username !== undefined) {
     store.dispatch('LoginAddr',cs).then(res => {
-      if(res.success){
-        location.reload()
+      if (res.success) {
+        var road_url = window.document.location.href
+        window.location.href = road_url.replace("username=","")
       }
     });
   }
