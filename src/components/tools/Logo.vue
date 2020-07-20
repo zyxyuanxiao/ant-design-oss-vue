@@ -21,7 +21,7 @@
     props: {
       title: {
         type: String,
-        default: '上海法院运维',
+        default: '上海高法运维',
         required: false
       },
       showTitle: {
