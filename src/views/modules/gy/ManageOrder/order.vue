@@ -32,7 +32,7 @@
                 <a-icon type="user"/>
                 <span>我的任务</span>
               </span>
-              <my-running-task-list></my-running-task-list>
+              <my-running-task-list ref="todoList"></my-running-task-list>
 
             </a-tab-pane>
             <!-- 组任务 -->
@@ -48,10 +48,10 @@
           </a-tabs>
         </a-tab-pane>
         <a-tab-pane tab="我参与的" key="partin">
-          <part-his-process-list></part-his-process-list>
+          <part-his-process-list ref="partinList"></part-his-process-list>
         </a-tab-pane>
         <a-tab-pane tab="全部工单" key="all">
-          <his-process-list></his-process-list>
+          <his-process-list ref="AllList"></his-process-list>
         </a-tab-pane>
       </a-tabs>
 
@@ -351,6 +351,13 @@
       // 切换tabs
       handleClick (tab, event) {
         console.log(tab)
+        if(tab === 'partin'){
+          this.$refs.partinList ? this.$refs.partinList.init('/act/task/partProcessList') : ''
+        } else if(tab === 'todo') {
+          this.$refs.todoList ? this.$refs.todoList.init('/act/task/list') : ''
+        } else if(tab === 'all') {
+          this.$refs.AllList ? this.$refs.AllList.init('/act/task/historyProcessList') : ''
+        }
         // if (tab === 'todo') {
         //   this.refreshToDoList()
         // } else if (tab === 'partin') {

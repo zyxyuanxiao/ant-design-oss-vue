@@ -220,6 +220,13 @@
       this.initList()
     },
     methods: {
+      // 
+      init (url) {
+        getAction(url, {}, 'GET').then((data) => {
+          this.dataSource = data.result.records
+          this.ipagination.total = data.result.total
+        })
+      },
       // 流程作废
       invalidProcess (record) {
         var that = this;

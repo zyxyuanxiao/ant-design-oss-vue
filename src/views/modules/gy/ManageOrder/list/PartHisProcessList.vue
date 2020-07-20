@@ -92,7 +92,7 @@
 
 <script>
   import { filterObj } from '@/utils/util'
-  import { getAction, putAction, httpAction } from '@/api/manage'
+  import { getAction, putAction, httpAction, postAction } from '@/api/manage'
   import HisTaskDealModal from "./task/HisTaskDealModalG";
   import JEllipsis from '@/components/jeecg/JEllipsis'
   import {JeecgListMixin} from '@/mixins/JeecgListMixin'
@@ -214,12 +214,20 @@
     created() {
       this.initList()
       console.log(11111)
+      this.init()
     },
     activated () {
       // this.ipagination.pageSize = 5
       console.log(111)
     },
     methods: {
+      // 
+      init (url) {
+        getAction(url, {}, 'GET').then((data) => {
+          this.dataSource = data.result.records
+          this.ipagination.total = data.result.total
+        })
+      },
       // 流程作废
       invalidProcess (record) {
         var that = this;
