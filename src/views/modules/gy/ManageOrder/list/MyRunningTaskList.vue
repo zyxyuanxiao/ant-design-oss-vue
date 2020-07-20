@@ -180,6 +180,13 @@
       }
     },
     methods: {
+      // 
+      init (url) {
+        getAction(url, {}, 'GET').then((data) => {
+          this.dataSource = data.result.records
+          this.ipagination.total = data.result.total
+        })
+      },
       searchReset() {
         this.queryParam = {};
         this.model.userName ="";
