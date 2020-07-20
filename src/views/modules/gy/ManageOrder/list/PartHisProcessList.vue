@@ -86,7 +86,7 @@
 <script>
   import { filterObj } from '@/utils/util'
   import { getAction,putAction } from '@/api/manage'
-  import HisTaskDealModal from "../../../bpm/task/HisTaskDealModal";
+  import HisTaskDealModal from "./task/HisTaskDealModalG";
   import JEllipsis from '@/components/jeecg/JEllipsis'
   import {JeecgListMixin} from '@/mixins/JeecgListMixin'
   import {BpmNodeInfoMixin} from '@/views/modules/bpm/mixins/BpmNodeInfoMixin'
@@ -161,7 +161,10 @@
             title: '状态',
             align: 'center',
             dataIndex: 'bpmStatus',
-            customRender: (text) => {
+            customRender: (text, index) => {
+              if(!text && index.endTime){
+                return '已完成';
+              }
               switch(text) {
                 case '1':
                   return '待提交';
@@ -192,7 +195,7 @@
         url: {
           list: "/act/task/partProcessList",
           invalidProcess: "/act/task/invalidProcess",
-          callBackProcess: "/act/task/callBackProcess",
+          callBackProcess: "/act/task/callBackProcess"
         },
         path: "modules/bpm/task/form/FormLoading",
         formData: {},
@@ -209,7 +212,7 @@
         var params = {
           processInstanceId: record.processInstanceId
         };//查询条件
-        console.log("流程作废", params)
+        console.log('流程作废', params)
         putAction(that.url.invalidProcess, params).then((res) => {
           if (res.success) {
             that.$message.success(res.message);
@@ -221,12 +224,12 @@
         })
       },
       // 流程取回
-      callBackProcess(record) {
+      callBackProcess (record) {
         var that = this;
         var params = {
           processInstanceId:record.processInstanceId
         };//查询条件
-        console.log("流程取回",params)
+        console.log('流程取回', params)
         putAction(that.url.callBackProcess, params).then((res) => {
           if (res.success) {
             that.$message.success(res.message);

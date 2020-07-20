@@ -86,7 +86,7 @@
 <script>
   import { filterObj } from '@/utils/util'
   import { getAction,putAction } from '@/api/manage'
-  import HisTaskDealModal from "../../../bpm/task/HisTaskDealModal";
+  import HisTaskDealModal from "./task/HisTaskDealModalG";
   import JEllipsis from '@/components/jeecg/JEllipsis'
   import {JeecgListMixin} from '@/mixins/JeecgListMixin'
   import {BpmNodeInfoMixin} from '@/views/modules/bpm/mixins/BpmNodeInfoMixin'
@@ -197,18 +197,18 @@
 
         ],
         url: {
-          list:"/act/task/historyProcessList",
-          invalidProcess:"/act/task/invalidProcess",
-          callBackProcess:"/act/task/callBackProcess",
+          list: '/act/task/historyProcessList',
+          invalidProcess: '/act/task/invalidProcess',
+          callBackProcess: '/act/task/callBackProcess',
         },
-        path:"modules/bpm/task/form/FormLoading",
-        formData:{},
+        path: 'modules/bpm/task/form/FormLoading',
+        formData: {},
 
       }
     },
     methods: {
       // 流程作废
-      invalidProcess(record) {
+      invalidProcess (record) {
         var that = this;
         var params = {
           processInstanceId:record.processInstanceId
@@ -225,25 +225,25 @@
         })
       },
       // 流程取回
-      callBackProcess(record) {
+      callBackProcess (record) {
         var that = this;
         var params = {
           processInstanceId:record.processInstanceId
         };//查询条件
-        console.log("流程取回",params)
+        console.log('流程取回', params)
         putAction(that.url.callBackProcess, params).then((res) => {
           if (res.success) {
-            that.$message.success(res.message);
+            that.$message.success(res.message)
             that.loadData();
           } else {
-            that.$message.warning(res.message);
+            that.$message.warning(res.message)
             that.loadData();
           }
         })
       },
       // 历史
-      showHistory(record){
-        this.getHisProcessNodeInfo(record);
+      showHistory (record) {
+        this.getHisProcessNodeInfo(record)
       },
     }
 
