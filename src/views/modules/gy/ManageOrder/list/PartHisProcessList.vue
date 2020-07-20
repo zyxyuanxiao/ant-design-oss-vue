@@ -11,8 +11,15 @@
             </a-form-item>
           </a-col>
           <a-col :md="8" :sm="12">
-            <a-form-item label="工单类型">
+            <!-- <a-form-item label="工单类型">
               <a-input placeholder="请输入工单类型" v-model="queryParam.processName"></a-input>
+            </a-form-item> -->
+            <a-form-item label="工单类型">
+              <a-select v-model="queryParam.processName" style="width: 100%" placeholder="请选择工单类型" >
+                <a-select-option v-for="type in typeList" :key="type.procName">
+                  {{ type.procName }}
+                </a-select-option>
+              </a-select>
             </a-form-item>
           </a-col>
 
@@ -85,7 +92,7 @@
 
 <script>
   import { filterObj } from '@/utils/util'
-  import { getAction,putAction } from '@/api/manage'
+  import { getAction, putAction, httpAction } from '@/api/manage'
   import HisTaskDealModal from "./task/HisTaskDealModalG";
   import JEllipsis from '@/components/jeecg/JEllipsis'
   import {JeecgListMixin} from '@/mixins/JeecgListMixin'
@@ -103,6 +110,7 @@
         description: '参与流程',
         queryParam: {},
         dataSource: [],
+        typeList: [],
         loading: false,
         columns: [
           {
@@ -195,15 +203,21 @@
         url: {
           list: "/act/task/partProcessList",
           invalidProcess: "/act/task/invalidProcess",
-          callBackProcess: "/act/task/callBackProcess"
+          callBackProcess: "/act/task/callBackProcess",
+          roleDegisnList: "/designform/designFormCommuse/roleDegisnList"
         },
         path: "modules/bpm/task/form/FormLoading",
         formData: {},
 
       }
     },
+    created() {
+      this.initList()
+      console.log(11111)
+    },
     activated () {
-      this.ipagination.pageSize = 5
+      // this.ipagination.pageSize = 5
+      console.log(111)
     },
     methods: {
       // 流程作废
@@ -244,6 +258,13 @@
       showHistory(record){
         this.getHisProcessNodeInfo(record);
       },
+      // 加载下拉
+      initList(){
+        httpAction(this.url.roleDegisnList, {}, "GET").then((data) => {
+          console.log(data)
+          this.typeList = data.result
+        })
+      }
     }
 
   }
