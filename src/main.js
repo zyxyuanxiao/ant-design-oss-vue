@@ -112,8 +112,9 @@ function getUrlUser(){
   }
   if (cs.username !== undefined) {
     store.dispatch('LoginAddr',cs).then(res => {
-      if(res.success){
-        location.reload()
+      if (res.success) {
+        var road_url = window.document.location.href
+        window.location.href = road_url.replace("username=","")
       }
     });
   }
