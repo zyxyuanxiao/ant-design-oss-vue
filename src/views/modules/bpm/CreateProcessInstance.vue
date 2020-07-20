@@ -100,15 +100,21 @@
         })
       },
       start (pa) {
-        console.log(pa)
-        getAction(this.url.start+pa.desformCode, {
-           'desformCode': pa.desformCode,
-           'id': pa.id,
-           'desformName': pa.desformName
-          }).then((data) => {
-          console.log(data)
-          // this.typeList = data.result.records
-        })
+        var that = this
+        this.$confirm({
+          title: '提示',
+          content: '确认同步'+pa.desformName+'吗?',
+          onOk: function(){
+            getAction(that.url.start+pa.desformCode, {
+              'desformCode': pa.desformCode,
+              'id': pa.id,
+              'desformName': pa.desformName
+              }).then((data) => {
+              console.log(data)
+              // this.typeList = data.result.records
+            })
+          }
+        });
       },
       handleSuccess(event) {
         if (this.dataId == null) {
