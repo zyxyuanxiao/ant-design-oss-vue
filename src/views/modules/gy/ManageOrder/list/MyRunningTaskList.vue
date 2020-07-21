@@ -95,7 +95,7 @@
 <script>
   import { filterObj } from '@/utils/util'
   import { deleteAction,getAction,postAction,putAction,httpAction } from '@/api/manage'
-  import TaskDealModal from "./task/TaskDealModal1"
+  import TaskDealModal from "../../../bpm/task/TaskDealModal"
   import SelectEntrusterModal from "../../../bpm/task/form/SelectEntrusterModal"
   import JEllipsis from '@/components/jeecg/JEllipsis'
   import {JeecgListMixin} from '@/mixins/JeecgListMixin'
