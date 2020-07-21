@@ -24,7 +24,7 @@
               <iframe :src="iframeUrl" frameborder="0" width="100%" :height="height" scrolling="auto"></iframe>
             </template>
           </div>
-          <div style="bottom:55px;position: fixed;width: 90%;padding: 10px;z-index:10;background:rgb(244,244,244)">
+          <div style="bottom: 24px;position: fixed;width: 91%;padding: 10px;z-index:10;background:rgb(244,244,244)">
             <!-- 处理意见 -->
             <div style="width: 100%;margin-bottom: 5px">
               <div style="margin-bottom: 5px">
@@ -123,7 +123,7 @@
           height:(window.innerHeight-80)+"px",
           "overflow-y":"auto"
         },
-        height:(window.innerHeight-120)+"px",
+        height:(window.innerHeight-220)+"px",
         iframeUrl:"",
         resultObj:{
           transitionList: []
@@ -226,6 +226,6 @@
   }
 .component_div{
   margin-top: 5px;
-  bottom: 55px;
+  // margin-bottom: 155px;
 }
 </style>
