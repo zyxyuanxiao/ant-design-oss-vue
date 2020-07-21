@@ -25,7 +25,7 @@
     <a-col :span="24">
       <a-tabs id="tabs" :default-active-key="tabName" v-model="tabName" @tabClick="handleClick">
         <a-tab-pane tab="我的待办" key="todo">
-          <a-tabs defaultActiveKey="1" tabPosition="left">
+          <a-tabs defaultActiveKey="1" tabPosition="left" @tabClick="handleClickT">
             <!-- 我的任务 -->
             <a-tab-pane key="1">
               <span slot="tab">
@@ -41,9 +41,7 @@
                 <a-icon type="team"/>
                 <span>组任务</span>
               </span>
-
-              <my-group-task-list></my-group-task-list>
-
+              <my-group-task-list ref="groupList"></my-group-task-list>
             </a-tab-pane>
           </a-tabs>
         </a-tab-pane>
@@ -316,21 +314,6 @@
       },
       // 获取数据列表
       refreshList () {
-        // this.searchForm.vars.keys = ''
-        // this.searchForm.vars.values = ''
-        // this.searchForm.vars.types = ''
-        // for (let i = 0; i < this.vars.length; i++) {
-        //   if (this.vars[i].value !== '') {
-        //     this.searchForm.vars.keys += this.vars[i].key + ','
-        //     this.searchForm.vars.values += this.vars[i].value + ','
-        //     this.searchForm.vars.types += 'S' + ','
-        //   }
-        // }
-        // if (this.searchForm.vars.keys.length > 1) {
-        //   this.searchForm.vars.keys = this.searchForm.vars.keys.substring(0, this.searchForm.vars.keys.length - 1)
-        //   this.searchForm.vars.values = this.searchForm.vars.values.substring(0, this.searchForm.vars.values.length - 1)
-        // }
-        // this.resetSearch()
         if (this.tabName === 'todo') {
           this.refreshToDoList()
         } else if (this.tabName === 'partin') {
@@ -348,9 +331,8 @@
           }
         })
       },
-      // 切换tabs
+      // 切换主tabs
       handleClick (tab, event) {
-        console.log(tab)
         if(tab === 'partin'){
           this.$refs.partinList ? this.$refs.partinList.init('/act/task/partProcessList') : ''
         } else if(tab === 'todo') {
@@ -358,13 +340,13 @@
         } else if(tab === 'all') {
           this.$refs.AllList ? this.$refs.AllList.init('/act/task/historyProcessList') : ''
         }
-        // if (tab === 'todo') {
-        //   this.refreshToDoList()
-        // } else if (tab === 'partin') {
-        //   this.refreshPartList()
-        // } else {
-        //   this.refreshAllList()
-        // }
+      },
+      handleClickT (tab, event) {
+        if(tab === '1'){
+          this.$refs.todoList ? this.$refs.todoList.init('/act/task/list') : ''
+        } else if(tab === '2') {
+          this.$refs.groupList ? this.$refs.groupList.init('/act/task/taskGroupList') : ''
+        }
       },
       // 代办工单列表
       refreshToDoList () {

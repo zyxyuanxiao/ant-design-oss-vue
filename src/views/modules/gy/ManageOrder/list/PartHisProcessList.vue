@@ -213,8 +213,7 @@
     },
     created() {
       this.initList()
-      console.log(11111)
-      this.init()
+      // this.init()
     },
     activated () {
       // this.ipagination.pageSize = 5

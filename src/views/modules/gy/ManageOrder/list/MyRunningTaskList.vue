@@ -12,8 +12,15 @@
             </a-form-item>
           </a-col> -->
           <a-col :md="6" :sm="12">
-            <a-form-item label="工单类型">
+            <!-- <a-form-item label="工单类型">
               <a-input placeholder="请输入工单类型" v-model="queryParam.processDefinitionName"></a-input>
+            </a-form-item> -->
+            <a-form-item label="工单类型">
+              <a-select v-model="queryParam.processDefinitionName" style="width: 100%" placeholder="请选择工单类型" >
+                <a-select-option v-for="type in typeList" :key="type.procName">
+                  {{ type.procName }}
+                </a-select-option>
+              </a-select>
             </a-form-item>
           </a-col>
           <a-col :md="8" :sm="12">
@@ -87,7 +94,7 @@
 
 <script>
   import { filterObj } from '@/utils/util'
-  import { deleteAction,getAction,postAction,putAction } from '@/api/manage'
+  import { deleteAction,getAction,postAction,putAction,httpAction } from '@/api/manage'
   import TaskDealModal from "./task/TaskDealModal1"
   import SelectEntrusterModal from "../../../bpm/task/form/SelectEntrusterModal"
   import JEllipsis from '@/components/jeecg/JEllipsis'
@@ -111,6 +118,7 @@
         description: '我的任务',
         // 查询条件
         queryParam: {},
+        typeList: [],
         model:{
           userName:""
         },
@@ -175,9 +183,13 @@
           list: "/act/task/list",
           claim: "/act/task/claim",
           taskEntrust:"/act/task/taskEntrust",
+          roleDegisnList: "/designform/designFormCommuse/roleDegisnList"
         },
         taskId:'',
       }
+    },
+    created() {
+      this.initList()
     },
     methods: {
       // 
@@ -263,6 +275,12 @@
       taskNotify (record) {
         this.$refs.taskNotifyMeModal.notify(record)
         this.$refs.taskNotifyMeModal.title = '催办提醒'
+      },
+      // 加载下拉
+      initList(){
+        httpAction(this.url.roleDegisnList, {}, "GET").then((data) => {
+          this.typeList = data.result
+        })
       }
     }
   }
