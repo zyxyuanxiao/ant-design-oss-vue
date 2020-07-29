@@ -212,7 +212,7 @@
           this.isorter.order = "ascend" == sorter.order ? "asc" : "desc"
         }
         //这种筛选方式只支持单选
-        this.filters.status = filters.status[0];
+        // this.filters.status = filters.status[0];
         this.ipagination = pagination;
         this.loadData();
       },
