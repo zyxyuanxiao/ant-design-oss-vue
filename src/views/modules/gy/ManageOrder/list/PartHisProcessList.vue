@@ -57,13 +57,13 @@
               <a-dropdown>
                 <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
                 <a-menu slot="overlay">
-                    <a-menu-item >
+                    <!-- <a-menu-item >
                       <a-popconfirm title="确定要作废流程吗?" @confirm="() => invalidProcess(record)">
                         <a>
                           作废流程
                         </a>
                       </a-popconfirm>
-                    </a-menu-item>
+                    </a-menu-item> -->
                     <!-- <a-menu-item >
                       <a-popconfirm title="确定要取回流程吗?" @confirm="() => callBackProcess(record)">
                         <a>

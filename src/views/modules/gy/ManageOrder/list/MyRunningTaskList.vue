@@ -45,7 +45,6 @@
     <!-- table区域-begin -->
     <div>
       <a-table
-        :scroll="{x: 1800}"
         ref="table"
         size="middle"
         bordered
@@ -95,7 +94,7 @@
 <script>
   import { filterObj } from '@/utils/util'
   import { deleteAction,getAction,postAction,putAction,httpAction } from '@/api/manage'
-  import TaskDealModal from "../../../bpm/task/TaskDealModal"
+  import TaskDealModal from "./task/TaskDealModal1"
   import SelectEntrusterModal from "../../../bpm/task/form/SelectEntrusterModal"
   import JEllipsis from '@/components/jeecg/JEllipsis'
   import {JeecgListMixin} from '@/mixins/JeecgListMixin'
@@ -144,19 +143,22 @@
           //   align: 'center',
           //   dataIndex: 'processDefinitionId'
           // },
-           {
-            title: '任务ID',
-            align: 'center',
-            dataIndex: 'taskId'
-          }, {
+          //  {
+          //   title: '任务ID',
+          //   align: 'center',
+          //   dataIndex: 'taskId'
+          // }, 
+          {
             title: '工单类型',
             align: 'center',
             dataIndex: 'processDefinitionName'
-          }, {
-            title: '工单编号',
-            align: 'center',
-            dataIndex: 'processInstanceId'
-          }, {
+          },
+          //  {
+          //   title: '工单编号',
+          //   align: 'center',
+          //   dataIndex: 'processInstanceId'
+          // }, 
+          {
             title: '创建人',
             align: 'center',
             dataIndex: 'processApplyUserName'

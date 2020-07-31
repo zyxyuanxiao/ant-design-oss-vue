@@ -125,16 +125,19 @@
             title: '工单类型',
             align: 'center',
             dataIndex: 'processDefinitionName'
-          },{
-            title: '工单编号',
-            align: 'center',
-            dataIndex: 'processInstanceId'
-          },{
-            title: '任务ID',
-            align: 'center',
-            dataIndex: 'taskId'
-          }, {
-            title: '发起人',
+          },
+          // {
+          //   title: '工单编号',
+          //   align: 'center',
+          //   dataIndex: 'processInstanceId'
+          // },
+          // {
+          //   title: '任务ID',
+          //   align: 'center',
+          //   dataIndex: 'taskId'
+          // },
+          {
+            title: '创建人',
             align: 'center',
             dataIndex: 'processApplyUserName'
           },{
