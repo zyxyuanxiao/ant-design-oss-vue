@@ -1,27 +1,37 @@
 <template>
   <a-card class="gy-ticket">
-    <a-row style="padding: 0px 10px 0px 10px;margin:10px" class="bg-white">
-      <a-col :span="24">
-        <a-row :gutter="10">
-          <a-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4" v-for="data in dataListTj" :key="data.id">
-            <a-card class="box-card" :body-style="{ padding: '0px'}" style="margin-bottom:15px;background-color:#f2f2f7; box-shadow: none;width:91%">
-              <div class="actCard" style="display:flex;">
-                <div class='long'>
-                  <span :title="data.name" style="font-size:18px;">{{data.name}}</span>
-                </div>
-                <div style="height: 50px;width:60px;text-align: center;line-height:50px;rgba(106, 146, 103, 0.1);">
-                  <span class="gy_numStyle" style="">{{data.sum}}</span>
-                </div>
-                <div class="icon">
-                  <a-icon type="plus-circle" style="transform: scale(1.8)" @click="start(data)" />
-                </div>
+    <a-col>
+      <a-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4" v-for="data in dataListTj" :key="data.id" style="padding: 5px;min-width: 242px;">
+        <a-card class="box-card" :body-style="{ padding: '0px',boxShadow: '0 2px 12px 0 rgba(97,111,255,.2)'}" @click="start(data)">
+          <!-- <div class="actCard" style="display:flex;"> -->
+            <!-- <div style="line-height:25px;height:60px;">
+              <div class='long'>
+                <span :title="data.name" style="font-size:18px;">{{data.name}}</span>
               </div>
-            </a-card>
-          </a-col>
-        </a-row>
+              <div style="width:60px;text-align: center;rgba(106, 146, 103, 0.1);">
+                <span class="gy_numStyle" style="">{{data.sum}}</span>
+              </div>
+            </div>
+            <div class="icon">
+                <a-icon type="plus-circle" style="transform: scale(1.8)" @click="start(data)" /> -->
+              <!-- <img style="transform: scale(0.7); width: 100px; height: 100px" src="./icon/add.png">
+            </div> --> 
+            <div class="actCard" style="cursor: pointer;display:flex;">
+              <div class="icon-style1">
+                <img class="ticket-icon" src="./icon/ticket.png">
+              </div>
+              <!-- <div style="height: 90px;flex:1;text-align: center;line-height: 45px;"> -->
+              <div style="width: 100%;text-align: center;">
+                <div><span class="gy_numStyle">{{data.sum}}</span></div>
+                <div class='long'><span style="font-size:18px;color: #000;">{{data.name}}</span></div>
+              </div>
+              <!-- <div class="icon-style">
+                <img class="add-icon" style="transform: scale(0.7); width: 90px; height: 90px" src="./icon/add1.png" @click="start(data)">
+              </div> -->
+            </div>
+        </a-card>
       </a-col>
-    </a-row>
-
+    </a-col>
     <a-col :span="24">
       <a-tabs id="tabs" :default-active-key="tabName" v-model="tabName" @tabClick="handleClick">
         <a-tab-pane tab="我的待办" key="todo">
@@ -67,6 +77,7 @@
   import MyGroupTaskList from './list/MyGroupTaskList'
   import HisProcessList from './list/HisProcessList'
   import PartHisProcessList from './list/PartHisProcessList'
+  // import cw from './icon/add.png'
   export default {
     data () {
       return {
@@ -121,132 +132,6 @@
         isCreateCollapse: false,
         loading: false,
         dataListTj: [],
-        // 表头
-        columnsA: [
-          {
-            title: '#',
-            dataIndex: '',
-            key: 'rowIndex',
-            width: 60,
-            align: "center",
-            customRender: function (t, r, index) {
-              return parseInt(index) + 1;
-            }
-          },
-          {
-            title: '流程名称',
-            align: "center",
-            dataIndex: 'prcocessDefinitionName',
-          },
-          {
-            title: '工单标题',
-            dataIndex: 'bpmBizTitle',
-            scopedSlots: { customRender: 'bpmBizTitle' }
-          },
-          {
-            title: '流程ID',
-            align: "center",
-            dataIndex: 'processDefinitionId',
-          },
-          {
-            title: '流程实例',
-            align: "center",
-            dataIndex: 'processInstanceId',
-          },
-          {
-            title: '发起人',
-            align: "center",
-            dataIndex: 'startUserName',
-          },
-          {
-            title: '当前任务',
-            align: "center",
-            dataIndex: 'name',
-          },
-          {
-            title: '办理人',
-            align: "center",
-            dataIndex: 'assigneeName',
-          },
-          {
-            title: '开始时间',
-            align: "center",
-            dataIndex: 'startTime',
-          },
-          {
-            title: '状态',
-            align: "center",
-            dataIndex: 'isSuspended',
-            customRender: function (t, r, index) {
-              if(t==='true'){
-                return '已暂停';
-              }else{
-                return '已启动';
-              }
-            }
-          },
-          {
-            title: '操作',
-            dataIndex: 'action',
-            align: "center",
-            scopedSlots: {customRender: 'action'},
-            width: 120,
-            fixed: 'right',
-          }
-        ],
-        // 表头
-        columnsT: [
-          {
-            title: '#',
-            width: 60,
-            dataIndex: '',
-            key: 'rowIndex',
-            align: 'center',
-            customRender: function(t, r, index) {
-              return parseInt(index) + 1
-            }
-          }, {
-            title: '业务标题',
-            align: 'center',
-            dataIndex: 'bpmBizTitle',
-            scopedSlots: { customRender: 'bpmBizTitle' }
-          },{
-            title: '流程编号',
-            align: 'center',
-            dataIndex: 'processDefinitionId'
-          }, {
-            title: '任务ID',
-            align: 'center',
-            dataIndex: 'taskId'
-          }, {
-            title: '流程名称',
-            align: 'center',
-            dataIndex: 'processDefinitionName'
-          }, {
-            title: '流程实例',
-            align: 'center',
-            dataIndex: 'processInstanceId'
-          }, {
-            title: '发起人',
-            align: 'center',
-            dataIndex: 'processApplyUserName'
-          }, {
-            title: '开始时间',
-            align: 'center',
-            dataIndex: 'taskBeginTime'
-          }, {
-            title: '当前环节',
-            align: 'center',
-            dataIndex: 'taskName'
-          },{
-            title: '操作',
-            align: 'center',
-            dataIndex: 'action',
-            fixed: 'right',
-            width:150,
-            scopedSlots: {customRender: 'action'}
-          }
-        ],
         flowCodePre:"desform_",
         dialogOptions: { top: 60, width: 1000, padding: { top: 25, right: 25, bottom: 30, left: 25 } },
         url: {
@@ -615,19 +500,50 @@
     text-align: center;
     line-height:50px;
   }
+  .ticket-icon {
+    transform: scale(0.8);
+    width: 90px;
+    height: 90px;
+    background-color: #1890ff;
+    border-radius: 55px;
+  }
+  .add-icon {
+    transform: scale(0.6);
+    width: 90px;
+    height: 90px;
+  }
+  @media (max-width: 1600) { 
+    .gy-ticket .ant-col-xl-4 {
+      width: 16.66666667%;
+    }
+  }
+  .gy-ticket .box-card:hover{
+    border: 1px solid #e8e8e8;
+  }
+  .gy-ticket .box-card{
+    border: 1px solid rgba(0,0,0,0);
+  }
+  .gy-ticket  .ant-table,.gy-ticket .ant-form label, .ant-tabs-nav-scroll{
+    font-size: 16px;
+  }
   .gy-ticket .long {
     /* height: 50px;
     flex:1;
     text-align: center;
     padding: 4px; */
-    padding: 13px 0px 0px 10px;
-    height: 50px;
+    line-height:22px;
+    /* padding: 13px 0px 0px 10px; */
+    /* position: absolute;
+    top: 40px;
+    left: 100px;
+    padding-left: 5px; */
+    /* height: 50px; */
     display: inline-block;
     text-align: center;
-    overflow: hidden;
+    /* overflow: hidden;
     width: 150px;
     text-overflow: ellipsis;
-    white-space: nowrap;
+    white-space: nowrap; */
   }
   .gy-ticket .icon {
     height: 50px;
@@ -638,15 +554,21 @@
     background: #BBBBBB;
   }
   .gy_numStyle {
-    font-size:20px;
-    -webkit-text-fill-color: rgba(1, 9, 16, 0.96);
-    -webkit-text-stroke: 0px rgba(16, 16, 16, 0.93);
+    font-size:28px;
   }
-  /* :style="'height: 45px;flex:1;text-align: center;line-height:45px;rgba(106, 146, 103, 0.1);'+data.name.length > 6 '1':'1' +';'" */
-  /* .gy-ticket .el-form{
-    background-color:#F2F2F2;
-  } */
-  /* .gy-ticket .actCard {
-    display: flex;
-  } */
+  .icon-style {
+    height: 80px;
+    float: right;
+    width: 80px;
+    text-align: center;
+    line-height: 80px;
+  }
+  .icon-style1 {
+    /* height: 80px; */
+    float: left;
+    /* width: 80px; */
+    /* text-align: center; */
+    /* line-height: 80px; */
+    /* background-color: #6183FF; */
+  }
 </style>

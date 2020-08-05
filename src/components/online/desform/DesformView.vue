@@ -1,6 +1,6 @@
 <template>
   <a-spin :spinning="pageLoading || loading">
-    <iframe v-if="show" v-bind="iframeProps" :height="height"></iframe>
+    <iframe id="create-iframe" v-if="show" v-bind="iframeProps" :height="height"></iframe>
   </a-spin>
 </template>
 

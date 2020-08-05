@@ -50,7 +50,7 @@
         <span slot="action" slot-scope="text, record">
             <template v-if="record.endTime&&record.endTime!=''">
               <a @click="showHistory(record)">
-                历史
+                查看
               </a>
             </template>
             <template v-else>
@@ -71,7 +71,7 @@
                         </a>
                       </a-popconfirm>
                     </a-menu-item> -->
-                    <a-menu-item  @click="showHistory(record)">历史</a-menu-item>
+                    <a-menu-item  @click="showHistory(record)">查看</a-menu-item>
                 </a-menu>
               </a-dropdown>
             </template>
