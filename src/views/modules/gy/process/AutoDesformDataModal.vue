@@ -87,6 +87,18 @@
         this.dataId = dataId
         this.desform = desform
         this.visible = true
+        this.showB()
+      },
+
+      showB(){
+        window.setTimeout(() => {
+          var iframe = document.getElementById('create-iframe');//获取那个iframe，也可以bai用$('#iframe')[0]替代
+          var iframeWindow = iframe.contentWindow;//获取iframe里的duwindow对象
+          var ifr_document = iframe.contentWindow.document;//iframe中的文档内容
+          var bList = ifr_document.getElementsByClassName('dialog-footer')
+          bList[0].style.display = 'unset'
+          that.$message.warning('unset');
+        }, 1800)
       },
 
       /** 关闭窗口，并初始化所有的表 */
