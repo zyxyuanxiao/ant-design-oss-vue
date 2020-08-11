@@ -103,7 +103,7 @@
 
           <template slot="view-picture" slot-scope="text, record, index">
             <div v-if="Array.isArray(text) && text.length > 0" class="j-table-slot-view">
-              <img v-for="(item,imgIndex) of text" :src="item.url" alt=" " :preview="index" v-show="imgIndex===0"/>
+              <img v-for="(item,imgIndex) of text" :key="imgIndex" :src="getFileAccessHttpUrl(item.url)" alt=" " :preview="index" v-show="imgIndex===0"/>
             </div>
           </template>
 
@@ -321,6 +321,8 @@
     },
 
     methods: {
+      getFileAccessHttpUrl,
+
       reload() {
         // 初始化
         this.pageLoading = true

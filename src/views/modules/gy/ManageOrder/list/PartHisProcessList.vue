@@ -48,7 +48,10 @@
         @change="handleTableChange">
 
         <span slot="action" slot-scope="text, record">
-            <template v-if="record.endTime&&record.endTime!=''">
+            <a @click="showHistory(record)">
+              查看
+            </a>
+            <!-- <template v-if="record.endTime&&record.endTime!=''">
               <a @click="showHistory(record)">
                 查看
               </a>
@@ -57,24 +60,24 @@
               <a-dropdown>
                 <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
                 <a-menu slot="overlay">
-                    <!-- <a-menu-item >
+                    <a-menu-item >
                       <a-popconfirm title="确定要作废流程吗?" @confirm="() => invalidProcess(record)">
                         <a>
                           作废流程
                         </a>
                       </a-popconfirm>
-                    </a-menu-item> -->
-                    <!-- <a-menu-item >
+                    </a-menu-item>
+                    <a-menu-item >
                       <a-popconfirm title="确定要取回流程吗?" @confirm="() => callBackProcess(record)">
                         <a>
                           取回流程
                         </a>
                       </a-popconfirm>
-                    </a-menu-item> -->
+                    </a-menu-item>
                     <a-menu-item  @click="showHistory(record)">查看</a-menu-item>
                 </a-menu>
               </a-dropdown>
-            </template>
+            </template> -->
         </span>
 
         <!-- 字符串超长截取省略号显示-->
