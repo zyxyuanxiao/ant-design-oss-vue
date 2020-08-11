@@ -50,10 +50,10 @@
             <span>账户设置</span>
           </router-link>
         </a-menu-item>-->
-        <a-menu-item key="3"  @click="systemSetting">
+        <!-- <a-menu-item key="3"  @click="systemSetting">
            <a-icon type="tool"/>
            <span>系统设置</span>
-        </a-menu-item>
+        </a-menu-item> -->
         <a-menu-item key="4" @click="updatePassword">
           <a-icon type="setting"/>
           <span>密码修改</span>
@@ -75,15 +75,15 @@
         </a-menu-item>-->
       </a-menu>
     </a-dropdown>
-    <span class="action">
-      <a class="logout_title" href="javascript:;" @click="handleLogout">
+    <span class="action" @click="handleLogout">
+      <a class="logout_title" href="javascript:;">
         <a-icon type="logout"/>
         <span v-if="isDesktop()">&nbsp;退出登录</span>
       </a>
     </span>
     <user-password ref="userPassword"></user-password>
     <depart-select ref="departSelect" :closable="true" title="部门切换"></depart-select>
-    <setting-drawer ref="settingDrawer" :closable="true" title="系统设置"></setting-drawer>
+    <!-- <setting-drawer ref="settingDrawer" :closable="true" title="系统设置"></setting-drawer> -->
   </div>
 </template>
 

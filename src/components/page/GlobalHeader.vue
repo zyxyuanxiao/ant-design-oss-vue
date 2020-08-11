@@ -17,7 +17,7 @@
         :type="collapsed ? 'menu-unfold' : 'menu-fold'"
         @click="toggle"/>
 
-      <span v-if="device === 'desktop'">欢迎进入 上海高级人民法院运维管理平台</span>
+      <span v-if="device === 'desktop'" style="font-size: 16px;">欢迎进入 上海高级人民法院运维管理平台</span>
       <span v-else>上海高级人民法院运维管理平台</span>
 
       <user-menu :theme="theme"/>

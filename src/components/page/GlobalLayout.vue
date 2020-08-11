@@ -679,4 +679,7 @@
       }
     }
   }
+  .ant-layout-sider-children .ant-menu-item, .ant-layout-sider-children .ant-menu-submenu .ant-menu-submenu-title {
+    font-size: 16px;
+  }
 </style>
