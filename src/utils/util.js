@@ -77,6 +77,29 @@ export function formatDate(value, fmt) {
     return value.substr(0,fmt.length);
   }
 }
+/**
+ * 格式化日期时间
+ * @param val Tue May 19 2020 11:08:00 GMT+0800
+ * @param isFull 是否显示时分秒
+ * @returns {string} 2020 11:08:00
+ */
+export function getSelectTime (val, isFull) {
+  let year = val.getFullYear()
+  let month = val.getMonth() + 1
+  let day = val.getDate()
+  let hour = val.getHours()
+  let minute = val.getMinutes()
+  let second = val.getSeconds()
+  if (month >= 1 && month <= 9) { month = `0${month}` }
+  if (day >= 1 && day <= 9) { day = `0${day}` }
+  if (hour >= 0 && hour <= 9) { hour = `0${hour}` }
+  if (minute >= 0 && minute <= 9) { minute = `0${minute}` }
+  if (second >= 0 && second <= 9) { second = `0${second}` }
+  if (isFull === false) {
+    return `${year}-${month}-${day}`
+  }
+  return `${year}-${month}-${day} ${hour}:${minute}:${second}`
+}
 
 // 生成首页路由
 export function generateIndexRouter(data) {
