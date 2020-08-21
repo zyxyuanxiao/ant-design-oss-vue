@@ -338,7 +338,7 @@
     <!-- 表单区域 -->
     <a-modal
       :title="ModalText"
-      :width="1200"
+      :width="widthModel"
       :centered="true"
       :visible="visible"
       :confirm-loading="confirmLoading"
@@ -463,6 +463,7 @@ export default {
         xl: { span: 18 },
         lg: { span: 17 }
       },
+      widthModel:'85%',
       workTypeList: [],
       ModalText: '创建工单',
       visible: false,
