@@ -370,7 +370,6 @@ export default {
             // update-begin- --- author:scott ------ date:20190805 ---- for:密码加密逻辑暂时注释掉，有点问题
             loginParams.captcha = that.inputCodeContent
             loginParams.checkKey = that.currdatetime
-            console.log('登录参数', loginParams)
             that.Login(loginParams).then((res) => {
               this.departConfirm(res)
             }).catch((err) => {
@@ -389,7 +388,6 @@ export default {
             loginParams.captcha = values.captcha
             loginParams.remember_me = values.rememberMe
             that.PhoneLogin(loginParams).then((res) => {
-              console.log(res.result)
               this.departConfirm(res)
             }).catch((err) => {
               that.requestFailed(err)
@@ -425,7 +423,6 @@ export default {
                   setTimeout(hide, 0)
                   this.cmsFailed(res.message)
                 }
-                console.log(res)
                 setTimeout(hide, 500)
               })
               .catch(err => {
@@ -522,6 +519,7 @@ export default {
           this.departVisible = true
           this.currentUsername = this.form.getFieldValue('username')
           this.departList = res.result.departs
+          this.loginSuccess()
         } else {
           this.loginSuccess()
         }
