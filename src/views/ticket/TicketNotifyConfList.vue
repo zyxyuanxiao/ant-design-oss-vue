@@ -16,35 +16,8 @@
           </a-col>
           <template v-if="toggleSearchStatus">
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
-              <a-form-item label="字段名称">
-                <j-search-select-tag placeholder="请选择字段名称" v-model="queryParam.fieldName" dict=",,ticketFieldCode"/>
-              </a-form-item>
-            </a-col>
-            <a-col :xl="6" :lg="7" :md="8" :sm="24">
-              <a-form-item label="字段编码">
-                <j-search-select-tag placeholder="请选择字段编码" v-model="queryParam.fieldCode" dict=",,ticketFieldCode"/>
-              </a-form-item>
-            </a-col>
-            <a-col :xl="6" :lg="7" :md="8" :sm="24">
-              <a-form-item label="是否必填">
-                <j-dict-select-tag placeholder="请选择是否必填" v-model="queryParam.isRequired" dictCode="isRequired"/>
-              </a-form-item>
-            </a-col>
-            <a-col :xl="6" :lg="7" :md="8" :sm="24">
-              <a-form-item label="是否隐藏">
-                <j-dict-select-tag placeholder="请选择是否隐藏" v-model="queryParam.isHidden" dictCode="isHidden"/>
-              </a-form-item>
-            </a-col>
-            <a-col :xl="6" :lg="7" :md="8" :sm="24">
-              <a-form-item label="默认值类型">
-                <j-dict-select-tag placeholder="请选择默认值类型" v-model="queryParam.defaultType" dictCode="defaultType"/>
-              </a-form-item>
-            </a-col>
-            <a-col :xl="10" :lg="11" :md="12" :sm="24">
-              <a-form-item label="创建时间">
-                <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择开始时间" class="query-group-cust" v-model="queryParam.createTime_begin"></j-date>
-                <span class="query-group-split-cust"></span>
-                <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择结束时间" class="query-group-cust" v-model="queryParam.createTime_end"></j-date>
+              <a-form-item label="通知类型">
+                <j-dict-select-tag placeholder="请选择通知类型" v-model="queryParam.notifyType" dictCode="notifyType"/>
               </a-form-item>
             </a-col>
           </template>
@@ -66,7 +39,7 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('流程字段配置')">导出</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('工单通知配置表')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
@@ -137,7 +110,7 @@
       </a-table>
     </div>
 
-    <ticketFieldConf-modal ref="modalForm" @ok="modalFormOk"></ticketFieldConf-modal>
+    <ticketNotifyConf-modal ref="modalForm" @ok="modalFormOk"></ticketNotifyConf-modal>
   </a-card>
 </template>
 
@@ -146,26 +119,22 @@
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import TicketFieldConfModal from './modules/TicketFieldConfModal'
+  import TicketNotifyConfModal from './modules/TicketNotifyConfModal'
   import JDictSelectTag from '@/components/dict/JDictSelectTag.vue'
-  import JDate from '@/components/jeecg/JDate.vue'
   import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
   import JMultiSelectTag from '@/components/dict/JMultiSelectTag'
-  import JSearchSelectTag from '@/components/dict/JSearchSelectTag'
 
   export default {
-    name: "TicketFieldConfList",
+    name: "TicketNotifyConfList",
     mixins:[JeecgListMixin, mixinDevice],
     components: {
       JDictSelectTag,
-      JDate,
       JMultiSelectTag,
-      JSearchSelectTag,
-      TicketFieldConfModal
+      TicketNotifyConfModal
     },
     data () {
       return {
-        description: '流程字段配置管理页面',
+        description: '工单通知配置表管理页面',
         // 表头
         columns: [
           {
@@ -189,34 +158,14 @@
             dataIndex: 'actId_dictText'
           },
           {
-            title:'字段名称',
+            title:'通知类型',
             align:"center",
-            dataIndex: 'fieldName_dictText'
+            dataIndex: 'notifyType_dictText'
           },
           {
-            title:'字段编码',
+            title:'描述',
             align:"center",
-            dataIndex: 'fieldCode_dictText'
-          },
-          {
-            title:'是否必填',
-            align:"center",
-            dataIndex: 'isRequired_dictText'
-          },
-          {
-            title:'是否隐藏',
-            align:"center",
-            dataIndex: 'isHidden_dictText'
-          },
-          {
-            title:'默认值类型',
-            align:"center",
-            dataIndex: 'defaultType_dictText'
-          },
-          {
-            title:'默认值',
-            align:"center",
-            dataIndex: 'defaultValue'
+            dataIndex: 'description'
           },
           {
             title:'创建时间',
@@ -233,11 +182,11 @@
           }
         ],
         url: {
-          list: "/ticket/ticketFieldConf/list",
-          delete: "/ticket/ticketFieldConf/delete",
-          deleteBatch: "/ticket/ticketFieldConf/deleteBatch",
-          exportXlsUrl: "/ticket/ticketFieldConf/exportXls",
-          importExcelUrl: "ticket/ticketFieldConf/importExcel",
+          list: "/ticket/ticketNotifyConf/list",
+          delete: "/ticket/ticketNotifyConf/delete",
+          deleteBatch: "/ticket/ticketNotifyConf/deleteBatch",
+          exportXlsUrl: "/ticket/ticketNotifyConf/exportXls",
+          importExcelUrl: "ticket/ticketNotifyConf/importExcel",
         },
         dictOptions:{},
       }

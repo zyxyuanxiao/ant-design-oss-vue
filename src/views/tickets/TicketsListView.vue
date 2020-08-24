@@ -162,7 +162,7 @@
                   mode="multiple"
                   :options="orderSateList"
                   :filterOption="filterOption"
-                  v-model="formData.orderSate"
+                  v-model="formData.hiddenOrderSate"
                   placeholder="请选择工单状态"
                   allowClear
                 />
@@ -487,7 +487,7 @@ export default {
           title: '状态',
           align: 'center',
           width: 100,
-          dataIndex: 'formData.orderSate',
+          dataIndex: 'formData.hiddenOrderSate',
           scopedSlots: { customRender: 'status' }
         },
         {

@@ -15,25 +15,13 @@
           <j-multi-select-tag type="list_multi" v-decorator="['modelId', validatorRules.modelId]" :trigger-change="true" dictCode="modelName" placeholder="请选择模型名称"/>
         </a-form-item>
         <a-form-item label="流程环节" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-multi-select-tag type="list_multi" v-decorator="['actId', validatorRules.actId]" :trigger-change="true" dictCode="actName" placeholder="请选择流程环节"/>
+          <j-multi-select-tag type="list_multi" v-decorator="['actId']" :trigger-change="true" dictCode="actName" placeholder="请选择流程环节"/>
         </a-form-item>
-        <a-form-item label="字段名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-search-select-tag v-decorator="['fieldName', validatorRules.fieldName]" dict="ticketFieldCode" />
+        <a-form-item label="通知类型" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <j-dict-select-tag type="list" v-decorator="['notifyType', validatorRules.notifyType]" :trigger-change="true" dictCode="notifyType" placeholder="请选择通知类型"/>
         </a-form-item>
-        <a-form-item label="字段编码" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-search-select-tag v-decorator="['fieldCode', validatorRules.fieldCode]" dict="ticketFieldCode" />
-        </a-form-item>
-        <a-form-item label="是否必填" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-dict-select-tag type="radio" v-decorator="['isRequired', validatorRules.isRequired]" :trigger-change="true" dictCode="isRequired" placeholder="请选择是否必填"/>
-        </a-form-item>
-        <a-form-item label="是否隐藏" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-dict-select-tag type="radio" v-decorator="['isHidden', validatorRules.isHidden]" :trigger-change="true" dictCode="isHidden" placeholder="请选择是否隐藏"/>
-        </a-form-item>
-        <a-form-item label="默认值类型" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-dict-select-tag type="list" v-decorator="['defaultType', validatorRules.defaultType]" :trigger-change="true" dictCode="defaultType" placeholder="请选择默认值类型"/>
-        </a-form-item>
-        <a-form-item label="默认值" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['defaultValue']" placeholder="请输入默认值"></a-input>
+        <a-form-item label="描述" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-textarea v-decorator="['description', validatorRules.description]" rows="4" placeholder="请输入描述"/>
         </a-form-item>
 
       </a-form>
@@ -48,16 +36,14 @@
   import { validateDuplicateValue } from '@/utils/util'
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
   import JMultiSelectTag from "@/components/dict/JMultiSelectTag"
-  import JSearchSelectTag from '@/components/dict/JSearchSelectTag'
 
 
 
   export default {
-    name: "TicketFieldConfModal",
+    name: "TicketNotifyConfModal",
     components: { 
       JDictSelectTag,
       JMultiSelectTag,
-      JSearchSelectTag,
     },
     data () {
       return {
@@ -81,40 +67,20 @@
               { required: true, message: '请输入模型名称!'},
             ]
           },
-          actId: {
+          notifyType: {
             rules: [
-              { required: true, message: '请输入流程环节!'},
+              { required: true, message: '请输入通知类型!'},
             ]
           },
-          fieldName: {
+          description: {
             rules: [
-              { required: true, message: '请输入字段名称!'},
-            ]
-          },
-          fieldCode: {
-            rules: [
-              { required: true, message: '请输入字段编码!'},
-            ]
-          },
-          isRequired: {
-            rules: [
-              { required: true, message: '请输入是否必填!'},
-            ]
-          },
-          isHidden: {
-            rules: [
-              { required: true, message: '请输入是否隐藏!'},
-            ]
-          },
-          defaultType: {
-            rules: [
-              { required: true, message: '请输入默认值类型!'},
+              { required: true, message: '请输入描述!'},
             ]
           },
         },
         url: {
-          add: "/ticket/ticketFieldConf/add",
-          edit: "/ticket/ticketFieldConf/edit",
+          add: "/ticket/ticketNotifyConf/add",
+          edit: "/ticket/ticketNotifyConf/edit",
         }
       }
     },
@@ -129,7 +95,7 @@
         this.model = Object.assign({}, record);
         this.visible = true;
         this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model,'modelId','actId','fieldName','fieldCode','isRequired','isHidden','defaultType','defaultValue','createTime'))
+          this.form.setFieldsValue(pick(this.model,'modelId','actId','notifyType','description','createTime'))
         })
       },
       close () {
@@ -172,7 +138,7 @@
         this.close()
       },
       popupCallback(row){
-        this.form.setFieldsValue(pick(row,'modelId','actId','fieldName','fieldCode','isRequired','isHidden','defaultType','defaultValue','createTime'))
+        this.form.setFieldsValue(pick(row,'modelId','actId','notifyType','description','createTime'))
       },
 
       
