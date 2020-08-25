@@ -5,23 +5,20 @@
         <li>监控设备总数</li>
         <li class="nums">{{ count.total }} 个</li>
       </ul>
-      <a-divider
-        type="vertical"
-        class="ver" />
+      <a-divider type="vertical"
+                 class="ver" />
       <ul>
         <li>设备在线数</li>
         <li class="nums">{{ count.online }} 个</li>
       </ul>
-      <a-divider
-        type="vertical"
-        class="ver" />
+      <a-divider type="vertical"
+                 class="ver" />
       <ul>
         <li>设备在线率</li>
         <li class="nums">{{ count.onlineRate*100 }}%</li>
       </ul>
-      <a-divider
-        type="vertical"
-        class="ver" />
+      <a-divider type="vertical"
+                 class="ver" />
       <ul>
         <li>图像质量完好率</li>
         <li class="nums"> {{ count.imgIntegrityRate*100 }} %</li>
@@ -30,60 +27,48 @@
     <a-card :bordered="false">
       <!-- 查询区域 -->
       <div class="table-page-search-wrapper">
-        <a-form
-          layout="inline"
-          @keyup.enter.native="searchQuery"
-          class="serch-form">
+        <a-form layout="inline"
+                @keyup.enter.native="searchQuery"
+                class="serch-form">
           <a-row :gutter="24">
-            <a-col
-              :md="6"
-              :sm="12">
+            <a-col :md="6"
+                   :sm="12">
               <a-form-item label="点位名称">
-                <a-input
-                  placeholder="请输入点位名称"
-                  v-model="queryParam.name"></a-input>
+                <a-input placeholder="请输入点位名称"
+                         v-model="queryParam.name"></a-input>
               </a-form-item>
             </a-col>
-            <a-col
-              :md="6"
-              :sm="12">
+            <a-col :md="6"
+                   :sm="12">
               <a-form-item label="键盘编号">
-                <a-input
-                  placeholder="请输入键盘编号"
-                  v-model="queryParam.jpbh"></a-input>
+                <a-input placeholder="请输入键盘编号"
+                         v-model="queryParam.jpbh"></a-input>
               </a-form-item>
             </a-col>
 
             <template v-if="toggleSearchStatus">
-              <a-col
-                :md="6"
-                :sm="8">
+              <a-col :md="6"
+                     :sm="8">
                 <a-form-item label="IP">
-                  <a-input
-                    placeholder="请输入点位IP地址"
-                    v-model="queryParam.ip"></a-input>
+                  <a-input placeholder="请输入点位IP地址"
+                           v-model="queryParam.ip"></a-input>
                 </a-form-item>
               </a-col>
             </template>
 
-            <a-col
-              :md="6"
-              :sm="8">
-              <span
-                style="float: left;overflow: hidden;"
-                class="table-page-search-submitButtons">
-                <a-button
-                  type="primary"
-                  @click="searchQuery"
-                  icon="search">查询</a-button>
-                <a-button
-                  type="primary"
-                  @click="searchReset"
-                  icon="reload"
-                  style="margin-left: 8px">重置</a-button>
-                <a
-                  @click="handleToggleSearch"
-                  style="margin-left: 8px">
+            <a-col :md="6"
+                   :sm="8">
+              <span style="float: left;overflow: hidden;"
+                    class="table-page-search-submitButtons">
+                <a-button type="primary"
+                          @click="searchQuery"
+                          icon="search">查询</a-button>
+                <a-button type="primary"
+                          @click="searchReset"
+                          icon="reload"
+                          style="margin-left: 8px">重置</a-button>
+                <a @click="handleToggleSearch"
+                   style="margin-left: 8px">
                   {{ toggleSearchStatus ? '收起' : '展开' }}
                   <a-icon :type="toggleSearchStatus ? 'up' : 'down'" />
                 </a>
@@ -98,28 +83,23 @@
       <div class="table-operator">
         <!-- <a-button type="primary"
                 icon="plus">新增</a-button> -->
-        <a-button
-          type="primary"
-          icon="download"
-          @click="handleExportXls('视频诊断结果')">导出</a-button>
+        <a-button type="primary"
+                  icon="download"
+                  @click="handleExportXls('视频诊断结果')">导出</a-button>
         <!-- <a-button type="primary"
                   icon="import">导入</a-button> -->
         <a-dropdown v-if="selectedRowKeys.length > 0">
           <a-menu slot="overlay">
-            <a-menu-item
-              key="1"
-              @click="batchInsertMark">
-              <a-icon
-                type="plus-circle"
-                theme="outlined" />
+            <a-menu-item key="1"
+                         @click="batchInsertMark">
+              <a-icon type="plus-circle"
+                      theme="outlined" />
               批量标记
             </a-menu-item>
-            <a-menu-item
-              key="2"
-              @click="recallBatchInsertMark">
-              <a-icon
-                type="close-circle"
-                theme="outlined" />
+            <a-menu-item key="2"
+                         @click="recallBatchInsertMark">
+              <a-icon type="close-circle"
+                      theme="outlined" />
               取消标记
             </a-menu-item>
           </a-menu>
@@ -128,10 +108,9 @@
           </a-button>
         </a-dropdown>
 
-        <a-radio-group
-          v-model="dotPosition"
-          @change="radioOnChange"
-          style="margin-bottom: 8px;float: right;margin-right: 10%">
+        <a-radio-group v-model="dotPosition"
+                       @change="radioOnChange"
+                       style="margin-bottom: 8px;float: right;margin-right: 10%">
           <a-radio-button value="全部">
             全部
           </a-radio-button>
@@ -149,68 +128,59 @@
 
       <!-- table区域-begin -->
       <div>
-        <div
-          class="ant-alert ant-alert-info"
-          style="margin-bottom: 16px;">
+        <div class="ant-alert ant-alert-info"
+             style="margin-bottom: 16px;">
           <i class="anticon anticon-info-circle ant-alert-icon"></i>
           已选择
           <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>
           项
-          <a
-            style="margin-left: 24px"
-            @click="onClearSelected">清空</a>
+          <a style="margin-left: 24px"
+             @click="onClearSelected">清空</a>
         </div>
 
-        <a-table
-          ref="table"
-          size="middle"
-          :rowKey="record => record.devcode"
-          :columns="columns"
-          :dataSource="dataSource"
-          :pagination="ipagination"
-          :loading="loading"
-          :rowSelection="{selectedRowKeys: selectedRowKeys,selectedRows:selectedRows, onChange: onSelectChange}"
-          @change="handleTableChange">
+        <a-table ref="table"
+                 size="middle"
+                 :rowKey="record => record.devcode"
+                 :columns="columns"
+                 :dataSource="dataSource"
+                 :pagination="ipagination"
+                 :loading="loading"
+                 :rowSelection="{selectedRowKeys: selectedRowKeys,selectedRows:selectedRows, onChange: onSelectChange}"
+                 @change="handleTableChange">
 
-          <template
-            slot="onlinestatus"
-            slot-scope="text, record">
+          <template slot="onlinestatus"
+                    slot-scope="text, record">
             <span v-if="text === 1"><img src="../../../assets/online.png">在线</span>
             <span v-if="text === 0"><img src="../../../assets/offline.png">离线</span>
           </template>
 
-          <template
-            slot="streamstatus"
-            slot-scope="text, record">
+          <template slot="streamstatus"
+                    slot-scope="text, record">
             <span v-if="text === 1"><img src="../../../assets/online.png">正常</span>
             <span v-if="text === 0"><img src="../../../assets/offline.png">异常</span>
           </template>
 
-          <template
-            slot="imgstatus"
-            slot-scope="text, record">
+          <template slot="imgstatus"
+                    slot-scope="text, record">
             <span v-if="text === 1"><img src="../../../assets/online.png">正常</span>
             <span v-if="text === 0"><img src="../../../assets/offline.png">异常</span>
             <span v-if="text === 3"><img src="../../../assets/unknown.png">未知</span>
           </template>
 
-          <template
-            slot="action"
-            slot-scope="text, record">
+          <template slot="action"
+                    slot-scope="text, record">
             <a @click="handleDetail(record)">详情</a>
 
             <span v-if="record.ismark !=1 ">
               <a-divider type="vertical" />
-              <a
-                @click="handleMark(record)"
-                class="ant-dropdown-link">标记
+              <a @click="handleMark(record)"
+                 class="ant-dropdown-link">标记
               </a>
             </span>
             <span v-if="record.ismark === 1">
               <a-divider type="vertical" />
-              <a
-                @click="handleMark(record)"
-                class="ant-dropdown-link">取消标记
+              <a @click="handleMark(record)"
+                 class="ant-dropdown-link">取消标记
               </a>
               <img src="../../../assets/flag.png">
             </span>
@@ -218,37 +188,20 @@
         </a-table>
       </div>
     </a-card>
-    <video-drawer
-      :detailRow="detailRow"
-      ref="videoDrawer"></video-drawer>
+    <video-drawer :detailRow="detailRow"
+                  ref="videoDrawer"></video-drawer>
   </div>
 </template>
 
 <script>
-import OnlCgformHeadModal from '@views/modules/online/cgform/modules/OnlCgformHeadModal'
 import { postAction, getAction } from '@/api/manage'
-import JMultiSelectTag from '@comp/dict/JMultiSelectTag'
 import { JeecgListMixin } from '@/mixins/JeecgListMixin'
 import JSuperQuery from '@/components/jeecg/JSuperQuery'
-import EnhanceJs from '@views/modules/online/cgform/modules/EnhanceJs'
-import EnhanceSql from '@views/modules/online/cgform/modules/EnhanceSql'
-import EnhanceJava from '@views/modules/online/cgform/modules/EnhanceJava'
-import TransDb2Online from '@views/modules/online/cgform/modules/TransDb2Online'
-import CodeGenerator from '@views/modules/online/cgform/modules/CodeGenerator'
-import OnlCgformButtonList from '@views/modules/online/cgform/button/OnlCgformButtonList'
 import videoDrawer from './videoDrawer'
 export default {
   name: 'OnlCgformHeadList',
   mixins: [JeecgListMixin],
   components: {
-    OnlCgformHeadModal,
-    EnhanceJs,
-    EnhanceSql,
-    EnhanceJava,
-    TransDb2Online,
-    CodeGenerator,
-    OnlCgformButtonList,
-    JMultiSelectTag,
     JSuperQuery,
     videoDrawer
   },
@@ -416,7 +369,22 @@ export default {
       this.$refs.videoDrawer.visible = true
     },
     radioOnChange (e) {
-      console.log('11', e.target.value)
+      delete this.queryParam.ismark
+      delete this.queryParam.onlinestatus
+      let value = e.target.value
+      if (value === '全部') {
+        this.queryParam = []
+        this.loadData()
+      } else if (value === '离线') {
+        this.queryParam['onlinestatus'] = 0
+        this.loadData()
+      } else if (value === '在线') {
+        this.queryParam['onlinestatus'] = 1
+        this.loadData()
+      } else if (value === '已标记') {
+        this.queryParam['ismark'] = 1
+        this.loadData()
+      }
     }
   }
 }
