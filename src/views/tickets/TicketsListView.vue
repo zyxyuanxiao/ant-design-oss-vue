@@ -890,6 +890,7 @@ export default {
           this.uploadFile(response.result.id, this.images)
         } else {
           this.$message.success(response.message)
+          this.showRollback = false
           this.spinning = false
           this.visible = false
           this.spinningShow = false
@@ -940,6 +941,7 @@ export default {
           this.uploadFile(this.orderInfo.ticketId, this.images)
         } else {
           this.$message.success(response.message)
+          this.showRollback = false
           this.visible = false
           this.spinningShow = false
           this.getTicketsList()
@@ -1008,6 +1010,7 @@ export default {
         } else {
           this.$message.success(response.message)
           this.visible = false
+          this.showRollback = false
           this.spinningShow = false
           this.loading = false
           this.visibleModel = false
@@ -1041,6 +1044,7 @@ export default {
         } else {
           this.$message.success(response.message)
           this.getTicketsList()
+          this.showRollback = false
           this.visible = false
           this.spinningShow = false
         }
@@ -1100,9 +1104,10 @@ export default {
           this.isFile = 0
         }
         this.operation = 'details'
+        this.showRollback = false
+        this.spinningShow = false
         this.visible = true
         this.spinning = false
-        this.spinningShow = false
       }).catch(error => {
         console.log(error)
       })
@@ -1183,6 +1188,7 @@ export default {
     handleOk (e) {
       this.confirmLoading = true
       setTimeout(() => {
+        this.showRollback = false
         this.visible = false
         this.spinningShow = false
         this.visibleModel = false
@@ -1190,6 +1196,7 @@ export default {
       }, 2000)
     },
     handleCancel () {
+      this.showRollback = false
       this.visible = false
       this.visibleModel = false
       this.spinningShow = false
