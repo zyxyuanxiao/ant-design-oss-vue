@@ -93,11 +93,11 @@ export default {
       },
       wrapperCol: {
         xs: { span: 24 },
-        sm: { span: 20 }
+        sm: { span: 21 }
       },
       wrapperCol2: {
         xs: { span: 24 },
-        sm: { span: 16 }
+        sm: { span: 18 }
       },
       typeList: ['multiRowText', 'table', 'attachfile'],
       isShow: true
