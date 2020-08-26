@@ -1,64 +1,66 @@
 <template>
   <div>
-    <a-form-model :model="formConfig" ref="formConfig" style="display: flex;flex-wrap:wrap">
-      <a-form-model-item
-        v-bind:class="[item.type === 'multiRowText' || item.type === 'table' || item.type === 'timeAxis' ||  item.type === 'attachfile' ? 'form-width-row': 'form-width']"
-        :hidden="item.is_hidden"
-        v-for="(item, index) in formConfig.formFiles"
-        :label="item.name"
-        :label-col="item.type === 'multiRowText' || item.type === 'table'|| item.type === 'timeAxis' || item.type === 'attachfile' ?  labelCol : labelCol2"
-        :prop="'formFiles.'+ index +'.conf.default_value'"
-        :key="item.code"
-        :rules="{
+    <a-spin :spinning="spinnings">
+      <a-form-model :model="formConfig" ref="formConfig" style="display: flex;flex-wrap:wrap">
+        <a-form-model-item
+          v-bind:class="[item.type === 'multiRowText' || item.type === 'table' || item.type === 'timeAxis' ||  item.type === 'attachfile' ? 'form-width-row': 'form-width']"
+          :hidden="item.is_hidden"
+          v-for="(item, index) in formConfig.formFiles"
+          :label="item.name"
+          :label-col="item.type === 'multiRowText' || item.type === 'table'|| item.type === 'timeAxis' || item.type === 'attachfile' ?  labelCol : labelCol2"
+          :prop="'formFiles.'+ index +'.conf.default_value'"
+          :key="item.code"
+          :rules="{
             required: item.is_required === 1,
             message: item.name + '不能为空',
             trigger: 'blur',
             }"
-        :wrapper-col="item.type === 'multiRowText' || item.type === 'table' || item.type === 'timeAxis' ||  item.type === 'attachfile' ?  wrapperCol : wrapperCol2"
-      >
-        <text-test :item="item" v-if="item.type === 'singleRowText'"></text-test>
-        <radio-test :item="item" v-else-if="item.type === 'singleSel'"></radio-test>
-        <checkbox-test :item="item" v-else-if="item.type === 'multiSel'"></checkbox-test>
-        <select-test :item="item" v-else-if="item.type === 'listSel'"></select-test>
-        <time-test :item="item" v-else-if="item.type === 'dateTime'"></time-test>
-        <cascade-test :item="item" v-else-if="item.type === 'cascader'"></cascade-test>
-        <tree-sel-test :item="item" v-else-if="item.type === 'treeSel'"></tree-sel-test>
-        <integer-test :item="item" v-else-if="item.type === 'int'"></integer-test>
-        <multi-row-test :item="item" v-else-if="item.type === 'multiRowText'"></multi-row-test>
-        <attachfile-test :item="item" v-else-if="item.type === 'attachfile'"
-                         @onUpLoad="onUpLoad"></attachfile-test>
-        <decimals-test :item="item" v-else-if="item.type === 'double'"></decimals-test>
-        <table-test :item="item" v-else-if="item.type=== 'table'"></table-test>
-        <table-test :item="item" v-else-if="item.type=== 'timeAxis'"></table-test>
-        <!--<dynamic-form-part-item
-          :items="item instanceof Array?item[1]:item">
-        </dynamic-form-part-item>-->
-      </a-form-model-item>
-    </a-form-model>
-    <div style="display: flex;justify-content:center" v-show="allotShow">
-      <div v-for="(item, index) in submitBtn" :key="index" style="padding: 15px 10px;">
-        <a-button style="padding: 0 15px;height: 35px;"
-                  type="primary"
-                  @click="submitForm('formConfig', item)"
+          :wrapper-col="item.type === 'multiRowText' || item.type === 'table' || item.type === 'timeAxis' ||  item.type === 'attachfile' ?  wrapperCol : wrapperCol2"
         >
-          {{item.btnName}}
-        </a-button>
+          <text-test :item="item" v-if="item.type === 'singleRowText'"></text-test>
+          <radio-test :item="item" v-else-if="item.type === 'singleSel'"></radio-test>
+          <checkbox-test :item="item" v-else-if="item.type === 'multiSel'"></checkbox-test>
+          <select-test :item="item" v-else-if="item.type === 'listSel'"></select-test>
+          <time-test :item="item" v-else-if="item.type === 'dateTime'"></time-test>
+          <cascade-test :item="item" v-else-if="item.type === 'cascader'"></cascade-test>
+          <tree-sel-test :item="item" v-else-if="item.type === 'treeSel'"></tree-sel-test>
+          <integer-test :item="item" v-else-if="item.type === 'int'"></integer-test>
+          <multi-row-test :item="item" v-else-if="item.type === 'multiRowText'"></multi-row-test>
+          <attachfile-test :item="item" v-else-if="item.type === 'attachfile'"
+                           @onUpLoad="onUpLoad"></attachfile-test>
+          <decimals-test :item="item" v-else-if="item.type === 'double'"></decimals-test>
+          <table-test :item="item" v-else-if="item.type=== 'table'"></table-test>
+          <table-test :item="item" v-else-if="item.type=== 'timeAxis'"></table-test>
+          <!--<dynamic-form-part-item
+            :items="item instanceof Array?item[1]:item">
+          </dynamic-form-part-item>-->
+        </a-form-model-item>
+      </a-form-model>
+      <div style="display: flex;justify-content:center" v-show="allotShow">
+        <div v-for="(item, index) in submitBtn" :key="index" style="padding: 15px 10px;">
+          <a-button style="padding: 0 15px;height: 35px;"
+                    type="primary"
+                    @click="submitForm('formConfig', item)"
+          >
+            {{item.btnName}}
+          </a-button>
+        </div>
+        <div style="padding: 15px 10px;" v-if="operation === 'details'">
+          <a-button type="primary" block @click="updateFeedback('formConfig')">保存</a-button>
+        </div>
+        <!--v-if="operation === 'details'"-->
+        <div style="padding: 15px 10px;" v-if="operation === 'details'">
+          <a-select style="width: 80px;height: 35px;" placeholder="更多" @change="handleChange">
+            <a-select-option value="reassign">
+              改派
+            </a-select-option>
+            <a-select-option value="putUp">
+              挂起
+            </a-select-option>
+          </a-select>
+        </div>
       </div>
-      <div style="padding: 15px 10px;" v-if="operation === 'details'">
-        <a-button type="primary" block @click="updateFeedback('formConfig')">保存</a-button>
-      </div>
-      <!--v-if="operation === 'details'"-->
-      <div style="padding: 15px 10px;" v-if="operation === 'details'">
-        <a-select style="width: 80px;height: 35px;" placeholder="更多" @change="handleChange">
-          <a-select-option value="reassign">
-            改派
-          </a-select-option>
-          <a-select-option value="putUp">
-            挂起
-          </a-select-option>
-        </a-select>
-      </div>
-    </div>
+    </a-spin>
   </div>
 </template>
 
@@ -80,7 +82,7 @@ import tableTest from './from-item/From-Table'
 
 export default {
   name: 'Tickets-From',
-  props: ['formConfig', 'submitBtn', 'allotShow', 'operation'],
+  props: ['formConfig', 'submitBtn', 'allotShow', 'operation', 'spinnings'],
   data () {
     return {
       labelCol: {
@@ -161,6 +163,7 @@ export default {
   .form-width {
     width: 50%;
   }
+
   .form-width-row {
     width: 100%;
   }

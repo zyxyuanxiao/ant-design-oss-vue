@@ -239,84 +239,86 @@
 
     <!-- table区域-begin -->
     <div>
-      <a-tabs v-model="activeKey" @change="onChangeTabs">
-        <a-tab-pane key="1">
+      <a-spin :spinning="spinningShow">
+        <a-tabs v-model="activeKey" @change="onChangeTabs">
+          <a-tab-pane key="1">
           <span slot="tab">
             <a-icon type="solution" style="font-size: 16px;"/>
            我的待办
           </span>
-        </a-tab-pane>
-        <a-tab-pane key="2">
+          </a-tab-pane>
+          <a-tab-pane key="2">
           <span slot="tab">
            <a-icon type="file-done" style="font-size: 16px;"/>
            关于我的
           </span>
-        </a-tab-pane>
-      </a-tabs>
-      <a-table
-        ref="table"
-        size="middle"
-        bordered
-        rowKey="flowNo"
-        :columns="columns"
-        :dataSource="dataSource"
-        :pagination="false"
-        :loading="loading"
-      >
+          </a-tab-pane>
+        </a-tabs>
+        <a-table
+          ref="table"
+          size="middle"
+          bordered
+          rowKey="flowNo"
+          :columns="columns"
+          :dataSource="dataSource"
+          :pagination="false"
+          :loading="loading"
+        >
         <span slot="status" slot-scope="status">
        <!--   <a-icon type="exclamation-circle" />-->
           <a-tag v-if="item.value === status +''" :color="item.color"
                  v-for="item in orderSateList"> {{item.label}}</a-tag>
         </span>
-        <template slot="type" slot-scope="type">
+          <template slot="type" slot-scope="type">
           <span v-if="item.value === type +''" :color="item.color"
                 v-for="item in orderTypeList"> {{item.label}}
           </span>
-        </template>
-        <span slot="create_time" slot-scope="create_time">
+          </template>
+          <span slot="create_time" slot-scope="create_time">
            {{getLongTime(create_time, true)}}
          </span>
-        <span slot="action" slot-scope="text, record">
+          <span slot="action" slot-scope="text, record">
           <a-button @click="handleDetail(record)">查看详情</a-button>
-          <!-- <a-dropdown>
-             <a class="ant-dropdown-link">更多 <a-icon type="down"/></a>
-             <a-menu slot="overlay">
-               <template v-if="record.bpmStatus === '1'">
+            <!-- <a-dropdown>
+               <a class="ant-dropdown-link">更多 <a-icon type="down"/></a>
+               <a-menu slot="overlay">
+                 <template v-if="record.bpmStatus === '1'">
+                   <a-menu-item>
+                     <a @click="handleEdit(record)">编辑</a>
+                   </a-menu-item>
+                 </template>
                  <a-menu-item>
-                   <a @click="handleEdit(record)">编辑</a>
+                   <a href="javascript:;" @click="handleDetail(record)">详情</a>
                  </a-menu-item>
-               </template>
-               <a-menu-item>
-                 <a href="javascript:;" @click="handleDetail(record)">详情</a>
-               </a-menu-item>
-               <a-menu-item v-if="record.bpmStatus === '1'">
-                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-                   <a>删除</a>
-                 </a-popconfirm>
-               </a-menu-item>
-               <a-menu-item v-else @click="handleTrack(record)">审批进度</a-menu-item>
-             </a-menu>
-           </a-dropdown>-->
+                 <a-menu-item v-if="record.bpmStatus === '1'">
+                   <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
+                     <a>删除</a>
+                   </a-popconfirm>
+                 </a-menu-item>
+                 <a-menu-item v-else @click="handleTrack(record)">审批进度</a-menu-item>
+               </a-menu>
+             </a-dropdown>-->
         </span>
 
-        <span slot="modelName" slot-scope="text, record">
+          <span slot="modelName" slot-scope="text, record">
           <j-ellipsis :value="'工单【'+text+'】'" :length="15"/>
         </span>
-        <!-- 字符串超长截取省略号显示-->
-        <span slot="executors" slot-scope="executors, record">
+          <!-- 字符串超长截取省略号显示-->
+          <span slot="executors" slot-scope="executors, record">
           <j-ellipsis :value="getExecutors(executors)" :length="15"/>
         </span>
-      </a-table>
-      <a-pagination
-        style="text-align: right;margin-top: 15px;"
-        :total="total"
-        show-size-changer
-        :show-total="(total, range) => `${range[0]}-${range[1]} 共 ${total} 条`"
-        :page-size="data.pageSize"
-        :default-current="1"
-        @change="onChange"
-        @showSizeChange="onShowSizeChange"
-      />
+        </a-table>
+        <a-pagination
+          style="text-align: right;margin-top: 15px;"
+          :total="total"
+          show-size-changer
+          :show-total="(total, range) => `${range[0]}-${range[1]} 共 ${total} 条`"
+          :page-size="data.pageSize"
+          :default-current="1"
+          @change="onChange"
+          @showSizeChange="onShowSizeChange"
+        />
+      </a-spin>
     </div>
     <!-- table区域-end -->
     <!--模型选择区域-->
@@ -350,7 +352,7 @@
         :submit-btn="submitBtn"
         :allot-show="allotShow"
         :operation="operation"
-        :spinning="spinning"
+        :spinnings="spinning"
         :flow-list="flowList"
         v-if="operation === 'details'"
         @updateFeedback="updateOrder"
@@ -414,6 +416,7 @@
         :form-config="formConfig"
         :submit-btn="submitBtn"
         :allot-show="allotShow"
+        :spinnings="spinning"
         :operation="operation"
         @updateFeedback="updateOrder"
         @uploadFile="uploadFile"
@@ -850,7 +853,7 @@ export default {
         this.saveTickets(item)
         return
       }
-      //  this.handleTickets(item)
+      this.handleTickets(item)
     },
     saveTickets (item) {
       this.spinning = true
@@ -1006,6 +1009,8 @@ export default {
           this.$message.success(response.message)
           this.visible = false
           this.spinningShow = false
+          this.loading = false
+          this.visibleModel = false
           this.getTicketsList()
         }
       }).catch(error => {
@@ -1044,7 +1049,7 @@ export default {
       })
     },
     handleDetail (record) {
-      this.loading = true
+      this.spinningShow = true
       this.formFileds = []
       this.submitBtn = []
       let params = {
@@ -1077,7 +1082,6 @@ export default {
                     status: 'done'
                   })
                 })
-                console.log('-------?-', this.imgs)
                 this.$set(itemA, 'fileList', this.imgs)
               } else {
                 this.$set(itemA, 'fileList', [])
@@ -1097,8 +1101,8 @@ export default {
         }
         this.operation = 'details'
         this.visible = true
+        this.spinning = false
         this.spinningShow = false
-        this.loading = false
       }).catch(error => {
         console.log(error)
       })
@@ -1145,6 +1149,7 @@ export default {
         this.operation = 'add'
         this.visibleModel = false
         this.spinningShow = false
+        this.spinning = false
         this.allotShow = true
         this.visible = true
         this.loading = false
@@ -1165,7 +1170,7 @@ export default {
         this.visibleModel = false
         this.spinningShow = false
         this.allotShow = true
-        this.visible = true
+        this.visible = false
         this.loading = false
 
       }).catch(error => {
