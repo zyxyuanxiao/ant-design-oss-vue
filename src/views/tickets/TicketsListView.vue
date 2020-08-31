@@ -262,7 +262,6 @@
           :columns="columns"
           :dataSource="dataSource"
           :pagination="false"
-          :loading="loading"
         >
         <span slot="status" slot-scope="status">
        <!--   <a-icon type="exclamation-circle" />-->
@@ -509,6 +508,9 @@ export default {
       workTypeList: [],
       ModalText: '创建工单',
       visible: false,
+      /**
+       * 显示选择模型
+       */
       visibleModel: false,
       confirmLoading: false,
       loading: false,
@@ -608,8 +610,11 @@ export default {
       dataSource: [],
       orderInfo: {},
       submitBtn: [],
+      /**
+       * 模型数据
+       */
       formConfig: {
-        formFiles: []
+        formFiles: [] //
       },
       flowList: [],  // 流程数据
       formData: {
@@ -802,6 +807,9 @@ export default {
       spinningShow: false,
       activeKey: '1',
       imgUrl: 'http://192.168.1.103:8080/oss/api/itsm/getFileById?isOnLine=true&fileId=',
+      /**
+       * 查询参数
+       */
       data: {
         pageSize: 10,
         pageNum: 1,
@@ -875,6 +883,7 @@ export default {
           [item.nextActivityId]: {}
         }
       }
+      delete this.workForm.file
       let data = {
         description: this.workForm.ticketDesc,
         form: this.workForm,
@@ -920,6 +929,7 @@ export default {
           [item.nextActivityId]: {}
         }
       }
+      delete this.workForm.file
       let data = {
         activity_id: this.orderInfo.activity_id,
         handle_type: 1,
@@ -989,6 +999,7 @@ export default {
         return
       }
       this.spinningShow = true
+      delete this.workForm.file
       let data = {
         activity_id: this.orderInfo.activity_id,
         handle_type: 1,
@@ -1032,6 +1043,7 @@ export default {
           }
         }
       })
+      delete this.workForm.file
       let data = {
         ticket_id: this.orderInfo.ticketId,
         form: this.workForm
@@ -1055,6 +1067,7 @@ export default {
     handleDetail (record) {
       this.spinningShow = true
       this.formFileds = []
+      this.workForm = {}
       this.submitBtn = []
       let params = {
         id: record.ticketId,
@@ -1090,19 +1103,22 @@ export default {
               } else {
                 this.$set(itemA, 'fileList', [])
               }
-            } else if (itemA.type === 'dateTime') {
-              if (itemA.conf.default_value === '') {
-                itemA.conf.default_value = getSelectTime(new Date(), true)
-              }
-            } else if (itemA.type === 'cascader') {
-              if (itemA.conf.default_value === '') {
-                itemA.conf.default_value = []
-              }
             }
           })
         } else {
           this.isFile = 0
         }
+        this.formFileds.forEach((itemA, index) => {
+          if (itemA.type === 'dateTime') {
+            if (itemA.conf.default_value === '') {
+              itemA.conf.default_value = getSelectTime(new Date(), true)
+            }
+          } else if (itemA.type === 'cascader') {
+            if (itemA.conf.default_value === '') {
+              itemA.conf.default_value = []
+            }
+          }
+        })
         this.operation = 'details'
         this.showRollback = false
         this.spinningShow = false
@@ -1118,6 +1134,7 @@ export default {
       this.loading = true
       this.formFileds = [] //清空数据
       this.submitBtn = []
+      this.workForm = {}
       let apiKey = this.userInfo().apikey
       getModelDetails(apiKey, id).then(response => {
         this.modeId = id
