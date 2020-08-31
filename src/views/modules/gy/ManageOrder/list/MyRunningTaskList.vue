@@ -262,7 +262,7 @@
           taskId:this.taskId,
           taskAssignee:data.username
         };//查询条件
-        console.log("委托", params)
+        console.log('委托', params)
         putAction(that.url.taskEntrust, params).then((res) => {
           if (res.success) {
             that.$message.success(res.message);
@@ -280,7 +280,7 @@
       },
       // 加载下拉
       initList(){
-        httpAction(this.url.roleDegisnList, {}, "GET").then((data) => {
+        httpAction(this.url.roleDegisnList, {}, 'GET').then((data) => {
           this.typeList = data.result
         })
       }

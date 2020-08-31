@@ -80,7 +80,7 @@
 <script>
   import { filterObj } from '@/utils/util'
   import { deleteAction,getAction,postAction,putAction,httpAction } from '@/api/manage'
-  import TaskDealModal from "../../../bpm/task/TaskDealModal";
+  import TaskDealModal from "./task/TaskDealModal1";
   import JEllipsis from '@/components/jeecg/JEllipsis'
   import {JeecgListMixin} from '@/mixins/JeecgListMixin'
   import {BpmNodeInfoMixin} from '@/views/modules/bpm/mixins/BpmNodeInfoMixin'
@@ -187,21 +187,22 @@
       handleClaim(record){
         var that = this;
         var params = {taskId:record.id};//查询条件
-        this.$confirm({
-          title:"确认签收吗",
-          content:"是否签收该任务?",
-          onOk: function(){
+        // this.$confirm({
+        //   title:"确认签收吗",
+        //   content:"是否签收该任务?",
+        //   onOk: function(){
             putAction(that.url.claim, params).then((res) => {
               if (res.success) {
                 that.$message.success(res.message);
-                that.loadData();
+                this.getProcessNodeInfo(record);
+                // that.loadData();
               } else {
                 that.$message.warning(res.message);
                 that.loadData();
               }
             })
-          }
-        });
+        //   }
+        // });
       },
       handleOk(){
         this.loadData();

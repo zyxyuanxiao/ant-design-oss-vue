@@ -40,7 +40,7 @@
             <a-tab-pane key="1">
               <span slot="tab">
                 <a-icon type="user"/>
-                <span>我的任务</span>
+                <span>已接任务</span>
               </span>
               <my-running-task-list ref="todoList"></my-running-task-list>
 
@@ -49,7 +49,7 @@
             <a-tab-pane key="2" forceRender>
               <span slot="tab">
                 <a-icon type="team"/>
-                <span>组任务</span>
+                <span>待接任务</span>
               </span>
               <my-group-task-list ref="groupList"></my-group-task-list>
             </a-tab-pane>

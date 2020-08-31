@@ -142,7 +142,11 @@
           //   align: 'center',
           //   dataIndex: 'processDefinitionId'
           // },
-
+          {
+            title: '当前环节',
+            align: 'center',
+            dataIndex: 'bpmTaskName'
+          },
           {
             title: '工单编号',
             align: 'center',
