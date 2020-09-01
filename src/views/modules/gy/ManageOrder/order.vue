@@ -159,7 +159,7 @@
       PartHisProcessList
     },
     created() {
-      this.refreshTypeSumList(),
+      this.refreshTypeSumList("todo"),
       this.isAllOrder()
     },
     watch: {
