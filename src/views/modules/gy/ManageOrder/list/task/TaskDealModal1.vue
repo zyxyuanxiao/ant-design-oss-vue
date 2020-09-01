@@ -21,7 +21,7 @@
               <dynamic-link :path="path" :formData="formData"></dynamic-link>
             </template>
             <template v-else>
-              <iframe :src="iframeUrl" frameborder="0" width="100%" :height="height" scrolling="auto"></iframe>
+              <iframe id="ifrmae" :src="iframeUrl" frameborder="0" width="100%" :height="height" scrolling="auto"></iframe>
             </template>
           </div>
           <div style="bottom: 24px;position: fixed;width: 91%;padding: 10px;z-index:10;background:rgb(244,244,244)">
@@ -91,10 +91,8 @@
     props: ['path','formData'],
     computed: {
       isComp: function () {
-        console.log(this.formData)
         this.model.taskId = this.formData.taskId
         this.getProcessTaskTransInfo(this.formData)
-        // console.log("isComp组件名称：",this.path);
         var TOKEN = Vue.ls.get(ACCESS_TOKEN);
         var DOMAIN_URL = window._CONFIG['domianURL'];
         var TASKID = this.formData.taskDefKey;
@@ -106,6 +104,14 @@
         }
         return true;
       }
+    },
+    watch: {
+      // iframeUrl: function (newVal,oldVal) {
+      //   if (newVal) {
+      //     this.$message.warning(newVal)
+      //     setTimeOut(() => {this.hiddenButtom()},1000)
+      //   }
+      // }
     },
     data() {
       return {
@@ -144,10 +150,19 @@
       }
     },
     created() {
-      console.log(111)
-      // this.getProcessTaskTransInfo(this.formData)
+      // alert('111')
     },
     methods: {
+      // 隐藏表单中提交
+      // hiddenButtom () {
+      //   window.setTimeout(() => {
+      //     var iframe = document.getElementById('ifrmae');//获取那个iframe，也可以bai用$('#iframe')[0]替代
+      //     var iframeWindow = iframe.contentWindow;//获取iframe里的duwindow对象
+      //     var ifr_document = iframe.contentWindow.document;//iframe中的文档内容
+      //     var bList = ifr_document.getElementsByClassName('el-button--small')
+      //     bList[0].style.visibility = 'hidden'
+      //   }, 800)
+      // },
       // 关闭模态框
       handleModalCancel() {
         this.visible = false
@@ -157,13 +172,13 @@
       },
       deal(record){
         this.visible = true;
-        // this.getProcessTaskTransInfo(this.formData)
         //初始化字典 - 常用语
         initDictOptions('approval_remarks').then((res) => {
           if (res.success) {
             this.remarksDictOptions = res.result;
           }
         });
+
       },
       completeProcess(){
         this.visible = false;
@@ -184,20 +199,22 @@
       },
       handleProcessComplete (nextnode) {
         const that = this;
+        var iframe = document.getElementById('ifrmae');//获取那个iframe，也可以bai用$('#iframe')[0]替代
+        var iframeWindow = iframe.contentWindow;//获取iframe里的duwindow对象
+        var ifr_document = iframe.contentWindow.document;//iframe中的文档内容
+        var bList = ifr_document.getElementsByClassName('el-button--small')
+        bList[bList.length-1].click()
         if(!this.model.reason || this.model.reason.length==0){
-          // this.$message.warning("请填写处理意见");
-          // return
           this.model.reason = '同意'
         }
         if(nextnode){
           this.model.nextnode = nextnode;
         }
-        console.log("流程办理数据：",this.model);
         var method = 'post';
-        this.$confirm({
-          title: "提示",
-          content: "确认提交审批吗?",
-          onOk: function(){
+        // this.$confirm({
+        //   title: "提示",
+        //   content: "确认提交审批吗?",
+        //   onOk: function(){
             that.loading = true;
             that.model.fileList = JSON.stringify(that.fileList)
             httpAction(that.url.processComplete,that.model,method).then((res)=>{
@@ -212,8 +229,8 @@
               that.loading = false;
               //that.close();
             })
-          }
-        });
+        //   }
+        // });
       }
     }
 

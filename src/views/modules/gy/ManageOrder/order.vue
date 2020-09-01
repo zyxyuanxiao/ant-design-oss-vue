@@ -4,31 +4,31 @@
       <a-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4" v-for="data in dataListTj" :key="data.id" style="padding: 5px;min-width: 242px;">
         <a-card class="box-card" :body-style="{ padding: '0px',boxShadow: '0 2px 12px 0 rgba(97,111,255,.2)'}" @click="start(data)">
           <!-- <div class="actCard" style="display:flex;"> -->
-            <!-- <div style="line-height:25px;height:60px;">
-              <div class='long'>
-                <span :title="data.name" style="font-size:18px;">{{data.name}}</span>
-              </div>
-              <div style="width:60px;text-align: center;rgba(106, 146, 103, 0.1);">
-                <span class="gy_numStyle" style="">{{data.sum}}</span>
-              </div>
+          <!-- <div style="line-height:25px;height:60px;">
+            <div class='long'>
+              <span :title="data.name" style="font-size:18px;">{{data.name}}</span>
             </div>
-            <div class="icon">
-                <a-icon type="plus-circle" style="transform: scale(1.8)" @click="start(data)" /> -->
-              <!-- <img style="transform: scale(0.7); width: 100px; height: 100px" src="./icon/add.png">
-            </div> --> 
-            <div class="actCard" style="cursor: pointer;display:flex;">
-              <div class="icon-style1">
-                <img class="ticket-icon" src="./icon/ticket.png">
-              </div>
-              <!-- <div style="height: 90px;flex:1;text-align: center;line-height: 45px;"> -->
-              <div style="width: 100%;text-align: center;">
-                <div><span class="gy_numStyle">{{data.sum}}</span></div>
-                <div class='long'><span style="font-size:18px;color: #000;">{{data.name}}</span></div>
-              </div>
-              <!-- <div class="icon-style">
-                <img class="add-icon" style="transform: scale(0.7); width: 90px; height: 90px" src="./icon/add1.png" @click="start(data)">
-              </div> -->
+            <div style="width:60px;text-align: center;rgba(106, 146, 103, 0.1);">
+              <span class="gy_numStyle" style="">{{data.sum}}</span>
             </div>
+          </div>
+          <div class="icon">
+              <a-icon type="plus-circle" style="transform: scale(1.8)" @click="start(data)" /> -->
+          <!-- <img style="transform: scale(0.7); width: 100px; height: 100px" src="./icon/add.png">
+        </div> -->
+          <div class="actCard" style="cursor: pointer;display:flex;">
+            <div class="icon-style1">
+              <img class="ticket-icon" src="./icon/ticket.png">
+            </div>
+            <!-- <div style="height: 90px;flex:1;text-align: center;line-height: 45px;"> -->
+            <div style="width: 100%;text-align: center;">
+              <div><span class="gy_numStyle">{{data.sum}}</span></div>
+              <div class='long'><span style="font-size:18px;color: #000;">{{data.name}}</span></div>
+            </div>
+            <!-- <div class="icon-style">
+              <img class="add-icon" style="transform: scale(0.7); width: 90px; height: 90px" src="./icon/add1.png" @click="start(data)">
+            </div> -->
+          </div>
         </a-card>
       </a-col>
     </a-col>
@@ -40,7 +40,7 @@
             <a-tab-pane key="1">
               <span slot="tab">
                 <a-icon type="user"/>
-                <span>我的任务</span>
+                <span>已接任务</span>
               </span>
               <my-running-task-list ref="todoList"></my-running-task-list>
 
@@ -49,7 +49,7 @@
             <a-tab-pane key="2" forceRender>
               <span slot="tab">
                 <a-icon type="team"/>
-                <span>组任务</span>
+                <span>待接任务</span>
               </span>
               <my-group-task-list ref="groupList"></my-group-task-list>
             </a-tab-pane>
@@ -58,28 +58,32 @@
         <a-tab-pane tab="我参与的" key="partin">
           <part-his-process-list ref="partinList"></part-his-process-list>
         </a-tab-pane>
-        <a-tab-pane tab="全部工单" key="all">
+        <a-tab-pane tab="全部工单" key="all" v-has="'order:all'" v-if="allOrderPermission">
           <his-process-list ref="AllList"></his-process-list>
         </a-tab-pane>
       </a-tabs>
 
     </a-col>
 
-    <auto-desform-data-modal ref="desformModal" :dialogOptions="dialogOptions"  @added="handleDesformDataAdded"></auto-desform-data-modal>
+    <auto-desform-data-modal ref="desformModal" :dialogOptions="dialogOptions"
+                             @added="handleDesformDataAdded"></auto-desform-data-modal>
   </a-card>
 </template>
 
 <script>
-  import AutoDesformDataModal from "../process/AutoDesformDataModal.vue"
+  import AutoDesformDataModal from '../process/AutoDesformDataModal.vue'
   import { httpAction, postAction, getAction } from '@/api/manage'
   import JEllipsis from '@/components/jeecg/JEllipsis'
   import MyRunningTaskList from './list/MyRunningTaskList'
   import MyGroupTaskList from './list/MyGroupTaskList'
   import HisProcessList from './list/HisProcessList'
   import PartHisProcessList from './list/PartHisProcessList'
+  import ACol from 'ant-design-vue/es/grid/Col'
+  import Vue from 'vue'
+  import { ACCESS_TOKEN } from '@/store/mutation-types'
   // import cw from './icon/add.png'
   export default {
-    data () {
+    data() {
       return {
         vars: [
           {
@@ -87,6 +91,7 @@
             'value': ''
           }
         ],
+        allOrderPermission: false,
         searchForm: {
           beginDate: '',
           endDate: '',
@@ -132,19 +137,20 @@
         isCreateCollapse: false,
         loading: false,
         dataListTj: [],
-        flowCodePre:"desform_",
+        flowCodePre: 'desform_',
         dialogOptions: { top: 60, width: 1000, padding: { top: 25, right: 25, bottom: 30, left: 25 } },
         url: {
-          list: "/act/process/lists",
-          start: "/act/process/starttest",
-          roleDegisnList: "/designform/designFormCommuse/roleDegisnList",
+          list: '/act/process/lists',
+          start: '/act/process/starttest',
+          roleDegisnList: '/designform/designFormCommuse/roleDegisnList',
           queryByCode: '/desform/queryByCode',
           add: '/process/extActDesignFlowData/add',
-          startProcess: "/process/extActProcess/startDesFormMutilProcess"
+          startProcess: '/process/extActProcess/startDesFormMutilProcess'
         }
       }
     },
     components: {
+      ACol,
       AutoDesformDataModal,
       JEllipsis,
       MyRunningTaskList,
@@ -152,11 +158,12 @@
       HisProcessList,
       PartHisProcessList
     },
-    created () {
-      this.refreshTypeSumList('todo')
+    created() {
+      this.refreshTypeSumList(),
+      this.isAllOrder()
     },
     watch: {
-      searchDates () {
+      searchDates() {
         if (this.searchDates) {
           this.searchForm.beginDate = this.searchDates[0]
           this.searchForm.endDate = this.searchDates[1]
@@ -167,15 +174,15 @@
       }
     },
     methods: {
-      random (lower, upper) {
+      random(lower, upper) {
         return Math.floor(Math.random() * (upper - lower + 1)) + lower
       },
-      addById () {
+      addById() {
         this.$router.push({ path: '../order/create' })
         // this.$refs.leaveFormForm.init('add', '')
       },
       // 获取工单类型列method表
-      refreshType () {
+      refreshType() {
         this.loading = true
         this.$http({
           url: '/flowable/process/list',
@@ -185,7 +192,7 @@
             'pageSize': this.pageSize,
             ...this.searchForm
           }
-        }).then(({data}) => {
+        }).then(({ data }) => {
           if (data && data.success) {
             this.dataList2 = data.page.list
             // this.total = data.page.count
@@ -193,12 +200,12 @@
           }
         })
       },
-      resetForm () {
+      resetForm() {
         // this.$refs.searchForm.resetFields()
         this.searchForm.procDefKey = ''
       },
       // 获取数据列表
-      refreshList () {
+      refreshList() {
         if (this.tabName === 'todo') {
           this.refreshToDoList()
         } else if (this.tabName === 'partin') {
@@ -209,7 +216,7 @@
       },
       // 顶部根据工单类型统计工单数据
       refreshTypeSumList (name) {
-        
+
         this.$http.get('/gy/count/countbytype?name='+name).then((data) => {
           if (data && data.success) {
             console.log(data)
@@ -245,7 +252,7 @@
         }
       },
       // 代办工单列表
-      refreshToDoList () {
+      refreshToDoList() {
         this.loading = true
         this.$http({
           url: '/act/task/list',
@@ -265,7 +272,7 @@
         })
       },
       // 参与数据列表
-      refreshPartList () {
+      refreshPartList() {
         this.loading = true
         this.$http({
           url: '/wa/flowable/task/partin/',
@@ -275,7 +282,7 @@
             'pageSize': this.pageSize,
             ...this.searchForm
           }
-        }).then(({data}) => {
+        }).then(({ data }) => {
           if (data && data.success) {
             this.tabData.partInList = data.page.list
             this.total = data.page.count
@@ -284,7 +291,7 @@
         })
       },
       // 所有工单列表
-      refreshAllList () {
+      refreshAllList() {
         this.loading = true
         this.$http({
           url: '/act/task/historyProcessList',
@@ -304,8 +311,8 @@
         })
       },
       // 加载表单
-      start (data) {
-        var title = "表单【"+data.desformName+"】发起申请"
+      start(data) {
+        var title = '表单【' + data.desformName + '】发起申请'
         var mode = 'add'
         var desform = data
         var dataId = null
@@ -313,7 +320,7 @@
           desformCode: data.desformCode
         }).then(res => {
           if (res.success) {
-            let designJson = res.result.desformDesignJson;
+            let designJson = res.result.desformDesignJson
             let json = JSON.parse(designJson)
             // 保存 dialogConfig
             let dialogOptions = json.config.dialogOptions
@@ -328,63 +335,68 @@
       /** 流程数据保存成功后触发该事件 */
       handleDesformDataAdded(event) {
         // 将流程保存至后台
-        let { desform, dataId } = event;
-        this.loading = true;
+        let { desform, dataId } = event
+        this.loading = true
         httpAction(this.url.add, {
           desformId: desform.id,
           desformCode: desform.desformCode,
           desformDataId: dataId,
           desformName: desform.desformName,
           processName: desform.procName,
-          flowCode: this.flowCodePre+desform.desformCode,
+          flowCode: this.flowCodePre + desform.desformCode,
           titleExp: desform.titleExp
         }, 'POST').then(res => {
           if (!res.success) {
-            this.$message.error(res.message);
-            return;
+            this.$message.error(res.message)
+            return
           }
           this.startDesFormProcess(desform, event.desformDataJson, res.result)
           // this.$router.push({ path: '/extbpm/process/ExtActDesignFlowDataList'})
         })
       },
-      startDesFormProcess (record, desformDataJson, id){
-        var jsonData = desformDataJson;
+      startDesFormProcess(record, desformDataJson, id) {
+        var jsonData = desformDataJson
         var param = {
-          flowCode:this.flowCodePre+record.desformCode,
+          flowCode: this.flowCodePre + record.desformCode,
           id: id,
-          formUrl:"{{DOMAIN_URL}}/desform/detail/"+record.desformCode+"/${BPM_DES_DATA_ID}?token={{TOKEN}}&taskId={{TASKID}}",
-          formUrlMobile:"{{DOMAIN_URL}}/desform/detail/"+record.desformCode+"/${BPM_DES_DATA_ID}?token={{TOKEN}}&taskId={{TASKID}}",
-          jsonData:jsonData,
+          formUrl: '{{DOMAIN_URL}}/desform/detail/' + record.desformCode + '/${BPM_DES_DATA_ID}?token={{TOKEN}}&taskId={{TASKID}}',
+          formUrlMobile: '{{DOMAIN_URL}}/desform/detail/' + record.desformCode + '/${BPM_DES_DATA_ID}?token={{TOKEN}}&taskId={{TASKID}}',
+          jsonData: jsonData
         }
-        postAction(this.url.startProcess,param).then((res)=>{
-          if(res.success){
-            this.$message.success(res.message);
-            this.loadData();
-            this.onClearSelected();
-          }else{
-            this.$message.warning(res.message);
+        postAction(this.url.startProcess, param).then((res) => {
+          if (res.success) {
+            this.$message.success(res.message)
+            this.loadData()
+            this.onClearSelected()
+          } else {
+            this.$message.warning(res.message)
           }
         }).finally(() => this.loading = false)
       },
-      todo (row) {
+      todo(row) {
         // 处理
-        this.$http.get('/flowable/task/getTaskDef', {params: {
-          taskId: row.task.id,
-          taskName: row.task.name,
-          taskDefKey: row.task.taskDefinitionKey,
-          procInsId: row.task.processInstanceId,
-          procDefId: row.task.processDefinitionId,
-          status: row.status
-        }}).then(({data}) => {
+        this.$http.get('/flowable/task/getTaskDef', {
+          params: {
+            taskId: row.task.id,
+            taskName: row.task.name,
+            taskDefKey: row.task.taskDefinitionKey,
+            procInsId: row.task.processInstanceId,
+            procDefId: row.task.processDefinitionId,
+            status: row.status
+          }
+        }).then(({ data }) => {
           if (data.success) {
             this.$router.push({
               path: '/gy/task/TaskForm',
-              query: {formTitle: `${row.vars.title}`, title: `审批【${row.task.name || ''}】`, ...pick(data.flow, 'formType', 'formReadOnly', 'formUrl', 'procDefKey', 'taskDefKey', 'procInsId', 'procDefId', 'taskId', 'status', 'title', 'businessId')}
+              query: {
+                formTitle: `${row.vars.title}`,
+                title: `审批【${row.task.name || ''}】`, ...pick(data.flow, 'formType', 'formReadOnly', 'formUrl', 'procDefKey', 'taskDefKey', 'procInsId', 'procDefId', 'taskId', 'status', 'title', 'businessId')
+              }
             })
           }
         })
       },
-      trace (row) {
+      trace(row) {
         // 查看进度
         this.processInstanceId = row.processInstanceId || row.task.processInstanceId
         this.visible = true
@@ -392,9 +404,9 @@
           this.$refs.preview.init()
         })
       },
-      claim (row) {
+      claim(row) {
         // 签收任务
-        this.$http.post('/flowable/task/claim', {taskId: row.task.id}).then(({data}) => {
+        this.$http.post('/flowable/task/claim', { taskId: row.task.id }).then(({ data }) => {
           if (data.success) {
             // this.$message.success(data.msg)
             this.todo(row) // 签收后处理
@@ -402,26 +414,26 @@
         })
       },
       // 每页数
-      sizeChangeHandle (val) {
+      sizeChangeHandle(val) {
         this.pageSize = val
         this.pageNo = 1
         this.refreshList()
       },
       // 当前页
-      currentChangeHandle (val) {
+      currentChangeHandle(val) {
         this.pageNo = val
         this.refreshList()
       },
       //
-      searchReset () {
+      searchReset() {
         this.searchForm = {}
       },
       // 查看
-      view (id) {
+      view(id) {
         this.$refs.testDataMainFormForm.init('view', id)
       },
       // 删除
-      del (id) {
+      del(id) {
         let ids = id || this.dataListSelections.map(item => {
           return item.id
         }).join(',')
@@ -434,8 +446,8 @@
           this.$http({
             url: '/test/onetomany/testDataMainForm/delete',
             method: 'delete',
-            params: {'ids': ids}
-          }).then(({data}) => {
+            params: { 'ids': ids }
+          }).then(({ data }) => {
             if (data && data.success) {
               this.$message.success(data.msg)
               this.refreshList()
@@ -444,73 +456,104 @@
           })
         })
       },
-     // 查看历史
-      detail (row) {
+      // 查看历史
+      detail(row) {
         console.log(row)
-        this.$http.get('/flowable/task/getTaskDef', {params: {
-          procInsId: row.processInstanceId || row.proc.processInstanceId,
-          procDefId: row.processDefinitionId || row.proc.processDefinitionId
-        }}).then(({data}) => {
+        this.$http.get('/flowable/task/getTaskDef', {
+          params: {
+            procInsId: row.processInstanceId || row.proc.processInstanceId,
+            procDefId: row.processDefinitionId || row.proc.processDefinitionId
+          }
+        }).then(({ data }) => {
           if (data.success) {
             this.$router.push({
               path: '/gy/task/TaskFormDetail',
-              query: {readOnly: true, title: row.vars.title, formTitle: row.vars.title, ...pick(data.flow, 'formType', 'formUrl', 'procDefKey', 'taskDefKey', 'procInsId', 'procDefId', 'taskId', 'status', 'title', 'businessId')}
+              query: {
+                readOnly: true,
+                title: row.vars.title,
+                formTitle: row.vars.title, ...pick(data.flow, 'formType', 'formUrl', 'procDefKey', 'taskDefKey', 'procInsId', 'procDefId', 'taskId', 'status', 'title', 'businessId')
+              }
             })
           }
         })
       },
-      details (row) {
-        this.$http.get('/flowable/task/getTaskDef', {params: {
-          procInsId: row.processInstanceId,
-          procDefId: row.processDefinitionId
-        }}).then(({data}) => {
+      details(row) {
+        this.$http.get('/flowable/task/getTaskDef', {
+          params: {
+            procInsId: row.processInstanceId,
+            procDefId: row.processDefinitionId
+          }
+        }).then(({ data }) => {
           if (data.success) {
             this.$router.push({
               path: '/gy/task/TaskFormDetail',
-              query: {readOnly: true, title: row.processVariables.title, formTitle: row.processVariables.title, ...pick(data.flow, 'formType', 'formUrl', 'procDefKey', 'taskDefKey', 'procInsId', 'procDefId', 'taskId', 'status', 'title', 'businessId')}
+              query: {
+                readOnly: true,
+                title: row.processVariables.title,
+                formTitle: row.processVariables.title, ...pick(data.flow, 'formType', 'formUrl', 'procDefKey', 'taskDefKey', 'procInsId', 'procDefId', 'taskId', 'status', 'title', 'businessId')
+              }
             })
           }
         })
       },
       // 导入成功
-      uploadSuccess (res, file) {
+      uploadSuccess(res, file) {
         if (res.success) {
-          this.$message.success({dangerouslyUseHTMLString: true,
-            message: res.msg})
+          this.$message.success({
+            dangerouslyUseHTMLString: true,
+            message: res.msg
+          })
         } else {
           this.$message.error(res.msg)
         }
       },
       // 下载模板
-      downloadTpl () {
+      downloadTpl() {
         this.$utils.download('/test/onetomany/testDataMainForm/import/template')
       },
-      exportExcel () {
+      exportExcel() {
         this.$utils.download('/test/onetomany/testDataMainForm/export')
       },
-      resetSearch () {
+      resetSearch() {
         // this.$refs.searchForm.resetFields()
         this.refreshList()
+      },
+
+      isAllOrder() {
+        const v_token = Vue.ls.get(ACCESS_TOKEN);
+        this.$http({
+          url: '/sys/order/getAllOrderPermission',
+          method: 'get',
+          params: { 'token': v_token }
+        }).then((data) => {
+          if (data && data.success) {
+            this.allOrderPermission = data.result
+          }
+        })
       }
+
     }
   }
 </script>
 <style>
   .gd-query-form {
-    margin:10px;
+    margin: 10px;
     border: 1px solid #EBEEF5;
     background-color: #FFF;
     padding: 25px 25px 0px;
   }
+
   #tabs .el-tabs__item {
     font-size: 18px;
   }
+
   .gy-ticket .short {
     height: 50px;
-    flex:1;
+    flex: 1;
     text-align: center;
-    line-height:50px;
+    line-height: 50px;
   }
+
   .ticket-icon {
     transform: scale(0.8);
     width: 90px;
@@ -518,31 +561,37 @@
     background-color: #1890ff;
     border-radius: 55px;
   }
+
   .add-icon {
     transform: scale(0.6);
     width: 90px;
     height: 90px;
   }
-  @media (max-width: 1600) { 
+
+  @media (max-width: 1600) {
     .gy-ticket .ant-col-xl-4 {
       width: 16.66666667%;
     }
   }
-  .gy-ticket .box-card:hover{
+
+  .gy-ticket .box-card:hover {
     border: 1px solid #e8e8e8;
   }
-  .gy-ticket .box-card{
-    border: 1px solid rgba(0,0,0,0);
+
+  .gy-ticket .box-card {
+    border: 1px solid rgba(0, 0, 0, 0);
   }
-  .gy-ticket  .ant-table,.gy-ticket .ant-form label, .ant-tabs-nav-scroll{
+
+  .gy-ticket .ant-table, .gy-ticket .ant-form label, .ant-tabs-nav-scroll {
     font-size: 16px;
   }
+
   .gy-ticket .long {
     /* height: 50px;
     flex:1;
     text-align: center;
     padding: 4px; */
-    line-height:22px;
+    line-height: 22px;
     /* padding: 13px 0px 0px 10px; */
     /* position: absolute;
     top: 40px;
@@ -556,17 +605,20 @@
     text-overflow: ellipsis;
     white-space: nowrap; */
   }
+
   .gy-ticket .icon {
     height: 50px;
-    color:white;
+    color: white;
     width: 50px;
     text-align: center;
-    line-height:50px;
+    line-height: 50px;
     background: #BBBBBB;
   }
+
   .gy_numStyle {
-    font-size:28px;
+    font-size: 28px;
   }
+
   .icon-style {
     height: 80px;
     float: right;
@@ -574,6 +626,7 @@
     text-align: center;
     line-height: 80px;
   }
+
   .icon-style1 {
     /* height: 80px; */
     float: left;
