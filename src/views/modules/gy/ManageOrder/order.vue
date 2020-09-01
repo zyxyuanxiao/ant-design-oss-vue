@@ -153,7 +153,7 @@
       PartHisProcessList
     },
     created () {
-      this.refreshTypeSumList()
+      this.refreshTypeSumList('todo')
     },
     watch: {
       searchDates () {
@@ -208,8 +208,9 @@
         }
       },
       // 顶部根据工单类型统计工单数据
-      refreshTypeSumList () {
-        this.$http.get('/gy/count/countbytype').then((data) => {
+      refreshTypeSumList (name) {
+        
+        this.$http.get('/gy/count/countbytype?name='+name).then((data) => {
           if (data && data.success) {
             console.log(data)
             this.dataListTj = data.result
@@ -219,18 +220,28 @@
       // 切换主tabs
       handleClick (tab, event) {
         if(tab === 'partin'){
+          this.refreshTypeSumList('part')
           this.$refs.partinList ? this.$refs.partinList.init('/act/task/partProcessList') : ''
+          this.$refs.partInList.close()
         } else if(tab === 'todo') {
+          this.refreshTypeSumList('todo')
           this.$refs.todoList ? this.$refs.todoList.init('/act/task/list') : ''
+          this.$refs.todoList.close()
         } else if(tab === 'all') {
+           this.refreshTypeSumList('all')
           this.$refs.AllList ? this.$refs.AllList.init('/act/task/historyProcessList') : ''
+          this.$refs.AllList.close()
         }
       },
       handleClickT (tab, event) {
         if(tab === '1'){
+          this.refreshTypeSumList('todo')
           this.$refs.todoList ? this.$refs.todoList.init('/act/task/list') : ''
+          this.$refs.todoList.close()
         } else if(tab === '2') {
+          this.refreshTypeSumList('group')
           this.$refs.groupList ? this.$refs.groupList.init('/act/task/taskGroupList') : ''
+          this.$refs.groupList.close()
         }
       },
       // 代办工单列表
@@ -336,7 +347,7 @@
           // this.$router.push({ path: '/extbpm/process/ExtActDesignFlowDataList'})
         })
       },
-      startDesFormProcess (record, desformDataJson, id){ 
+      startDesFormProcess (record, desformDataJson, id){
         var jsonData = desformDataJson;
         var param = {
           flowCode:this.flowCodePre+record.desformCode,
@@ -401,7 +412,7 @@
         this.pageNo = val
         this.refreshList()
       },
-      // 
+      //
       searchReset () {
         this.searchForm = {}
       },
