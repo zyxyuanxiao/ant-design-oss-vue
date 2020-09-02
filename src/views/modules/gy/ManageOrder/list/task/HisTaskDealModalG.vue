@@ -10,9 +10,22 @@
     style="top: 0px;"
     :footer="null"
     @cancel="handleModalCancel">
-
+    <a-row>
+      <a-col :md="24" :sm="24">
+          <div style="text-align: left;margin-top: 5px;font-size: 18px;margin-left: 180px;">
+            <a-col :md="4" :sm="8">
+              <span>创建人：</span>{{onedata.startUserName}}
+            </a-col>
+            <a-col :md="5" :sm="8">
+              <span>流程发起时间：</span>{{onedata.startTime}}
+            </a-col>
+            <a-col :md="4" :sm="8">
+              <span>当前环节：</span>{{onedata.bpmTaskName}}
+            </a-col>
+          </div>
+        </a-col>
+    </a-row>
     <a-tabs defaultActiveKey="1" tabPosition="left">
-
       <a-tab-pane key="1">
         <span slot="tab">
           <a-icon type="file-text"/>
@@ -87,6 +100,8 @@
     data() {
       return {
         loading: false,
+        onedata: {},
+        lczt: '',
         title: '流程',
         visible: false,
         bodyStyle: {
@@ -104,7 +119,30 @@
         this.visible = false
       },
       deal (record) {
+        console.log(record)
+        this.onedata = record
+        this.lczt = this.getState (record.bpmStatus, record);
         this.visible = true;
+      },
+      getState (text, record) {
+        if(!text && record.endTime){
+          return '已完成';
+        }
+        switch(text) {
+          case '1':
+            return '待提交';
+          case '2':
+            return '处理中';
+          case '3':
+            return '已完成';
+          case 'rejectProcess':
+            return '已驳回';
+          case 'callBackProcess':
+            return '已取回';
+          case 'invalidProcess':
+            return '已作废';
+        }
+        return text;
       }
 
     }

@@ -10,6 +10,26 @@
       style="top: 0px;"
       :footer="null"
       @cancel="handleModalCancel">
+      <a-row>
+        <!-- <a-col :md="2" :sm="4">
+        </a-col> -->
+        <a-col :md="24" :sm="24">
+          <div style="text-align: left;margin-top: 5px;font-size: 18px;margin-left: 180px;">
+            <a-col :md="4" :sm="8">
+              <span>创建人：</span>{{onedata.processApplyUserName}}
+            </a-col>
+            <a-col :md="5" :sm="8">
+              <span>流程发起时间：</span>{{onedata.taskBeginTime}}
+            </a-col>
+            <a-col :md="4" :sm="8">
+              <span>当前环节：</span>{{onedata.taskName}}
+            </a-col>
+          </div>
+        </a-col>
+        <!-- <a-col :md="7" :sm="10">
+          <div style="text-align: center;margin-top: 5px;"><span>流程状态:</span>{{lczt}}</div>
+        </a-col> -->
+      </a-row>
       <a-tabs defaultActiveKey="1" tabPosition="left">
         <a-tab-pane key="1">
           <span slot="tab">
@@ -27,13 +47,15 @@
           <div style="bottom: 24px;position: fixed;width: 91%;padding: 10px;z-index:10;background:rgb(244,244,244)">
             <!-- 处理意见 -->
             <div style="width: 100%;margin-bottom: 5px">
-              <div style="margin-bottom: 5px">
-                处理意见：
-                <a-select style="width: 300px" placeholder="常用审批语" :getPopupContainer = "(target) => target.parentNode" @change="handleChangeSelect">
-                  <a-icon slot="suffixIcon" type="smile" />
-                  <a-select-option v-for="(item, key) in remarksDictOptions" :key="key" :value="item.value">{{ item.text }}</a-select-option>
-                </a-select>
-              </div>
+              <a-col :md="8" :sm="12">
+                <div style="margin-bottom: 5px">
+                  处理意见：
+                  <a-select style="width: 300px" placeholder="常用审批语" :getPopupContainer = "(target) => target.parentNode" @change="handleChangeSelect">
+                    <a-icon slot="suffixIcon" type="smile" />
+                    <a-select-option v-for="(item, key) in remarksDictOptions" :key="key" :value="item.value">{{ item.text }}</a-select-option>
+                  </a-select>
+                </div>
+              </a-col>
               <a-textarea rows="3" v-model="model.reason" />
             </div>
             <!-- 流转按钮 -->
@@ -116,6 +138,8 @@
     data() {
       return {
         remarksDictOptions: [],
+        onedata: {},
+        lczt: '',
         url: {
           getProcessTaskTransInfo: '/act/task/getProcessTaskTransInfo',
           processComplete:'/act/task/processComplete',
@@ -126,19 +150,19 @@
         visible: false,
         bodyStyle:{
           padding: "0",
-          height:(window.innerHeight-80)+"px",
+          height: (window.innerHeight-80)+"px",
           "overflow-y":"auto"
         },
-        height:(window.innerHeight-220)+"px",
+        height: (window.innerHeight-220)+"px",
         iframeUrl:"",
         resultObj:{
           transitionList: []
         },
-        model:{
-          taskId:"",
-          nextnode:"",
-          nextCodeCount:"",
-          reason:"",
+        model: {
+          taskId: '',
+          nextnode: '',
+          nextCodeCount: '',
+          reason: '',
           processModel:1,
           rejectModelNode:"",
           nextUserName:"",
@@ -171,6 +195,9 @@
         this.model.reason = value;
       },
       deal(record){
+        console.log(record)
+        this.onedata = record
+        this.lczt = this.getState (record.bpmStatus, record);
         this.visible = true;
         //初始化字典 - 常用语
         initDictOptions('approval_remarks').then((res) => {
@@ -178,7 +205,26 @@
             this.remarksDictOptions = res.result;
           }
         });
-
+      },
+      getState (text, record) {
+        if(!text && record.endTime){
+          return '已完成';
+        }
+        switch(text) {
+          case '1':
+            return '待提交';
+          case '2':
+            return '处理中';
+          case '3':
+            return '已完成';
+          case 'rejectProcess':
+            return '已驳回';
+          case 'callBackProcess':
+            return '已取回';
+          case 'invalidProcess':
+            return '已作废';
+        }
+        return text;
       },
       completeProcess(){
         this.visible = false;

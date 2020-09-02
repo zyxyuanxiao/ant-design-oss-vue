@@ -8,11 +8,11 @@
             <a-form-item label="流程编号">
               <a-input placeholder="请输入流程编号" v-model="queryParam.processDefinitionId"></a-input>
             </a-form-item>
-          </a-col>-->
+          </a-col> -->
           <a-col :md="6" :sm="12">
             <!-- <a-form-item label="工单类型">
               <a-input placeholder="请输入工单类型" v-model="queryParam.processDefinitionName"></a-input>
-            </a-form-item>-->
+            </a-form-item> -->
             <a-form-item label="工单类型">
               <a-select
                 v-model="queryParam.processDefinitionName"
@@ -223,7 +223,7 @@
       // 自动签收
       handleProcessC (record) {
         var that = this
-        var params = {taskId:record.id} // 查询条件
+        var params = {taskId: record.id} // 查询条件
         putAction(that.url.claim, params).then((res) => {
           if (res.success) {
             this.getProcessNodeInfo(record);
@@ -235,11 +235,11 @@
       },
       handleClaim (record) {
         var that = this
-        var params = {taskId:record.id} // 查询条件
+        var params = { taskId: record.id } // 查询条件
         this.$confirm({
-          title:"确认签收吗",
-          content:"是否签收该任务?",
-          onOk: function(){
+          title: '确认签收吗',
+          content: '是否签收该任务?',
+          onOk: function() {
             putAction(that.url.claim, params).then((res) => {
               if (res.success) {
                 that.$message.success(res.message);
@@ -260,13 +260,13 @@
         this.$refs.selectEntrusterModal.select(record)
         this.$refs.selectEntrusterModal.title = '选择委托人'
       },
-      handleEntruster(data){
+      handleEntruster (data) {
         var that = this;
         var params = {
-          taskId:this.taskId,
-          taskAssignee:data.username
-        };//查询条件
-        console.log("委托", params)
+          taskId: this.taskId,
+          taskAssignee: data.username
+        }// 查询条件
+        console.log('委托', params)
         putAction(that.url.taskEntrust, params).then((res) => {
           if (res.success) {
             that.$message.success(res.message);
@@ -283,8 +283,8 @@
         this.$refs.taskNotifyMeModal.title = '催办提醒'
       },
       // 加载下拉
-      initList(){
-        httpAction(this.url.roleDegisnList, {}, "GET").then((data) => {
+      initList () {
+        httpAction(this.url.roleDegisnList, {}, 'GET').then((data) => {
           this.typeList = data.result
         })
       }
