@@ -12,10 +12,11 @@ const api = {
 export default api
 
 //post
-export function postAction(url,parameter) {
+export function postAction(url,parameter,param) {
   return axios({
     url: url,
     method:'post' ,
+    params: param,
     data: parameter
   })
 }
