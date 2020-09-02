@@ -79,8 +79,7 @@
         </div>
       </div>
     </div>
-    <div
-      style="border: 1px solid #f1f1f1;padding-top: 15px;padding-right:10px;background-color: #f1f1f1;margin-bottom: 20px;">
+    <div style="border: 1px solid #f1f1f1;padding-top: 15px;padding-right:10px;background-color: #f1f1f1;margin-bottom: 20px;">
       <!-- <a-form layout="inline">
          <a-row :gutter="24">
            <a-col :md="6" :sm="8">
@@ -114,117 +113,173 @@
            </a-col>
          </a-row>
        </a-form>-->
-      <a-form-model ref="ruleForm" :model="formData" :label-col="labelCol" :wrapper-col="wrapperCol">
+      <a-form-model ref="ruleForm"
+                    :model="formData"
+                    :label-col="labelCol"
+                    :wrapper-col="wrapperCol">
         <a-row :gutter="24">    
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-model-item label="工单标题" prop="title">            
-              <a-input placeholder="请输入工单标题" v-model="formData.title"></a-input>
+          <a-col :xl="6"
+                 :lg="7"
+                 :md="8"
+                 :sm="24">
+            <a-form-model-item label="工单标题"
+                               prop="title">            
+              <a-input placeholder="请输入工单标题"
+                       v-model="formData.title"></a-input>
             </a-form-model-item>
           </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-model-item label="工单模板" prop="modelId">            
-              <a-select mode="tags" v-model="formData.modelId" style="width: 100%" placeholder="请选择工单模板">
-                <a-select-option v-for="item in workTypeList" :key="item.id">
+          <a-col :xl="6"
+                 :lg="7"
+                 :md="8"
+                 :sm="24">
+            <a-form-model-item label="工单模板"
+                               prop="modelId">            
+              <a-select mode="tags"
+                        v-model="formData.modelId"
+                        style="width: 100%"
+                        placeholder="请选择工单模板">
+                <a-select-option v-for="item in workTypeList"
+                                 :key="item.id">
                   {{item.name}}
                 </a-select-option>
               </a-select>
             </a-form-model-item>
           </a-col>
           <template v-if="toggleSearchStatus">
-            <a-col :xl="6" :lg="7" :md="8" :sm="24">
-              <a-form-model-item label="流水号" prop="flowNo">            
-                <a-input placeholder="请输入流水号" v-model="formData.flowNo"></a-input>
+            <a-col :xl="6"
+                   :lg="7"
+                   :md="8"
+                   :sm="24">
+              <a-form-model-item label="流水号"
+                                 prop="flowNo">            
+                <a-input placeholder="请输入流水号"
+                         v-model="formData.flowNo"></a-input>
               </a-form-model-item>
             </a-col>
-            <a-col :xl="6" :lg="7" :md="8" :sm="24">
-              <a-form-model-item label="报修人" prop="repairman">            
-                <a-input placeholder="请输入报修人" v-model="formData.repairman"></a-input>
+            <a-col :xl="6"
+                   :lg="7"
+                   :md="8"
+                   :sm="24">
+              <a-form-model-item label="报修人"
+                                 prop="repairman">            
+                <a-input placeholder="请输入报修人"
+                         v-model="formData.repairman"></a-input>
               </a-form-model-item>
             </a-col>
-            <a-col :xl="6" :lg="7" :md="8" :sm="24">
-              <a-form-model-item label="报修时间" prop="createTime">
-                <a-range-picker
-                  style="width: 100%;"
-                  :ranges="{ '今天' : [moment(), moment()], '这个月': [moment(), moment().endOf('month')] }"
-                  show-time
-                  v-model="formData.createTime"
-                  format="YYYY-MM-DD HH:mm:ss"
-                  @change="onChangeDate"
-                />
-              <!--  <j-date style="width: 100%" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择开始时间"
+            <a-col :xl="6"
+                   :lg="7"
+                   :md="8"
+                   :sm="24">
+              <a-form-model-item label="报修时间"
+                                 prop="createTime">
+                <a-range-picker style="width: 100%;"
+                                :ranges="{ '今天' : [moment(), moment()], '这个月': [moment(), moment().endOf('month')] }"
+                                show-time
+                                v-model="formData.createTime"
+                                format="YYYY-MM-DD HH:mm:ss"
+                                @change="onChangeDate" />
+                <!--  <j-date style="width: 100%" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择开始时间"
                         v-model="formData.bxsj"></j-date>-->
               </a-form-model-item>
             </a-col>
-            <a-col :xl="6" :lg="7" :md="8" :sm="24">
-              <a-form-model-item label="工单状态" prop="orderSate">           
-                <a-select
-                  showSearch
-                  mode="multiple"
-                  :options="orderSateList"
-                  :filterOption="filterOption"
-                  v-model="formData.hiddenOrderSate"
-                  placeholder="请选择工单状态"
-                  allowClear
-                />
+            <a-col :xl="6"
+                   :lg="7"
+                   :md="8"
+                   :sm="24">
+              <a-form-model-item label="工单状态"
+                                 prop="orderSate">           
+                <a-select showSearch
+                          mode="multiple"
+                          :options="orderSateList"
+                          :filterOption="filterOption"
+                          v-model="formData.hiddenOrderSate"
+                          placeholder="请选择工单状态"
+                          allowClear />
               </a-form-model-item>
             </a-col>
-            <a-col :xl="6" :lg="7" :md="8" :sm="24">
-              <a-form-model-item label="设备编码" prop="deviceid">
-                <a-input placeholder="请输入设备编码" v-model="formData.deviceid"></a-input>
+            <a-col :xl="6"
+                   :lg="7"
+                   :md="8"
+                   :sm="24">
+              <a-form-model-item label="设备编码"
+                                 prop="deviceid">
+                <a-input placeholder="请输入设备编码"
+                         v-model="formData.deviceid"></a-input>
               </a-form-model-item>
             </a-col>
-            <a-col :xl="6" :lg="7" :md="8" :sm="24">
-              <a-form-model-item label="设备IP" prop="IP">
-                <a-input placeholder="请输入设备IP" v-model="formData.IP"></a-input>
+            <a-col :xl="6"
+                   :lg="7"
+                   :md="8"
+                   :sm="24">
+              <a-form-model-item label="设备IP"
+                                 prop="IP">
+                <a-input placeholder="请输入设备IP"
+                         v-model="formData.IP"></a-input>
               </a-form-model-item>
             </a-col>
-            <a-col :xl="6" :lg="7" :md="8" :sm="24">
-              <a-form-model-item label="报修类型" prop="bxlx">
-                <a-select
-                  showSearch
-                  mode="multiple"
-                  :options="repairsTypeList"
-                  :filterOption="filterOption"
-                  v-model="formData.bxlx"
-                  placeholder="请选择报修类"
-                  allowClear
-                />
+            <a-col :xl="6"
+                   :lg="7"
+                   :md="8"
+                   :sm="24">
+              <a-form-model-item label="报修类型"
+                                 prop="bxlx">
+                <a-select showSearch
+                          mode="multiple"
+                          :options="repairsTypeList"
+                          :filterOption="filterOption"
+                          v-model="formData.bxlx"
+                          placeholder="请选择报修类"
+                          allowClear />
               </a-form-model-item>
             </a-col>
-            <a-col :xl="6" :lg="7" :md="8" :sm="24">
-              <a-form-model-item label="工单等级" prop="gddj">
-                <a-select
-                  showSearch
-                  mode="multiple"
-                  :options="ticketsLevel"
-                  :filterOption="filterOption"
-                  v-model="formData.gddj"
-                  placeholder="请选择工单等级"
-                  allowClear
-                />
+            <a-col :xl="6"
+                   :lg="7"
+                   :md="8"
+                   :sm="24">
+              <a-form-model-item label="工单等级"
+                                 prop="gddj">
+                <a-select showSearch
+                          mode="multiple"
+                          :options="ticketsLevel"
+                          :filterOption="filterOption"
+                          v-model="formData.gddj"
+                          placeholder="请选择工单等级"
+                          allowClear />
               </a-form-model-item>
             </a-col>
-            <a-col :xl="6" :lg="7" :md="8" :sm="24">
-              <a-form-model-item label="工单类型" prop="gdlx">
-                <a-select
-                  showSearch
-                  mode="multiple"
-                  :options="orderTypeList"
-                  :filterOption="filterOption"
-                  v-model="formData.gdlx"
-                  placeholder="请选择工单类型"
-                  allowClear
-                />
+            <a-col :xl="6"
+                   :lg="7"
+                   :md="8"
+                   :sm="24">
+              <a-form-model-item label="工单类型"
+                                 prop="gdlx">
+                <a-select showSearch
+                          mode="multiple"
+                          :options="orderTypeList"
+                          :filterOption="filterOption"
+                          v-model="formData.gdlx"
+                          placeholder="请选择工单类型"
+                          allowClear />
               </a-form-model-item>
             </a-col>
           </template>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <span style="float: left;overflow: hidden;padding-left: 25px;" class="table-page-search-submitButtons">
-              <a-button type="primary" icon="search" @click="searchQuery">查询</a-button>
-              <a-button type="primary" icon="reload" @click="searchReset" style="margin-left: 8px;">重置</a-button>
-              <a @click="handleToggleSearch()" style="margin-left: 8px">
+          <a-col :xl="6"
+                 :lg="7"
+                 :md="8"
+                 :sm="24">
+            <span style="float: left;overflow: hidden;padding-left: 25px;"
+                  class="table-page-search-submitButtons">
+              <a-button type="primary"
+                        icon="search"
+                        @click="searchQuery">查询</a-button>
+              <a-button type="primary"
+                        icon="reload"
+                        @click="searchReset"
+                        style="margin-left: 8px;">重置</a-button>
+              <a @click="handleToggleSearch()"
+                 style="margin-left: 8px">
                 {{ toggleSearchStatus ? '收起' : '展开' }}
-                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
+                <a-icon :type="toggleSearchStatus ? 'up' : 'down'" />
               </a>
             </span>
           </a-col>
@@ -234,49 +289,58 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button @click="handleAddBpm" type="primary" icon="plus">发起流程</a-button>
+      <a-button @click="handleAddBpm"
+                type="primary"
+                icon="plus">发起流程</a-button>
     </div>
 
     <!-- table区域-begin -->
     <div>
-      <a-tabs v-model="activeKey" @change="onChangeTabs">
+      <a-tabs v-model="activeKey"
+              @change="onChangeTabs">
         <a-tab-pane key="1">
           <span slot="tab">
-            <a-icon type="solution" style="font-size: 16px;"/>
-           我的待办
+            <a-icon type="solution"
+                    style="font-size: 16px;" />
+            我的待办
           </span>
         </a-tab-pane>
         <a-tab-pane key="2">
           <span slot="tab">
-           <a-icon type="file-done" style="font-size: 16px;"/>
-           全部工单
+            <a-icon type="file-done"
+                    style="font-size: 16px;" />
+            全部工单
           </span>
         </a-tab-pane>
       </a-tabs>
-      <a-table
-        ref="table"
-        size="middle"
-        bordered
-        rowKey="flowNo"
-        :columns="columns"
-        :dataSource="dataSource"
-        :pagination="false"
-        :loading="loading"
-      >
-        <span slot="status" slot-scope="status">
-       <!--   <a-icon type="exclamation-circle" />-->
-          <a-tag v-if="item.value === status +''" :color="item.color"
+      <a-table ref="table"
+               size="middle"
+               bordered
+               rowKey="flowNo"
+               :columns="columns"
+               :dataSource="dataSource"
+               :pagination="false"
+               :loading="loading">
+        <span slot="status"
+              slot-scope="status">
+          <!--   <a-icon type="exclamation-circle" />-->
+          <a-tag v-if="item.value === status +''"
+                 :color="item.color"
                  v-for="item in orderSateList"> {{item.label}}</a-tag>
         </span>
-        <template slot="type" slot-scope="type">
-          <span v-if="item.value === type +''" :color="item.color"
+        <template slot="type"
+                  slot-scope="type">
+          <span v-if="item.value === type +''"
+                :color="item.color"
                 v-for="item in orderTypeList"> {{item.label}}
           </span>
         </template>
-        <span slot="create_time" slot-scope="create_time">
-           {{getLongTime(create_time, true)}}
-         </span>
-        <span slot="action" slot-scope="text, record">
+        <span slot="create_time"
+              slot-scope="create_time">
+          {{getLongTime(create_time, true)}}
+        </span>
+        <span slot="action"
+              slot-scope="text, record">
           <a-button @click="handleDetail(record)">查看详情</a-button>
           <!-- <a-dropdown>
              <a class="ant-dropdown-link">更多 <a-icon type="down"/></a>
@@ -299,63 +363,61 @@
            </a-dropdown>-->
         </span>
 
-        <span slot="modelName" slot-scope="text, record">
-          <j-ellipsis :value="'工单【'+text+'】'" :length="15"/>
+        <span slot="modelName"
+              slot-scope="text, record">
+          <j-ellipsis :value="'工单【'+text+'】'"
+                      :length="15" />
         </span>
         <!-- 字符串超长截取省略号显示-->
-        <span slot="executors" slot-scope="executors, record">
-          <j-ellipsis :value="getExecutors(executors)" :length="15"/>
+        <span slot="executors"
+              slot-scope="executors, record">
+          <j-ellipsis :value="getExecutors(executors)"
+                      :length="15" />
         </span>
       </a-table>
-      <a-pagination
-        style="text-align: right;margin-top: 15px;"
-        :total="total"
-        show-size-changer
-        :show-total="(total, range) => `${range[0]}-${range[1]} 共 ${total} 条`"
-        :page-size="data.pageSize"
-        :default-current="1"
-        @change="onChange"
-        @showSizeChange="onShowSizeChange"
-      />
+      <a-pagination style="text-align: right;margin-top: 15px;"
+                    :total="total"
+                    show-size-changer
+                    :show-total="(total, range) => `${range[0]}-${range[1]} 共 ${total} 条`"
+                    :page-size="data.pageSize"
+                    :default-current="1"
+                    @change="onChange"
+                    @showSizeChange="onShowSizeChange" />
     </div>
     <!-- table区域-end -->
     <!--模型选择区域-->
-    <a-modal
-      :title="ModalText"
-      :width="1000"
-      :visible="visibleModel"
-      :confirm-loading="confirmLoading"
-      @ok="handleOk"
-      @cancel="handleCancel"
-      :footer="null"
-      style="min-height: 500px;"
-    >
+    <a-modal :title="ModalText"
+             :width="1000"
+             :visible="visibleModel"
+             :confirm-loading="confirmLoading"
+             @ok="handleOk"
+             @cancel="handleCancel"
+             :footer="null"
+             style="min-height: 500px;">
       <div>
-        <tickets-model-type :items="workTypeList" @click="getModelDetails"></tickets-model-type>
+        <tickets-model-type :items="workTypeList"
+                            @click="getModelDetails"></tickets-model-type>
       </div>
     </a-modal>
 
     <!-- 表单区域 -->
-    <a-modal
-      :title="ModalText"
-      :width="widthModel"
-      :centered="true"
-      :visible="visible"
-      :confirm-loading="confirmLoading"
-      @cancel="handleCancel"
-      :footer="null"
-    >
-      <tickets-from-flow
-        :form-config="formConfig"
-        :submit-btn="submitBtn"
-        :allot-show="allotShow"
-        :operation="operation"
-        :spinning="spinning"
-        :flow-list="flowList"
-        v-if="operation === 'details'"
-        @updateFeedback="updateOrder"
-        @uploadFile="uploadFile"
-        @click="onSubmit">
+    <a-modal :title="ModalText"
+             :width="widthModel"
+             :centered="true"
+             :visible="visible"
+             :confirm-loading="confirmLoading"
+             @cancel="handleCancel"
+             :footer="null">
+      <tickets-from-flow :form-config="formConfig"
+                         :submit-btn="submitBtn"
+                         :allot-show="allotShow"
+                         :operation="operation"
+                         :spinning="spinning"
+                         :flow-list="flowList"
+                         v-if="operation === 'details'"
+                         @updateFeedback="updateOrder"
+                         @uploadFile="uploadFile"
+                         @click="onSubmit">
       </tickets-from-flow>
       <!--    <div style="width: 65%;border: 1px solid #dee3ea;height: 700px;">
             <div style="border-bottom: 1px solid #dee3ea;background-color: #f4f7fd" class="work-detail-main-title"
@@ -410,16 +472,14 @@
               </a-timeline>
             </div>
           </div>-->
-      <tickets-form
-        :form-config="formConfig"
-        :submit-btn="submitBtn"
-        :allot-show="allotShow"
-        :operation="operation"
-        @updateFeedback="updateOrder"
-        @uploadFile="uploadFile"
-        @click="onSubmit"
-        v-if="operation === 'add'"
-      >
+      <tickets-form :form-config="formConfig"
+                    :submit-btn="submitBtn"
+                    :allot-show="allotShow"
+                    :operation="operation"
+                    @updateFeedback="updateOrder"
+                    @uploadFile="uploadFile"
+                    @click="onSubmit"
+                    v-if="operation === 'add'">
       </tickets-form>
     </a-modal>
   </a-card>
@@ -463,7 +523,7 @@ export default {
         xl: { span: 18 },
         lg: { span: 17 }
       },
-      widthModel:'85%',
+      widthModel: '85%',
       workTypeList: [],
       ModalText: '创建工单',
       visible: false,
@@ -932,6 +992,7 @@ export default {
         apikey: this.userInfo().apikey
       }
       getTicketsDetails(params).then(response => {
+        0
         this.orderInfo = response.result
         this.formFileds = response.result.formFileds
         this.submitBtn = response.result.submitBtn
@@ -1140,16 +1201,16 @@ export default {
         //console.log(key + '--->' + this.formData[key].length)
         if (typeof (this.formData[key]) === 'string') {
           if (this.formData[key] !== '') {
-            if(key === 'title' || key === 'flowNo'){
+            if (key === 'title' || key === 'flowNo') {
               let obj = {
-                field: key+'',
+                field: key + '',
                 value: this.formData[key],
                 operator: 'like'
               }
               this.data.param.push(obj)
-            }else {
+            } else {
               let obj = {
-                field: 'formData.' + key+'',
+                field: 'formData.' + key + '',
                 value: this.formData[key],
                 operator: 'like'
               }
@@ -1166,14 +1227,14 @@ export default {
                 operator: 'in'
               }
               this.data.param.push(obj)
-            }else if (key === 'createTime') {
+            } else if (key === 'createTime') {
               obj = {
                 field: key + '',
                 value: this.formData[key],
                 operator: 'BETWEEN'
               }
               this.data.param.push(obj)
-            }else {
+            } else {
               obj = {
                 field: 'formData.' + key + '',
                 value: this.formData[key],
@@ -1223,7 +1284,7 @@ export default {
         this.data.param = dataArr
       }
     },
-    onChangeDate(dates, dateStrings) {
+    onChangeDate (dates, dateStrings) {
       console.log('From: ', dates[0], ', to: ', dates[1]);
       console.log('From: ', dateStrings[0], ', to: ', dateStrings[1]);
     },
@@ -1238,170 +1299,163 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-  @import '~@assets/less/common.less';
+@import '~@assets/less/common.less';
 
-  .gd-status-sjzy {
-    width: 23%;
-    border: 1px solid #65c6f3;
-    background-color: #65c6f3;
-    border-radius: 5px;
-    margin-left: 20px;
-    box-shadow: 2px 2px 6px #aaaaaa;
-  }
+.gd-status-sjzy {
+  width: 23%;
+  border: 1px solid #65c6f3;
+  background-color: #65c6f3;
+  border-radius: 5px;
+  margin-left: 20px;
+  box-shadow: 2px 2px 6px #aaaaaa;
+}
 
-  .gd-status-ztsy {
-    width: 25%;
-    border: 1px solid #f78463;
-    background-color: #f78463;
-    border-radius: 5px;
-    margin-left: 35px;
-    box-shadow: 2px 2px 6px #aaaaaa;
-  }
+.gd-status-ztsy {
+  width: 25%;
+  border: 1px solid #f78463;
+  background-color: #f78463;
+  border-radius: 5px;
+  margin-left: 35px;
+  box-shadow: 2px 2px 6px #aaaaaa;
+}
 
-  .gd-status-yxj {
-    width: 25%;
-    border: 1px solid #8aaaf5;
-    background-color: #8aaaf5;
-    border-radius: 5px;
-    margin-left: 35px;
-    box-shadow: 2px 2px 6px #aaaaaa;
-  }
+.gd-status-yxj {
+  width: 25%;
+  border: 1px solid #8aaaf5;
+  background-color: #8aaaf5;
+  border-radius: 5px;
+  margin-left: 35px;
+  box-shadow: 2px 2px 6px #aaaaaa;
+}
 
-  .gd-status-total {
-    color: white;
-    font-size: 17px;
-    margin-left: 20px;
-    margin-top: 15px;
-  }
+.gd-status-total {
+  color: white;
+  font-size: 17px;
+  margin-left: 20px;
+  margin-top: 15px;
+}
 
-  .gd-status-total-num {
-    font-size: 32px;
-    color: white;
-    margin-left: 20px;
-    margin-top: -5px;
-    margin-bottom: 10px;
-  }
+.gd-status-total-num {
+  font-size: 32px;
+  color: white;
+  margin-left: 20px;
+  margin-top: -5px;
+  margin-bottom: 10px;
+}
 
-  .gd-status-text {
-    color: white;
-    font-size: 12px;
-    margin-right: 10px;
-  }
+.gd-status-text {
+  color: white;
+  font-size: 12px;
+  margin-right: 10px;
+}
 
-  .topbar {
-    position: relative;
-    display: flex;
-    // justify-content: space-between;
-    // align-items: center;
-    // box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-    padding-bottom: 20px;
+.topbar {
+  position: relative;
+  display: flex;
+  // justify-content: space-between;
+  // align-items: center;
+  // box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  padding-bottom: 20px;
 
-    .topbar-item {
-      overflow: hidden;
-      width: 300px;
-      height: 100px;
-      border-radius: 10px;
-      margin-right: 20px;
-      box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
-      //box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-      .header {
-        height: 50px;
-        line-height: 50px;
+  .topbar-item {
+    overflow: hidden;
+    width: 300px;
+    height: 100px;
+    border-radius: 10px;
+    margin-right: 20px;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    //box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    .header {
+      height: 50px;
+      line-height: 50px;
+      text-align: center;
+      color: #fff;
+      font-size: 24px;
+    }
+
+    .content {
+      position: relative;
+      border-bottom: 1px solid rgb(241, 241, 241);
+      height: 50px;
+      box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+
+      .info-left,
+      .info-right {
+        display: inline-block;
+        box-sizing: border-box;
+        height: 40px;
+        line-height: 40px;
         text-align: center;
-        color: #fff;
-        font-size: 24px;
+        color: rgb(165, 165, 165);
+        font-size: 16px;
+      }
+
+      .info-left {
+        width: 58%;
+
+        strong {
+          font-size: 24px;
+        }
+      }
+
+      .info-right {
+        position: relative;
+        top: -4px;
+        width: 42%;
+        font-size: 16px;
+      }
+    }
+
+    &.item1 {
+      .header {
+        background: linear-gradient(180deg, rgb(14, 145, 254) 35%, rgb(16, 183, 248));
+        // background-color: rgb(16,175,249) ;
       }
 
       .content {
-        position: relative;
-        border-bottom: 1px solid rgb(241, 241, 241);
-        height: 50px;
-        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-
-        .info-left,
-        .info-right {
-          display: inline-block;
-          box-sizing: border-box;
-          height: 40px;
-          line-height: 40px;
-          text-align: center;
-          color: rgb(165, 165, 165);
-          font-size: 16px;
-        }
+        border: 4px solid rgb(16, 183, 248);
+        border-bottom: 6px solid rgb(16, 183, 248);
 
         .info-left {
-          width: 58%;
-
-          strong {
-            font-size: 24px;
-          }
-        }
-
-        .info-right {
-          position: relative;
-          top: -4px;
-          width: 42%;
-          font-size: 16px;
+          color: rgb(14, 145, 254);
+          border-right: 2px solid rgb(16, 183, 248);
         }
       }
+    }
 
-      &.item1 {
-
-        .header {
-          background: linear-gradient(180deg,
-          rgb(14, 145, 254) 35%,
-          rgb(16, 183, 248));
-          // background-color: rgb(16,175,249) ;
-        }
-
-        .content {
-          border: 4px solid rgb(16, 183, 248);
-          border-bottom: 6px solid rgb(16, 183, 248);
-
-          .info-left {
-            color: rgb(14, 145, 254);
-            border-right: 2px solid rgb(16, 183, 248);
-          }
-        }
+    &.item2 {
+      .header {
+        background: linear-gradient(180deg, rgb(235, 156, 23) 25%, rgb(255, 190, 61));
+        //background-color:rgb(255,205,61) ;
       }
 
-      &.item2 {
-        .header {
-          background: linear-gradient(180deg,
-          rgb(235, 156, 23) 25%,
-          rgb(255, 190, 61));
-          //background-color:rgb(255,205,61) ;
-        }
+      .content {
+        border: 4px solid rgb(255, 190, 61);
+        border-bottom: 6px solid rgb(255, 190, 61);
 
-        .content {
-          border: 4px solid rgb(255, 190, 61);
-          border-bottom: 6px solid rgb(255, 190, 61);
-
-          .info-left {
-            color: rgb(235, 156, 23);
-            border-right: 2px solid rgb(255, 190, 61);
-          }
+        .info-left {
+          color: rgb(235, 156, 23);
+          border-right: 2px solid rgb(255, 190, 61);
         }
       }
+    }
 
-      &.item3 {
-        .header {
-          background: linear-gradient(180deg,
-          rgb(251, 84, 83) 30%,
-          rgb(255, 123, 123));
-          // background-color:rgb(253,120,100) ;
-        }
+    &.item3 {
+      .header {
+        background: linear-gradient(180deg, rgb(251, 84, 83) 30%, rgb(255, 123, 123));
+        // background-color:rgb(253,120,100) ;
+      }
 
-        .content {
-          border: 4px solid rgb(255, 123, 123);
-          border-bottom: 6px solid rgb(255, 123, 123);
+      .content {
+        border: 4px solid rgb(255, 123, 123);
+        border-bottom: 6px solid rgb(255, 123, 123);
 
-          .info-left {
-            color: rgb(255, 123, 123);
-            border-right: 2px solid rgb(255, 123, 123);
-          }
+        .info-left {
+          color: rgb(255, 123, 123);
+          border-right: 2px solid rgb(255, 123, 123);
         }
       }
     }
   }
+}
 </style>

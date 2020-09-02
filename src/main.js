@@ -40,7 +40,8 @@ import vueBus from '@/utils/vueBus';
 import JeecgComponents from '@/components/jeecg/index'
 import '@/assets/less/JAreaLinkage.less'
 import VueAreaLinkage from 'vue-area-linkage'
-
+import echarts from 'echarts'
+Vue.prototype.$echarts = echarts
 
 Vue.config.productionTip = false
 Vue.use(Storage, config.storageOptions)
@@ -70,7 +71,7 @@ new Vue({
     store.commit('TOGGLE_WEAK', Vue.ls.get(DEFAULT_COLOR_WEAK, config.colorWeak))
     store.commit('TOGGLE_COLOR', Vue.ls.get(DEFAULT_COLOR, config.primaryColor))
     store.commit('SET_TOKEN', Vue.ls.get(ACCESS_TOKEN))
-    store.commit('SET_MULTI_PAGE',Vue.ls.get(DEFAULT_MULTI_PAGE,config.multipage))
+    store.commit('SET_MULTI_PAGE', Vue.ls.get(DEFAULT_MULTI_PAGE, config.multipage))
     getUrlUser()
   },
   render: h => h(App)
@@ -98,7 +99,7 @@ new Vue({
 //     render: h => h(App)
 //   }).$mount('#app')
 // }
-function getUrlUser(){
+function getUrlUser () {
   var url = window.location.href // 获取当前url
   var dz_url = url.split('#')[0] // 获取#/之前的字符串
   var cs = dz_url.split('?')[1]  // 获取?之后的参数字符串
@@ -111,10 +112,10 @@ function getUrlUser(){
     cs[cs_arr[i].split('=')[0]] = cs_arr[i].split('=')[1]
   }
   if (cs.username !== undefined) {
-    store.dispatch('LoginAddr',cs).then(res => {
+    store.dispatch('LoginAddr', cs).then(res => {
       if (res.success) {
         var road_url = window.document.location.href
-        window.location.href = road_url.replace("username=","")
+        window.location.href = road_url.replace("username=", "")
       }
     });
   }

@@ -145,8 +145,10 @@
                  :dataSource="dataSource"
                  :pagination="ipagination"
                  :loading="loading"
-                 :rowSelection="{selectedRowKeys: selectedRowKeys,selectedRows:selectedRows, onChange: onSelectChange}"
-                 @change="handleTableChange">
+                 :scroll="{x:true}"
+                 :rowSelection="{selectedRowKeys: selectedRowKeys,selectedRows:selectedRows, onChange: onSelectChange,fixed: true}"
+                 @change="handleTableChange"
+                 class="j-table-force-nowrap">
 
           <template slot="onlinestatus"
                     slot-scope="text, record">
@@ -272,6 +274,7 @@ export default {
         {
           title: '操作',
           dataIndex: 'action',
+          fixed: "right",
           scopedSlots: { customRender: 'action' },
           align: 'left',
           width: 170
