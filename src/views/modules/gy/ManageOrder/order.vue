@@ -229,26 +229,27 @@
         if(tab === 'partin'){
           this.refreshTypeSumList('part')
           this.$refs.partinList ? this.$refs.partinList.init('/act/task/partProcessList') : ''
-          this.$refs.partInList.close()
+          this.$refs.partinList ? this.$refs.partinList.close() : ''
         } else if(tab === 'todo') {
           this.refreshTypeSumList('todo')
           this.$refs.todoList ? this.$refs.todoList.init('/act/task/list') : ''
-          this.$refs.todoList.close()
+          this.$refs.todoList ? this.$refs.todoList.close() : ''
         } else if(tab === 'all') {
-           this.refreshTypeSumList('all')
+          this.refreshTypeSumList('all')
           this.$refs.AllList ? this.$refs.AllList.init('/act/task/historyProcessList') : ''
-          this.$refs.AllList.close()
+          this.$refs.AllList ? this.$refs.AllList.close() : ''
+         
         }
       },
       handleClickT (tab, event) {
         if(tab === '1'){
           this.refreshTypeSumList('todo')
           this.$refs.todoList ? this.$refs.todoList.init('/act/task/list') : ''
-          this.$refs.todoList.close()
+          this.$refs.todoList ? this.$refs.todoList.close() : ''
         } else if(tab === '2') {
           this.refreshTypeSumList('group')
           this.$refs.groupList ? this.$refs.groupList.init('/act/task/taskGroupList') : ''
-          this.$refs.groupList.close()
+          // this.$refs.groupList.close()
         }
       },
       // 代办工单列表
