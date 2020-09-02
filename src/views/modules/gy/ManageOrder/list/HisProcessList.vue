@@ -152,8 +152,6 @@ export default {
   },
   data() {
     return {
-    
-     
       flag: false,
       description: '历史流程',
       bpmStatusList: [
@@ -282,7 +280,6 @@ export default {
   },
   created() {
     this.initList()
-    this.close()
   },
   methods: {
     onChange(value, dateString) {
@@ -356,7 +353,6 @@ export default {
       }
 
     },
-
     codeChange(code) {
       this.flag = true
       this.queryParam.code = code
@@ -370,7 +366,6 @@ export default {
       })
       this.datas=[]
     },
-
     close() {
       this.queryParam = {}
       this.flag = false
