@@ -24,7 +24,9 @@
               <a-icon slot="prefix" type="lock" :style="{ color: 'rgba(0,0,0,.25)' }"/>
             </a-input>
           </a-form-item>
-          <a-row :gutter="0">
+
+          <!--业务需要注释验证码-->
+          <!-- <a-row :gutter="0">
             <a-col :span="16">
               <a-form-item style="margin-bottom: 15px;">
                 <a-input
@@ -44,7 +46,7 @@
               <img v-else style="margin-top: 2px;width: 100%;height: 35px;margin-left: 5px;"
                    src="../../assets/checkcode.png" @click="handleChangeCheckCode"/>
             </a-col>
-          </a-row>
+          </a-row> -->
           <a-form-item style="margin-top:0">
             <a-button
               size="large"
@@ -463,7 +465,7 @@ export default {
       // update-begin- author:sunjianlei --- date:20190812 --- for: 登录成功后不解除禁用按钮，防止多次点击
       // this.loginBtn = false
       // update-end- author:sunjianlei --- date:20190812 --- for: 登录成功后不解除禁用按钮，防止多次点击
-      this.$router.push({ path: '/dashboard/analysis' })
+      this.$router.push({ path: '/tickets/TicketsListView' })
       this.$notification.success({
         message: '欢迎',
         description: `${timeFix()}，欢迎回来`

@@ -79,7 +79,8 @@
         </div>
       </div>
     </div>
-    <div style="border: 1px solid #f1f1f1;padding-top: 15px;padding-right:10px;background-color: #f1f1f1;margin-bottom: 20px;">
+    <div
+      style="border: 1px solid #f1f1f1;padding-top: 15px;padding-right:10px;background-color: #f1f1f1;margin-bottom: 20px;">
       <!-- <a-form layout="inline">
          <a-row :gutter="24">
            <a-col :md="6" :sm="8">
@@ -113,173 +114,117 @@
            </a-col>
          </a-row>
        </a-form>-->
-      <a-form-model ref="ruleForm"
-                    :model="formData"
-                    :label-col="labelCol"
-                    :wrapper-col="wrapperCol">
+      <a-form-model ref="ruleForm" :model="formData" :label-col="labelCol" :wrapper-col="wrapperCol">
         <a-row :gutter="24">    
-          <a-col :xl="6"
-                 :lg="7"
-                 :md="8"
-                 :sm="24">
-            <a-form-model-item label="工单标题"
-                               prop="title">            
-              <a-input placeholder="请输入工单标题"
-                       v-model="formData.title"></a-input>
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-model-item label="工单标题" prop="title">            
+              <a-input placeholder="请输入工单标题" v-model="formData.title"></a-input>
             </a-form-model-item>
           </a-col>
-          <a-col :xl="6"
-                 :lg="7"
-                 :md="8"
-                 :sm="24">
-            <a-form-model-item label="工单模板"
-                               prop="modelId">            
-              <a-select mode="tags"
-                        v-model="formData.modelId"
-                        style="width: 100%"
-                        placeholder="请选择工单模板">
-                <a-select-option v-for="item in workTypeList"
-                                 :key="item.id">
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-form-model-item label="工单模板" prop="modelId">            
+              <a-select mode="tags" v-model="formData.modelId" style="width: 100%" placeholder="请选择工单模板">
+                <a-select-option v-for="item in workTypeList" :key="item.id">
                   {{item.name}}
                 </a-select-option>
               </a-select>
             </a-form-model-item>
           </a-col>
           <template v-if="toggleSearchStatus">
-            <a-col :xl="6"
-                   :lg="7"
-                   :md="8"
-                   :sm="24">
-              <a-form-model-item label="流水号"
-                                 prop="flowNo">            
-                <a-input placeholder="请输入流水号"
-                         v-model="formData.flowNo"></a-input>
+            <a-col :xl="6" :lg="7" :md="8" :sm="24">
+              <a-form-model-item label="流水号" prop="flowNo">            
+                <a-input placeholder="请输入流水号" v-model="formData.flowNo"></a-input>
               </a-form-model-item>
             </a-col>
-            <a-col :xl="6"
-                   :lg="7"
-                   :md="8"
-                   :sm="24">
-              <a-form-model-item label="报修人"
-                                 prop="repairman">            
-                <a-input placeholder="请输入报修人"
-                         v-model="formData.repairman"></a-input>
+            <a-col :xl="6" :lg="7" :md="8" :sm="24">
+              <a-form-model-item label="报修人" prop="repairman">            
+                <a-input placeholder="请输入报修人" v-model="formData.repairman"></a-input>
               </a-form-model-item>
             </a-col>
-            <a-col :xl="6"
-                   :lg="7"
-                   :md="8"
-                   :sm="24">
-              <a-form-model-item label="报修时间"
-                                 prop="createTime">
-                <a-range-picker style="width: 100%;"
-                                :ranges="{ '今天' : [moment(), moment()], '这个月': [moment(), moment().endOf('month')] }"
-                                show-time
-                                v-model="formData.createTime"
-                                format="YYYY-MM-DD HH:mm:ss"
-                                @change="onChangeDate" />
+            <a-col :xl="6" :lg="7" :md="8" :sm="24">
+              <a-form-model-item label="报修时间" prop="createTime">
+                <a-range-picker
+                  style="width: 100%;"
+                  :ranges="{ '今天' : [moment(), moment()], '这个月': [moment(), moment().endOf('month')] }"
+                  show-time
+                  v-model="formData.createTime"
+                  format="YYYY-MM-DD HH:mm:ss"
+                  @change="onChangeDate"
+                />
                 <!--  <j-date style="width: 100%" :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择开始时间"
-                        v-model="formData.bxsj"></j-date>-->
+                          v-model="formData.bxsj"></j-date>-->
               </a-form-model-item>
             </a-col>
-            <a-col :xl="6"
-                   :lg="7"
-                   :md="8"
-                   :sm="24">
-              <a-form-model-item label="工单状态"
-                                 prop="orderSate">           
-                <a-select showSearch
-                          mode="multiple"
-                          :options="orderSateList"
-                          :filterOption="filterOption"
-                          v-model="formData.hiddenOrderSate"
-                          placeholder="请选择工单状态"
-                          allowClear />
+            <a-col :xl="6" :lg="7" :md="8" :sm="24">
+              <a-form-model-item label="工单状态" prop="hiddenOrderSate">           
+                <a-select
+                  showSearch
+                  mode="multiple"
+                  :options="orderSateList"
+                  :filterOption="filterOption"
+                  v-model="formData.hiddenOrderSate"
+                  placeholder="请选择工单状态"
+                  allowClear
+                />
               </a-form-model-item>
             </a-col>
-            <a-col :xl="6"
-                   :lg="7"
-                   :md="8"
-                   :sm="24">
-              <a-form-model-item label="设备编码"
-                                 prop="deviceid">
-                <a-input placeholder="请输入设备编码"
-                         v-model="formData.deviceid"></a-input>
+            <a-col :xl="6" :lg="7" :md="8" :sm="24">
+              <a-form-model-item label="设备编码" prop="deviceid">
+                <a-input placeholder="请输入设备编码" v-model="formData.deviceid"></a-input>
               </a-form-model-item>
             </a-col>
-            <a-col :xl="6"
-                   :lg="7"
-                   :md="8"
-                   :sm="24">
-              <a-form-model-item label="设备IP"
-                                 prop="IP">
-                <a-input placeholder="请输入设备IP"
-                         v-model="formData.IP"></a-input>
+            <a-col :xl="6" :lg="7" :md="8" :sm="24">
+              <a-form-model-item label="设备IP" prop="IP">
+                <a-input placeholder="请输入设备IP" v-model="formData.IP"></a-input>
               </a-form-model-item>
             </a-col>
-            <a-col :xl="6"
-                   :lg="7"
-                   :md="8"
-                   :sm="24">
-              <a-form-model-item label="报修类型"
-                                 prop="bxlx">
-                <a-select showSearch
-                          mode="multiple"
-                          :options="repairsTypeList"
-                          :filterOption="filterOption"
-                          v-model="formData.bxlx"
-                          placeholder="请选择报修类"
-                          allowClear />
+            <a-col :xl="6" :lg="7" :md="8" :sm="24">
+              <a-form-model-item label="报修类型" prop="bxlx">
+                <a-select
+                  showSearch
+                  mode="multiple"
+                  :options="repairsTypeList"
+                  :filterOption="filterOption"
+                  v-model="formData.bxlx"
+                  placeholder="请选择报修类型"
+                  allowClear
+                />
               </a-form-model-item>
             </a-col>
-            <a-col :xl="6"
-                   :lg="7"
-                   :md="8"
-                   :sm="24">
-              <a-form-model-item label="工单等级"
-                                 prop="gddj">
-                <a-select showSearch
-                          mode="multiple"
-                          :options="ticketsLevel"
-                          :filterOption="filterOption"
-                          v-model="formData.gddj"
-                          placeholder="请选择工单等级"
-                          allowClear />
+            <a-col :xl="6" :lg="7" :md="8" :sm="24">
+              <a-form-model-item label="工单等级" prop="gddj">
+                <a-select
+                  showSearch
+                  mode="multiple"
+                  :options="ticketsLevel"
+                  :filterOption="filterOption"
+                  v-model="formData.gddj"
+                  placeholder="请选择工单等级"
+                  allowClear
+                />
               </a-form-model-item>
             </a-col>
-            <a-col :xl="6"
-                   :lg="7"
-                   :md="8"
-                   :sm="24">
-              <a-form-model-item label="工单类型"
-                                 prop="gdlx">
-                <a-select showSearch
-                          mode="multiple"
-                          :options="orderTypeList"
-                          :filterOption="filterOption"
-                          v-model="formData.gdlx"
-                          placeholder="请选择工单类型"
-                          allowClear />
+            <a-col :xl="6" :lg="7" :md="8" :sm="24">
+              <a-form-model-item label="工单类型" prop="gdlx">
+                <a-select
+                  showSearch
+                  mode="multiple"
+                  :options="orderTypeList"
+                  :filterOption="filterOption"
+                  v-model="formData.gdlx"
+                  placeholder="请选择工单类型"
+                  allowClear
+                />
               </a-form-model-item>
             </a-col>
           </template>
-          <a-col :xl="6"
-                 :lg="7"
-                 :md="8"
-                 :sm="24">
-            <span style="float: left;overflow: hidden;padding-left: 25px;"
-                  class="table-page-search-submitButtons">
-              <a-button type="primary"
-                        icon="search"
-                        @click="searchQuery">查询</a-button>
-              <a-button type="primary"
-                        icon="reload"
-                        @click="searchReset"
-                        style="margin-left: 8px;">重置</a-button>
-              <a @click="handleToggleSearch()"
-                 style="margin-left: 8px">
+          <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <span style="float: left;overflow: hidden;padding-left: 25px;" class="table-page-search-submitButtons">
+              <a-button type="primary" icon="search" @click="searchQuery">查询</a-button>
+              <a-button type="primary" icon="reload" @click="searchReset" style="margin-left: 8px;">重置</a-button>
+              <a @click="handleToggleSearch()" style="margin-left: 8px">
                 {{ toggleSearchStatus ? '收起' : '展开' }}
-                <a-icon :type="toggleSearchStatus ? 'up' : 'down'" />
+                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
               </a>
             </span>
           </a-col>
@@ -289,135 +234,129 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button @click="handleAddBpm"
-                type="primary"
-                icon="plus">发起流程</a-button>
+      <a-button @click="handleAddBpm" type="primary" icon="plus">发起流程</a-button>
     </div>
 
     <!-- table区域-begin -->
     <div>
-      <a-tabs v-model="activeKey"
-              @change="onChangeTabs">
-        <a-tab-pane key="1">
+      <a-spin :spinning="spinningShow">
+        <a-tabs v-model="activeKey" @change="onChangeTabs">
+          <a-tab-pane key="1">
           <span slot="tab">
-            <a-icon type="solution"
-                    style="font-size: 16px;" />
-            我的待办
+            <a-icon type="solution" style="font-size: 16px;"/>
+           我的待办
           </span>
-        </a-tab-pane>
-        <a-tab-pane key="2">
+          </a-tab-pane>
+          <a-tab-pane key="2">
           <span slot="tab">
-            <a-icon type="file-done"
-                    style="font-size: 16px;" />
-            全部工单
+           <a-icon type="file-done" style="font-size: 16px;"/>
+           关于我的
           </span>
-        </a-tab-pane>
-      </a-tabs>
-      <a-table ref="table"
-               size="middle"
-               bordered
-               rowKey="flowNo"
-               :columns="columns"
-               :dataSource="dataSource"
-               :pagination="false"
-               :loading="loading">
-        <span slot="status"
-              slot-scope="status">
-          <!--   <a-icon type="exclamation-circle" />-->
-          <a-tag v-if="item.value === status +''"
-                 :color="item.color"
+          </a-tab-pane>
+        </a-tabs>
+        <a-table
+          ref="table"
+          size="middle"
+          bordered
+          rowKey="flowNo"
+          :columns="columns"
+          :dataSource="dataSource"
+          :pagination="false"
+        >
+        <span slot="status" slot-scope="status">
+       <!--   <a-icon type="exclamation-circle" />-->
+          <a-tag v-if="item.value === status +''" :color="item.color"
                  v-for="item in orderSateList"> {{item.label}}</a-tag>
         </span>
-        <template slot="type"
-                  slot-scope="type">
-          <span v-if="item.value === type +''"
-                :color="item.color"
+          <template slot="type" slot-scope="type">
+          <span v-if="item.value === type +''" :color="item.color"
                 v-for="item in orderTypeList"> {{item.label}}
           </span>
-        </template>
-        <span slot="create_time"
-              slot-scope="create_time">
-          {{getLongTime(create_time, true)}}
-        </span>
-        <span slot="action"
-              slot-scope="text, record">
+          </template>
+          <span slot="create_time" slot-scope="create_time">
+           {{getLongTime(create_time, true)}}
+         </span>
+          <span slot="action" slot-scope="text, record">
           <a-button @click="handleDetail(record)">查看详情</a-button>
-          <!-- <a-dropdown>
-             <a class="ant-dropdown-link">更多 <a-icon type="down"/></a>
-             <a-menu slot="overlay">
-               <template v-if="record.bpmStatus === '1'">
+            <!-- <a-dropdown>
+               <a class="ant-dropdown-link">更多 <a-icon type="down"/></a>
+               <a-menu slot="overlay">
+                 <template v-if="record.bpmStatus === '1'">
+                   <a-menu-item>
+                     <a @click="handleEdit(record)">编辑</a>
+                   </a-menu-item>
+                 </template>
                  <a-menu-item>
-                   <a @click="handleEdit(record)">编辑</a>
+                   <a href="javascript:;" @click="handleDetail(record)">详情</a>
                  </a-menu-item>
-               </template>
-               <a-menu-item>
-                 <a href="javascript:;" @click="handleDetail(record)">详情</a>
-               </a-menu-item>
-               <a-menu-item v-if="record.bpmStatus === '1'">
-                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-                   <a>删除</a>
-                 </a-popconfirm>
-               </a-menu-item>
-               <a-menu-item v-else @click="handleTrack(record)">审批进度</a-menu-item>
-             </a-menu>
-           </a-dropdown>-->
+                 <a-menu-item v-if="record.bpmStatus === '1'">
+                   <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
+                     <a>删除</a>
+                   </a-popconfirm>
+                 </a-menu-item>
+                 <a-menu-item v-else @click="handleTrack(record)">审批进度</a-menu-item>
+               </a-menu>
+             </a-dropdown>-->
         </span>
 
-        <span slot="modelName"
-              slot-scope="text, record">
-          <j-ellipsis :value="'工单【'+text+'】'"
-                      :length="15" />
+          <span slot="modelName" slot-scope="text, record">
+          <j-ellipsis :value="'工单【'+text+'】'" :length="15"/>
         </span>
-        <!-- 字符串超长截取省略号显示-->
-        <span slot="executors"
-              slot-scope="executors, record">
-          <j-ellipsis :value="getExecutors(executors)"
-                      :length="15" />
+          <!-- 字符串超长截取省略号显示-->
+          <span slot="executors" slot-scope="executors, record">
+          <j-ellipsis :value="getExecutors(executors)" :length="15"/>
         </span>
-      </a-table>
-      <a-pagination style="text-align: right;margin-top: 15px;"
-                    :total="total"
-                    show-size-changer
-                    :show-total="(total, range) => `${range[0]}-${range[1]} 共 ${total} 条`"
-                    :page-size="data.pageSize"
-                    :default-current="1"
-                    @change="onChange"
-                    @showSizeChange="onShowSizeChange" />
+        </a-table>
+        <a-pagination
+          style="text-align: right;margin-top: 15px;"
+          :total="total"
+          show-size-changer
+          :show-total="(total, range) => `${range[0]}-${range[1]} 共 ${total} 条`"
+          :page-size="data.pageSize"
+          :default-current="1"
+          @change="onChange"
+          @showSizeChange="onShowSizeChange"
+        />
+      </a-spin>
     </div>
     <!-- table区域-end -->
     <!--模型选择区域-->
-    <a-modal :title="ModalText"
-             :width="1000"
-             :visible="visibleModel"
-             :confirm-loading="confirmLoading"
-             @ok="handleOk"
-             @cancel="handleCancel"
-             :footer="null"
-             style="min-height: 500px;">
+    <a-modal
+      :title="ModalText"
+      :width="1000"
+      :visible="visibleModel"
+      :confirm-loading="confirmLoading"
+      @ok="handleOk"
+      @cancel="handleCancel"
+      :footer="null"
+      style="min-height: 500px;"
+    >
       <div>
-        <tickets-model-type :items="workTypeList"
-                            @click="getModelDetails"></tickets-model-type>
+        <tickets-model-type :items="workTypeList" @click="getModelDetails"></tickets-model-type>
       </div>
     </a-modal>
 
     <!-- 表单区域 -->
-    <a-modal :title="ModalText"
-             :width="widthModel"
-             :centered="true"
-             :visible="visible"
-             :confirm-loading="confirmLoading"
-             @cancel="handleCancel"
-             :footer="null">
-      <tickets-from-flow :form-config="formConfig"
-                         :submit-btn="submitBtn"
-                         :allot-show="allotShow"
-                         :operation="operation"
-                         :spinning="spinning"
-                         :flow-list="flowList"
-                         v-if="operation === 'details'"
-                         @updateFeedback="updateOrder"
-                         @uploadFile="uploadFile"
-                         @click="onSubmit">
+    <a-modal
+      :title="ModalText"
+      :width="widthModel"
+      :centered="true"
+      :visible="visible"
+      :confirm-loading="confirmLoading"
+      @cancel="handleCancel"
+      :footer="null"
+    >
+      <tickets-from-flow
+        :form-config="formConfig"
+        :submit-btn="submitBtn"
+        :allot-show="allotShow"
+        :operation="operation"
+        :spinnings="spinning"
+        :flow-list="flowList"
+        v-if="operation === 'details'"
+        @updateFeedback="updateOrder"
+        @uploadFile="uploadFile"
+        @click="onSubmit">
       </tickets-from-flow>
       <!--    <div style="width: 65%;border: 1px solid #dee3ea;height: 700px;">
             <div style="border-bottom: 1px solid #dee3ea;background-color: #f4f7fd" class="work-detail-main-title"
@@ -472,15 +411,45 @@
               </a-timeline>
             </div>
           </div>-->
-      <tickets-form :form-config="formConfig"
-                    :submit-btn="submitBtn"
-                    :allot-show="allotShow"
-                    :operation="operation"
-                    @updateFeedback="updateOrder"
-                    @uploadFile="uploadFile"
-                    @click="onSubmit"
-                    v-if="operation === 'add'">
+      <tickets-form
+        :form-config="formConfig"
+        :submit-btn="submitBtn"
+        :allot-show="allotShow"
+        :spinnings="spinning"
+        :operation="operation"
+        @updateFeedback="updateOrder"
+        @uploadFile="uploadFile"
+        @click="onSubmit"
+        v-if="operation === 'add'"
+      >
       </tickets-form>
+    </a-modal>
+    <a-modal
+      title="请选择下一节点处理人"
+      :width="600"
+      :centered="true"
+      :visible="showRollback"
+      @cancel="handleCancelShow"
+      @ok="handleShow"
+    >
+      <a-spin :spinning="spinningShow">
+        <a-form-model :labelCol="labelCol2" :wrapperCol="wrapperCol2">
+          <a-form-model-item label="处理人" v-if="userList.length>0">
+            <a-select mode="multiple" showSearch allowClear v-model="userIdList" placeholder="请选择处理人">
+              <a-select-option v-for="item in userList" :key="item.id">
+                {{item.name}}
+              </a-select-option>
+            </a-select>
+          </a-form-model-item>
+          <a-form-model-item label="用户组" v-if="userGroup.length>0">
+            <a-select mode="multiple" showSearch allowClear v-model="userIdList" placeholder="请选择用户组">
+              <a-select-option v-for="item in userGroup" :key="item.id">
+                {{item.name}}
+              </a-select-option>
+            </a-select>
+          </a-form-model-item>
+        </a-form-model>
+      </a-spin>
     </a-modal>
   </a-card>
 </template>
@@ -523,10 +492,25 @@ export default {
         xl: { span: 18 },
         lg: { span: 17 }
       },
+      labelCol2: {
+        xs: { span: 24 },
+        sm: { span: 3 },
+        xl: { span: 3 },
+        lg: { span: 7 }
+      },
+      wrapperCol2: {
+        xs: { span: 24 },
+        sm: { span: 20 },
+        xl: { span: 20 },
+        lg: { span: 15 }
+      },
       widthModel: '85%',
       workTypeList: [],
       ModalText: '创建工单',
       visible: false,
+      /**
+       * 显示选择模型
+       */
       visibleModel: false,
       confirmLoading: false,
       loading: false,
@@ -546,14 +530,14 @@ export default {
         {
           title: '状态',
           align: 'center',
-          width: 100,
+          width: 110,
           dataIndex: 'formData.hiddenOrderSate',
           scopedSlots: { customRender: 'status' }
         },
         {
           title: '工单标题',
           align: 'center',
-          width: 180,
+          width: 230,
           dataIndex: 'title'
         },
         {
@@ -572,6 +556,7 @@ export default {
         {
           title: '工单类型',
           align: 'center',
+          width: 180,
           dataIndex: 'formData.gdlx',
           scopedSlots: { customRender: 'type' }
         },
@@ -625,8 +610,11 @@ export default {
       dataSource: [],
       orderInfo: {},
       submitBtn: [],
+      /**
+       * 模型数据
+       */
       formConfig: {
-        formFiles: []
+        formFiles: [] //
       },
       flowList: [],  // 流程数据
       formData: {
@@ -639,7 +627,7 @@ export default {
         gdlx: [],
         bxlx: [],
         IP: '',
-        orderSate: [],
+        hiddenOrderSate: [],
         gddj: []
       },
       formFileds: [],
@@ -809,7 +797,6 @@ export default {
       isFile: 0,
       isShow: false,
       showRollback: false,
-      userGroup: [],
       workForm: {},
       modeId: '',
       imgs: [],
@@ -817,8 +804,12 @@ export default {
       operation: '',
       allotShow: false,
       spinning: false,
+      spinningShow: false,
       activeKey: '1',
       imgUrl: 'http://192.168.1.103:8080/oss/api/itsm/getFileById?isOnLine=true&fileId=',
+      /**
+       * 查询参数
+       */
       data: {
         pageSize: 10,
         pageNum: 1,
@@ -847,19 +838,24 @@ export default {
           value: 'sanji',
           label: '3'
         }
-      ]
+      ],
+      userList: [],
+      userIdList: [],
+      userGroup: [],
+      groupIdList: [],
+      subItem: {}
     }
   },
   methods: {
     moment,
     onSubmit (item) {
       this.subItem = item
-      /* if (this.policy === 0) {
-         this.showRollback = true
-         this.userList = item.user
-         this.userGroup = item.groups
-         return
-       }*/
+      if (item.policy === 0) {
+        this.showRollback = true
+        this.userList = item.user
+        this.userGroup = item.group
+        return
+      }
       // alert(JSON.stringify(this.formFileds))
       if (this.operation === 'add') {
         this.saveTickets(item)
@@ -875,7 +871,7 @@ export default {
         } else {
           this.$set(this.workForm, itemA.code, '')
           if (itemA.conf.default_value.length > 0) {
-            this.imgs = itemA.conf.default_value
+            this.images = itemA.conf.default_value
           }
         }
       })
@@ -887,6 +883,7 @@ export default {
           [item.nextActivityId]: {}
         }
       }
+      delete this.workForm.file
       let data = {
         description: this.workForm.ticketDesc,
         form: this.workForm,
@@ -898,10 +895,16 @@ export default {
       }
       let apiKey = this.userInfo().apikey
       saveWorkOrder(data, apiKey).then(response => {
-        this.$message.success(response.message)
-        this.spinning = false
-        this.visible = false
-        this.getTicketsList()
+        if (this.isFile === 1 && this.images.length > 0) {
+          this.uploadFile(response.result.id, this.images)
+        } else {
+          this.$message.success(response.message)
+          this.showRollback = false
+          this.spinning = false
+          this.visible = false
+          this.spinningShow = false
+          this.getTicketsList()
+        }
       }).catch(error => {
         console.log(error)
       })
@@ -926,6 +929,7 @@ export default {
           [item.nextActivityId]: {}
         }
       }
+      delete this.workForm.file
       let data = {
         activity_id: this.orderInfo.activity_id,
         handle_type: 1,
@@ -939,14 +943,88 @@ export default {
         handle_rules: handleRules
       }
       let apiKey = this.userInfo().apikey
+      console.log('---->>--', this.images.length)
       handleOrder(data, apiKey).then(response => {
         this.disabled = true
         this.spinning = false
         if (this.isFile === 1 && this.images.length > 0) {
-          // this.uploadFileByTicketId()
+          this.uploadFile(this.orderInfo.ticketId, this.images)
+        } else {
+          this.$message.success(response.message)
+          this.showRollback = false
+          this.visible = false
+          this.spinningShow = false
+          this.getTicketsList()
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    handleShow () {
+      this.formFileds.forEach((itemA) => {
+        if (itemA.type !== 'attachfile') {
+          this.$set(this.workForm, itemA.code, itemA.conf.default_value)
+        } else {
+          this.$set(this.workForm, itemA.code, '')
+          if (itemA.conf.default_value.length > 0) {
+            this.images = itemA.conf.default_value
+          }
+        }
+      })
+      let handleRules = {
+        route_id: this.subItem.route_id
+      }
+      if (this.userIdList.length > 0 || this.groupIdList.length > 0) {
+        if (this.subItem.nextActivityId) {
+          handleRules.executors_groups = {
+            [this.subItem.nextActivityId]: {}
+          }
+        }
+        if (this.userList.length > 0) {
+          handleRules.executors_groups = {
+            [this.subItem.nextActivityId]: {
+              user: this.userIdList
+            }
+          }
+        }
+        if (this.userGroup.length > 0) {
+          handleRules.executors_groups = {
+            [this.subItem.nextActivityId]: {
+              group: this.groupIdList
+            }
+          }
+        }
+      } else {
+        this.$message.warning('请选择下一节点处理人')
+        return
+      }
+      this.spinningShow = true
+      delete this.workForm.file
+      let data = {
+        activity_id: this.orderInfo.activity_id,
+        handle_type: 1,
+        model_id: this.orderInfo.model_id,
+        ticket_id: this.orderInfo.ticketId,
+        form: this.workForm,
+        description: this.workForm.ticketDesc,
+        title: this.workForm.title,
+        ticket_source: 'wchart',
+        urgent_level: '2',
+        handle_rules: handleRules
+      }
+      let apiKey = this.userInfo().apikey
+      console.log('///**---***', data)
+      handleOrder(data, apiKey).then(response => {
+        this.disabled = true
+        if (this.isFile === 1 && this.images.length > 0) {
+          this.uploadFile(this.orderInfo.ticketId, this.images)
         } else {
           this.$message.success(response.message)
           this.visible = false
+          this.showRollback = false
+          this.spinningShow = false
+          this.loading = false
+          this.visibleModel = false
           this.getTicketsList()
         }
       }).catch(error => {
@@ -965,6 +1043,7 @@ export default {
           }
         }
       })
+      delete this.workForm.file
       let data = {
         ticket_id: this.orderInfo.ticketId,
         form: this.workForm
@@ -973,52 +1052,64 @@ export default {
       updateTickets(data, apiKey).then(response => {
         this.loading = false
         if (this.isFile === 1 && this.images.length > 0) {
-          this.uploadFileByTicketId()
+          this.uploadFile(this.orderInfo.ticketId, this.images)
         } else {
           this.$message.success(response.message)
           this.getTicketsList()
+          this.showRollback = false
           this.visible = false
+          this.spinningShow = false
         }
       }).catch(error => {
         console.log(error)
       })
     },
     handleDetail (record) {
-      this.loading = true
+      this.spinningShow = true
       this.formFileds = []
+      this.workForm = {}
       this.submitBtn = []
       let params = {
         id: record.ticketId,
         apikey: this.userInfo().apikey
       }
       getTicketsDetails(params).then(response => {
-        0
         this.orderInfo = response.result
         this.formFileds = response.result.formFileds
         this.submitBtn = response.result.submitBtn
         this.formConfig.formFiles = this.formFileds
+        this.imgs = []
         this.getUserInfo()
         sessionStorage.setItem('tickedId', response.result.ticketId)
         this.ModalText = '工单详情'
         let url = ''
-        this.formFileds.forEach((itemA, index) => {
-          if (itemA.type === 'attachfile') {
-            this.isFile = 1
-            if (this.orderInfo.files) {
-              this.orderInfo.files.forEach((item) => {
-                url = this.imgUrl + item
-                this.imgs.push({
-                  url: url,
-                  uid: index - 20,
-                  name: 'image' + index + '.png',
-                  status: 'done'
+        let type = 'attachfile'
+        let executor = this.formFileds.find((item) => type === item.type)
+        if (executor !== undefined) {
+          this.isFile = 1
+          this.formFileds.forEach((itemA, index) => {
+            if (itemA.type === 'attachfile') {
+              if (this.orderInfo.files) {
+                this.orderInfo.files.forEach((item) => {
+                  url = this.imgUrl + item
+                  this.imgs.push({
+                    url: url,
+                    uid: index + 20,
+                    name: 'image' + index + '.png',
+                    status: 'done'
+                  })
                 })
-              })
-              this.$set(itemA, 'fileList', this.imgs)
-            } else {
-              this.$set(itemA, 'fileList', [])
+                this.$set(itemA, 'fileList', this.imgs)
+              } else {
+                this.$set(itemA, 'fileList', [])
+              }
             }
-          } else if (itemA.type === 'dateTime') {
+          })
+        } else {
+          this.isFile = 0
+        }
+        this.formFileds.forEach((itemA, index) => {
+          if (itemA.type === 'dateTime') {
             if (itemA.conf.default_value === '') {
               itemA.conf.default_value = getSelectTime(new Date(), true)
             }
@@ -1027,20 +1118,23 @@ export default {
               itemA.conf.default_value = []
             }
           }
-          this.isFile = 0
         })
         this.operation = 'details'
+        this.showRollback = false
+        this.spinningShow = false
         this.visible = true
-        this.loading = false
+        this.spinning = false
       }).catch(error => {
         console.log(error)
       })
       this.getTicketsProcess(record.ticketId)
+
     },
     getModelDetails (id) {
       this.loading = true
       this.formFileds = [] //清空数据
       this.submitBtn = []
+      this.workForm = {}
       let apiKey = this.userInfo().apikey
       getModelDetails(apiKey, id).then(response => {
         this.modeId = id
@@ -1048,18 +1142,36 @@ export default {
         this.submitBtn = response.result.submitBtn
         this.formConfig.formFiles = this.formFileds
         this.ModalText = '创建工单'
-        this.formFileds.forEach((itemA) => {
-          if (itemA.type === 'attachfile') {
-            this.isFile = 1
-            this.$set(itemA, 'fileList', [])
-            return
-          } else if (itemA.type === 'dateTime') {
-            itemA.conf.default_value = getSelectTime(new Date(), true)
-          }
+        let type = 'attachfile'
+        let executor = this.formFileds.find((item) => type === item.type)
+        if (executor !== undefined) {
+          this.isFile = 1
+          this.formFileds.forEach((itemA) => {
+            if (itemA.type === 'attachfile') {
+              this.$set(itemA, 'fileList', [])
+              itemA.conf.default_value = []
+            }
+            if (itemA.type === 'dateTime') {
+              itemA.conf.default_value = getSelectTime(new Date(), true)
+            }
+          })
+        } else {
           this.isFile = 0
-        })
+          this.formFileds.forEach((itemA) => {
+            if (itemA.type === 'attachfile') {
+              this.isFile = 1
+              this.$set(itemA, 'fileList', [])
+              itemA.conf.default_value = []
+            }
+            if (itemA.type === 'dateTime') {
+              itemA.conf.default_value = getSelectTime(new Date(), true)
+            }
+          })
+        }
         this.operation = 'add'
         this.visibleModel = false
+        this.spinningShow = false
+        this.spinning = false
         this.allotShow = true
         this.visible = true
         this.loading = false
@@ -1067,16 +1179,22 @@ export default {
         console.log(error)
       })
     },
-    uploadFile (fileList) {
+    uploadFile (ticketId, fileList) {
       this.loading = true
       let data = {
-        ticketId: this.orderInfo.ticketId,
+        ticketId: ticketId,
         filesBase64: fileList
       }
       let apiKey = this.userInfo().apikey
       uploadFileByTicketId(data, apiKey).then(response => {
-        this.loading = false
         this.$message.success(response.message)
+        this.loading = false
+        this.visibleModel = false
+        this.spinningShow = false
+        this.allotShow = true
+        this.visible = false
+        this.loading = false
+
       }).catch(error => {
         console.log(error)
       })
@@ -1085,17 +1203,23 @@ export default {
       // this.visible = true
     },
     handleOk (e) {
-      this.ModalText = 'The modal will be closed after two seconds'
       this.confirmLoading = true
       setTimeout(() => {
+        this.showRollback = false
         this.visible = false
+        this.spinningShow = false
         this.visibleModel = false
         this.confirmLoading = false
       }, 2000)
     },
     handleCancel () {
+      this.showRollback = false
       this.visible = false
       this.visibleModel = false
+      this.spinningShow = false
+    },
+    handleCancelShow () {
+      this.showRollback = false
     },
     /** 发起流程 */
     handleAddBpm () {
@@ -1285,9 +1409,9 @@ export default {
       }
     },
     onChangeDate (dates, dateStrings) {
-      console.log('From: ', dates[0], ', to: ', dates[1]);
-      console.log('From: ', dateStrings[0], ', to: ', dateStrings[1]);
-    },
+      console.log('From: ', dates[0], ', to: ', dates[1])
+      console.log('From: ', dateStrings[0], ', to: ', dateStrings[1])
+    }
   },
   mounted () {
     this.getQueryTerms()
@@ -1299,163 +1423,170 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-@import '~@assets/less/common.less';
+  @import '~@assets/less/common.less';
 
-.gd-status-sjzy {
-  width: 23%;
-  border: 1px solid #65c6f3;
-  background-color: #65c6f3;
-  border-radius: 5px;
-  margin-left: 20px;
-  box-shadow: 2px 2px 6px #aaaaaa;
-}
+  .gd-status-sjzy {
+    width: 23%;
+    border: 1px solid #65c6f3;
+    background-color: #65c6f3;
+    border-radius: 5px;
+    margin-left: 20px;
+    box-shadow: 2px 2px 6px #aaaaaa;
+  }
 
-.gd-status-ztsy {
-  width: 25%;
-  border: 1px solid #f78463;
-  background-color: #f78463;
-  border-radius: 5px;
-  margin-left: 35px;
-  box-shadow: 2px 2px 6px #aaaaaa;
-}
+  .gd-status-ztsy {
+    width: 25%;
+    border: 1px solid #f78463;
+    background-color: #f78463;
+    border-radius: 5px;
+    margin-left: 35px;
+    box-shadow: 2px 2px 6px #aaaaaa;
+  }
 
-.gd-status-yxj {
-  width: 25%;
-  border: 1px solid #8aaaf5;
-  background-color: #8aaaf5;
-  border-radius: 5px;
-  margin-left: 35px;
-  box-shadow: 2px 2px 6px #aaaaaa;
-}
+  .gd-status-yxj {
+    width: 25%;
+    border: 1px solid #8aaaf5;
+    background-color: #8aaaf5;
+    border-radius: 5px;
+    margin-left: 35px;
+    box-shadow: 2px 2px 6px #aaaaaa;
+  }
 
-.gd-status-total {
-  color: white;
-  font-size: 17px;
-  margin-left: 20px;
-  margin-top: 15px;
-}
+  .gd-status-total {
+    color: white;
+    font-size: 17px;
+    margin-left: 20px;
+    margin-top: 15px;
+  }
 
-.gd-status-total-num {
-  font-size: 32px;
-  color: white;
-  margin-left: 20px;
-  margin-top: -5px;
-  margin-bottom: 10px;
-}
+  .gd-status-total-num {
+    font-size: 32px;
+    color: white;
+    margin-left: 20px;
+    margin-top: -5px;
+    margin-bottom: 10px;
+  }
 
-.gd-status-text {
-  color: white;
-  font-size: 12px;
-  margin-right: 10px;
-}
+  .gd-status-text {
+    color: white;
+    font-size: 12px;
+    margin-right: 10px;
+  }
 
-.topbar {
-  position: relative;
-  display: flex;
-  // justify-content: space-between;
-  // align-items: center;
-  // box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-  padding-bottom: 20px;
+  .topbar {
+    position: relative;
+    display: flex;
+    // justify-content: space-between;
+    // align-items: center;
+    // box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    padding-bottom: 20px;
 
-  .topbar-item {
-    overflow: hidden;
-    width: 300px;
-    height: 100px;
-    border-radius: 10px;
-    margin-right: 20px;
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-    //box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-    .header {
-      height: 50px;
-      line-height: 50px;
-      text-align: center;
-      color: #fff;
-      font-size: 24px;
-    }
-
-    .content {
-      position: relative;
-      border-bottom: 1px solid rgb(241, 241, 241);
-      height: 50px;
-      box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-
-      .info-left,
-      .info-right {
-        display: inline-block;
-        box-sizing: border-box;
-        height: 40px;
-        line-height: 40px;
+    .topbar-item {
+      overflow: hidden;
+      width: 300px;
+      height: 100px;
+      border-radius: 10px;
+      margin-right: 20px;
+      box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
+      //box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+      .header {
+        height: 50px;
+        line-height: 50px;
         text-align: center;
-        color: rgb(165, 165, 165);
-        font-size: 16px;
+        color: #fff;
+        font-size: 24px;
       }
 
-      .info-left {
-        width: 58%;
-
-        strong {
-          font-size: 24px;
-        }
-      }
-
-      .info-right {
+      .content {
         position: relative;
-        top: -4px;
-        width: 42%;
-        font-size: 16px;
-      }
-    }
+        border-bottom: 1px solid rgb(241, 241, 241);
+        height: 50px;
+        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 
-    &.item1 {
-      .header {
-        background: linear-gradient(180deg, rgb(14, 145, 254) 35%, rgb(16, 183, 248));
-        // background-color: rgb(16,175,249) ;
-      }
-
-      .content {
-        border: 4px solid rgb(16, 183, 248);
-        border-bottom: 6px solid rgb(16, 183, 248);
+        .info-left,
+        .info-right {
+          display: inline-block;
+          box-sizing: border-box;
+          height: 40px;
+          line-height: 40px;
+          text-align: center;
+          color: rgb(165, 165, 165);
+          font-size: 16px;
+        }
 
         .info-left {
-          color: rgb(14, 145, 254);
-          border-right: 2px solid rgb(16, 183, 248);
+          width: 58%;
+
+          strong {
+            font-size: 24px;
+          }
+        }
+
+        .info-right {
+          position: relative;
+          top: -4px;
+          width: 42%;
+          font-size: 16px;
         }
       }
-    }
 
-    &.item2 {
-      .header {
-        background: linear-gradient(180deg, rgb(235, 156, 23) 25%, rgb(255, 190, 61));
-        //background-color:rgb(255,205,61) ;
-      }
+      &.item1 {
 
-      .content {
-        border: 4px solid rgb(255, 190, 61);
-        border-bottom: 6px solid rgb(255, 190, 61);
+        .header {
+          background: linear-gradient(180deg,
+          rgb(14, 145, 254) 35%,
+          rgb(16, 183, 248));
+          // background-color: rgb(16,175,249) ;
+        }
 
-        .info-left {
-          color: rgb(235, 156, 23);
-          border-right: 2px solid rgb(255, 190, 61);
+        .content {
+          border: 4px solid rgb(16, 183, 248);
+          border-bottom: 6px solid rgb(16, 183, 248);
+
+          .info-left {
+            color: rgb(14, 145, 254);
+            border-right: 2px solid rgb(16, 183, 248);
+          }
         }
       }
-    }
 
-    &.item3 {
-      .header {
-        background: linear-gradient(180deg, rgb(251, 84, 83) 30%, rgb(255, 123, 123));
-        // background-color:rgb(253,120,100) ;
+      &.item2 {
+        .header {
+          background: linear-gradient(180deg,
+          rgb(235, 156, 23) 25%,
+          rgb(255, 190, 61));
+          //background-color:rgb(255,205,61) ;
+        }
+
+        .content {
+          border: 4px solid rgb(255, 190, 61);
+          border-bottom: 6px solid rgb(255, 190, 61);
+
+          .info-left {
+            color: rgb(235, 156, 23);
+            border-right: 2px solid rgb(255, 190, 61);
+          }
+        }
       }
 
-      .content {
-        border: 4px solid rgb(255, 123, 123);
-        border-bottom: 6px solid rgb(255, 123, 123);
+      &.item3 {
+        .header {
+          background: linear-gradient(180deg,
+          rgb(251, 84, 83) 30%,
+          rgb(255, 123, 123));
+          // background-color:rgb(253,120,100) ;
+        }
 
-        .info-left {
-          color: rgb(255, 123, 123);
-          border-right: 2px solid rgb(255, 123, 123);
+        .content {
+          border: 4px solid rgb(255, 123, 123);
+          border-bottom: 6px solid rgb(255, 123, 123);
+
+          .info-left {
+            color: rgb(255, 123, 123);
+            border-right: 2px solid rgb(255, 123, 123);
+          }
         }
       }
     }
   }
-}
 </style>

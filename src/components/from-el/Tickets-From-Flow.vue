@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-spin :spinning="spinning">
+    <a-spin :spinning="spinnings">
       <div style="display: flex">
         <div class="form-container" style="">
           <div style="" class="form-head" @click="isShowData()">
@@ -122,7 +122,7 @@ import tableTest from './from-item/From-Table'
 
 export default {
   name: 'Tickets-From',
-  props: ['formConfig', 'submitBtn', 'allotShow', 'operation', 'spinning', 'flowList'],
+  props: ['formConfig', 'submitBtn', 'allotShow', 'operation', 'spinnings', 'flowList'],
   data () {
     return {
       labelCol: {
