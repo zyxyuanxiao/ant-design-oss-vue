@@ -23,6 +23,7 @@
               </a-select>
             </a-form-item>
           </a-col>
+
           <a-col :md="6" :sm="8" >
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
@@ -41,7 +42,7 @@
     <div>
       <a-table
         ref="table"
-        :scroll="{x: 1800}"
+       
         size="middle"
         bordered
         rowKey="id"
@@ -59,7 +60,7 @@
           </template>
           <template v-else>
             <a  @click="handleClaim(record)" >
-              办理
+              签收
             </a>
           </template>
         </span>
@@ -143,11 +144,13 @@
             title: '开始时间',
             align: 'center',
             dataIndex: 'taskBeginTime'
-          }, {
-            title: '结束时间',
-            align: 'center',
-            dataIndex: 'taskEndTime'
-          }, {
+          }, 
+          // {
+          //   title: '结束时间',
+          //   align: 'center',
+          //   dataIndex: 'taskEndTime'
+          // }, 
+          {
             title: '当前环节',
             align: 'center',
             dataIndex: 'taskName'
