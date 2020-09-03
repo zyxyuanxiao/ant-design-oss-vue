@@ -86,10 +86,7 @@
         @change="handleTableChange"
       >
         <span slot="action" slot-scope="text, record">
-          <a @click="showHistory(record)">
-            查看
-          </a>
-          <!-- <template v-if="record.endTime&&record.endTime!=''">
+          <template v-if="record.endTime&&record.endTime!=''">
             <a @click="showHistory(record)">历史</a>
           </template>
           <template v-else>
@@ -103,7 +100,7 @@
                   <a-popconfirm title="确定要作废流程吗?" @confirm="() => invalidProcess(record)">
                     <a>作废流程</a>
                   </a-popconfirm>
-                </a-menu-item> -->
+                </a-menu-item>
                 <!-- <a-menu-item >
                       <a-popconfirm title="确定要取回流程吗?" @confirm="() => callBackProcess(record)">
                         <a>
@@ -111,10 +108,10 @@
                         </a>
                       </a-popconfirm>
                 </a-menu-item>-->
-                <!-- <a-menu-item @click="showHistory(record)">历史</a-menu-item>
+                <a-menu-item @click="showHistory(record)">历史</a-menu-item>
               </a-menu>
             </a-dropdown>
-          </template> -->
+          </template>
         </span>
 
         <!-- 字符串超长截取省略号显示-->
@@ -282,6 +279,18 @@ export default {
     this.initList()
   },
   methods: {
+    handleTableChange(pagination) {
+      //分页、排序、筛选变化时触发
+      //TODO 筛选
+      console.log(pagination)
+      this.ipagination = pagination;
+      this.queryParam.pageNo = pagination.current;
+      this.queryParam.pageSize = pagination.pageSize
+      console.log(this.queryParam)
+      this.searchQuery();
+      
+    },
+   
     onChange(value, dateString) {
       this.queryParam.startTime = dateString[0]
       this.queryParam.endTime = dateString[1]
@@ -338,11 +347,10 @@ export default {
         postAction(this.url.getDynamicData, param, {
           tableName: this.queryParam.code,
           tag: 'all',
-          pageNo: this.ipagination.pageNo,
+          pageNo: this.ipagination.current,
           pageSize: this.ipagination.pageSize,
           startDate: this.queryParam.startTime,
           endDate: this.queryParam.endTime
-
         }).then((res) => {
           this.dataSource = res.result.records
           this.ipagination.total = res.result.total

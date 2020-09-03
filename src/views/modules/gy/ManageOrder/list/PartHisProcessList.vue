@@ -281,6 +281,16 @@ export default {
     console.log(111)
   },
   methods: {
+    handleTableChange(pagination) {
+      //分页、排序、筛选变化时触发
+      //TODO 筛选
+      console.log(pagination)
+      this.ipagination = pagination;
+      this.queryParam.pageNo = pagination.current;
+      this.queryParam.pageSize = pagination.pageSize
+      this.searchQuery();
+      
+    },
      onChange(value, dateString) {
       this.queryParam.startTime = dateString[0]
       this.queryParam.endTime = dateString[1]
@@ -337,7 +347,7 @@ export default {
         postAction(this.url.getDynamicData, param, {
           tableName: this.queryParam.code,
           tag: 'myPart',
-          pageNo: this.ipagination.pageNo,
+          pageNo: this.ipagination.current,
           pageSize: this.ipagination.pageSize,
           startDate: this.queryParam.startTime,
           endDate: this.queryParam.endTime
