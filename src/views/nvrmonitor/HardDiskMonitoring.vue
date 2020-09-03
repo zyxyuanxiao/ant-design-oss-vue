@@ -8,30 +8,35 @@
                 class="serch-form">
           <a-row :gutter="24">
             <a-col :md="6"
+                   :sm="8">
+              <a-form-item label="NVRIP">
+                <a-input placeholder="请输入NVRIP"
+                         v-model="queryParam.ip"></a-input>
+              </a-form-item>
+            </a-col>
+            <a-col :md="6"
                    :sm="12">
-              <a-form-item label="点位名称">
-                <a-input placeholder="请输入点位名称"
+              <a-form-item label="NVR厂商">
+                <a-input placeholder="请输入NVR厂商"
                          v-model="queryParam.name"></a-input>
               </a-form-item>
             </a-col>
             <a-col :md="6"
                    :sm="12">
-              <a-form-item label="键盘编号">
-                <a-input placeholder="请输入键盘编号"
-                         v-model="queryParam.jpbh"></a-input>
+              <a-form-item label="硬盘状态">
+                <a-select v-model="queryParam.jpbh" @change="handleChange">
+                  <a-select-option value="all">
+                    全部
+                  </a-select-option>
+                  <a-select-option value="online">
+                    在线
+                  </a-select-option>
+                  <a-select-option value="offline">
+                    离线
+                  </a-select-option>
+                </a-select>
               </a-form-item>
             </a-col>
-
-            <template v-if="toggleSearchStatus">
-              <a-col :md="6"
-                     :sm="8">
-                <a-form-item label="IP">
-                  <a-input placeholder="请输入点位IP地址"
-                           v-model="queryParam.ip"></a-input>
-                </a-form-item>
-              </a-col>
-            </template>
-
             <a-col :md="6"
                    :sm="8">
               <span style="float: left;overflow: hidden;"

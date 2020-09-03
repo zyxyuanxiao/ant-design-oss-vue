@@ -12,18 +12,15 @@
               style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;color: white">
       <div>
         <div class="search">
-          <a-select default-value="lucy" style="width: 20%" @change="handleChange">
-            <a-select-option value="jack">
-              Jack
+          <a-select default-value="all" style="width: 20%" @change="handleChange">
+            <a-select-option value="all">
+              全部
             </a-select-option>
-            <a-select-option value="lucy">
-              Lucy
+            <a-select-option value="online">
+              在线
             </a-select-option>
-            <a-select-option value="disabled" disabled>
-              Disabled
-            </a-select-option>
-            <a-select-option value="Yiminghe">
-              yiminghe
+            <a-select-option value="offline">
+              离线
             </a-select-option>
           </a-select>
           <a-button type="primary"
