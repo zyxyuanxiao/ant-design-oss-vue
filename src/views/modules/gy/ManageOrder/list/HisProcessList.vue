@@ -4,7 +4,7 @@
     <div class="table-page-search-wrapper test">
       <a-form layout="inline">
         <a-row :gutter="24">
-          
+
           <a-col :md="8" :sm="10">
             <!-- <a-form-item label="工单类型">
               <a-input placeholder="请输入工单类型" v-model="queryParam.processName"></a-input>
@@ -86,7 +86,10 @@
         @change="handleTableChange"
       >
         <span slot="action" slot-scope="text, record">
-          <template v-if="record.endTime&&record.endTime!=''">
+          <a @click="showHistory(record)">
+            查看
+          </a>
+          <!-- <template v-if="record.endTime&&record.endTime!=''">
             <a @click="showHistory(record)">历史</a>
           </template>
           <template v-else>
@@ -100,7 +103,7 @@
                   <a-popconfirm title="确定要作废流程吗?" @confirm="() => invalidProcess(record)">
                     <a>作废流程</a>
                   </a-popconfirm>
-                </a-menu-item>
+                </a-menu-item> -->
                 <!-- <a-menu-item >
                       <a-popconfirm title="确定要取回流程吗?" @confirm="() => callBackProcess(record)">
                         <a>
@@ -108,10 +111,10 @@
                         </a>
                       </a-popconfirm>
                 </a-menu-item>-->
-                <a-menu-item @click="showHistory(record)">历史</a-menu-item>
+                <!-- <a-menu-item @click="showHistory(record)">历史</a-menu-item>
               </a-menu>
             </a-dropdown>
-          </template>
+          </template> -->
         </span>
 
         <!-- 字符串超长截取省略号显示-->
@@ -288,10 +291,9 @@ export default {
       this.queryParam.pageSize = pagination.pageSize
       console.log(this.queryParam)
       this.searchQuery();
-      
+
     },
-   
-    onChange(value, dateString) {
+    onChange (value, dateString) {
       this.queryParam.startTime = dateString[0]
       this.queryParam.endTime = dateString[1]
       console.log('Formatted Selected Time: ', dateString)
@@ -302,7 +304,7 @@ export default {
     handleSuperQuery() {
       console.log(param)
     },
-    onChange(value, dateString) {
+    onChange (value, dateString) {
       this.queryParam.startTime = dateString[0]
       this.queryParam.endTime = dateString[1]
 
@@ -310,7 +312,7 @@ export default {
       console.log(this.queryParam.endTime)
     },
 
-    search() {
+    search () {
       getAction(this.url.list, this.queryParam).then((res) => {
         if (res.success) {
           this.dataSource = res.result.records
@@ -323,7 +325,7 @@ export default {
       })
     },
 
-    searchReset() {
+    searchReset () {
       this.queryParam = {}
       this.$refs.superQueryModal.handleReset()
       this.search()
@@ -331,7 +333,7 @@ export default {
       this.datas=[]
     },
 
-    searchQuery() {
+    searchQuery () {
       let code = this.queryParam.code
 
       if (code != null) {
@@ -361,43 +363,41 @@ export default {
       }
 
     },
-    codeChange(code) {
+    codeChange (code) {
       this.flag = true
       this.queryParam.code = code
       console.log(code)
       getAction(this.url.codeChange, {
-        code: code,
+        code: code
       }).then((res) => {
         if (res.success) {
           this.fieldList = res.result
         }
       })
-      this.datas=[]
+      this.datas = []
     },
-    close() {
+    close () {
       this.queryParam = {}
       this.flag = false
-      this.datas=[]
+      this.datas = []
     },
 
-
-    nameChange(bpmStatus) {
+    nameChange (bpmStatus) {
       this.queryParam.bpmStatus = bpmStatus
       console.log(this.queryParam)
     },
     //
-    init(url) {
+    init (url) {
       getAction(url, {}, 'GET').then((data) => {
         this.dataSource = data.result.records
         this.ipagination.total = data.result.total
       })
     },
-
     // 流程作废
-    invalidProcess(record) {
+    invalidProcess (record) {
       var that = this
       var params = {
-        processInstanceId: record.processInstanceId,
+        processInstanceId: record.processInstanceId
       }
       console.log('流程作废', params)
       putAction(that.url.invalidProcess, params).then((res) => {
@@ -411,11 +411,11 @@ export default {
       })
     },
     // 流程取回
-    callBackProcess(record) {
+    callBackProcess (record) {
       var that = this
       var params = {
-        processInstanceId: record.processInstanceId,
-      } //查询条件
+        processInstanceId: record.processInstanceId
+      } // 查询条件
       console.log('流程取回', params)
       putAction(that.url.callBackProcess, params).then((res) => {
         if (res.success) {
@@ -428,17 +428,17 @@ export default {
       })
     },
     // 历史
-    showHistory(record) {
+    showHistory (record) {
       this.getHisProcessNodeInfo(record)
     },
     // 加载下拉
-    initList() {
+    initList () {
       httpAction(this.url.roleDegisnList, {}, 'GET').then((data) => {
         console.log(data)
         this.typeList = data.result
       })
-    },
-  },
+    }
+  }
 }
 </script>
 <style>
