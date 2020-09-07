@@ -82,7 +82,7 @@
     <div>
       <a-table
         ref="table"
-        :scroll="{x: 1600}"
+       
         bordered
         size="middle"
         rowKey="id"
