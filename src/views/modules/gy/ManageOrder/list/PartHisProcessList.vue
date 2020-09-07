@@ -142,11 +142,11 @@ export default {
     return {
       labelCol: {
         xs: { span: 24 },
-        sm: { span: 6 },
+        sm: { span: 8 },
       },
       wrapperCol: {
         xs: { span: 24 },
-        sm: { span: 18 },
+        sm: { span: 16 },
       },
       values: [],
       items:[],
