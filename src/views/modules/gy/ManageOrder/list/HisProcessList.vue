@@ -60,9 +60,9 @@
                 <a-button type="primary" @click="searchQuery" style="margin-left: 24px" icon="search" >查询</a-button>
                 <a-button type="primary" @click="searchReset" style="margin-left: 8px" icon="reload" >重置</a-button>
               </a-form-item>
-            
+
           </a-col>
-          
+
         </a-row>
         <!-- 更多查询 -->
         <a-row >
@@ -75,9 +75,9 @@
             </a-form-item>
           </a-col>
         </a-row>
-        
+
       </a-form>
-      
+
     </div>
     <!-- table区域-begin -->
     <div>
@@ -164,7 +164,7 @@ export default {
         xs: { span: 24 },
         sm: { span: 18 },
       },
-      
+
       values: [],
       plainOptions: [],
       flag: false,

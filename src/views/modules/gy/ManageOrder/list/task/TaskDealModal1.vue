@@ -11,24 +11,17 @@
       :footer="null"
       @cancel="handleModalCancel">
       <a-row>
-        <!-- <a-col :md="2" :sm="4">
-        </a-col> -->
-        <a-col :md="24" :sm="24">
-          <div style="text-align: left;margin-top: 5px;font-size: 18px;margin-left: 180px;">
-            <a-col :md="4" :sm="8">
-              <span>创建人：</span>{{onedata.processApplyUserName}}
-            </a-col>
-            <a-col :md="5" :sm="8">
-              <span>流程发起时间：</span>{{onedata.taskBeginTime}}
-            </a-col>
-            <a-col :md="4" :sm="8">
-              <span>当前环节：</span>{{onedata.taskName}}
-            </a-col>
+        <div style="text-align: left;margin-top: 5px;font-size: 18px;margin-left: 180px;display: flex;">
+          <div style="width: 250px">
+            <span>创建人：</span>{{onedata.processApplyUserName}}
           </div>
-        </a-col>
-        <!-- <a-col :md="7" :sm="10">
-          <div style="text-align: center;margin-top: 5px;"><span>流程状态:</span>{{lczt}}</div>
-        </a-col> -->
+          <div style="width: 350px">
+            <span>流程发起时间：</span>{{onedata.taskBeginTime}}
+          </div>
+          <div style="width: 250px">
+            <span>当前环节：</span>{{onedata.taskName}}
+          </div>
+        </div>
       </a-row>
       <a-tabs defaultActiveKey="1" tabPosition="left">
         <a-tab-pane key="1">
