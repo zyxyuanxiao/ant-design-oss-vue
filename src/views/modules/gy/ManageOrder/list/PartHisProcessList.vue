@@ -3,7 +3,7 @@
     <!-- 查询区域 -->
     <div class="table-page-search-wrapper">
       <a-form >
-        <a-row :gutter="24">
+        <a-row >
           <a-col :md="8" :sm="10">
             <!-- <a-form-item label="工单类型">
               <a-input placeholder="请输入工单类型" v-model="queryParam.processName"></a-input>
