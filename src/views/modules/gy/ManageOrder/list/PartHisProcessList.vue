@@ -2,13 +2,13 @@
   <a-card :bordered="false">
     <!-- 查询区域 -->
     <div class="table-page-search-wrapper">
-      <a-form layout="inline">
+      <a-form >
         <a-row :gutter="24">
           <a-col :md="8" :sm="10">
             <!-- <a-form-item label="工单类型">
               <a-input placeholder="请输入工单类型" v-model="queryParam.processName"></a-input>
             </a-form-item>-->
-            <a-form-item label="工单类型">
+            <a-form-item label="工单类型" :labelCol="labelCol" :wrapperCol="wrapperCol">
               <a-select v-model="queryParam.processName" style="width: 100%" placeholder="请选择工单类型">
                 <a-select-option
                   v-for="type in typeList"
@@ -20,51 +20,44 @@
           </a-col>
 
           <a-col :md="8" :sm="10" v-show="!flag">
-            <a-form-item label="工单标题">
+            <a-form-item label="工单标题" :labelCol="labelCol" :wrapperCol="wrapperCol">
               <a-input placeholder="请输入工单标题" v-model="queryParam.bpmBizTitle"></a-input>
             </a-form-item>
           </a-col>
 
-          <a-col :md="8" :sm="10" v-show="flag">
-            <a-form-item label="开始时间范围">
-              <a-range-picker
-                :show-time="{ format: 'HH:mm:ss' }"
-                format="YYYY-MM-DD HH:mm:ss"
-                style="width:auto;"
-                @change="onChange"
-                v-model="datas"
+          <a-col :md="8" :sm="12" v-show="flag">
+            <a-form-item label="更多查询" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-select
+                mode="multiple"
+                @change="changeSel"
+                v-model="values"
+                style="width: 100%"
+                placeholder="请选择需要查询的字段"
               >
-                <template slot="renderExtraFooter">extra footer</template>
-              </a-range-picker>
+                <a-select-option v-for="type in fieldList" :key="type.text">{{ type.text }}</a-select-option>
+              </a-select>
             </a-form-item>
           </a-col>
 
-          <a-col :md="6" :sm="8">
-            <span style="float: right;overflow: hidden;" class="table-page-search-submitButtons">
-              <a-form-item>
-                <!-- 高级查询区域 -->
-                <super-query
-                  v-show="flag"
-                  v-model="param"
-                  :fieldList="fieldList"
-                  ref="superQueryModal"
-                ></super-query>
+          <a-col :md="4" :sm="6"></a-col>
 
-                <a-button
-                  type="primary"
-                  @click="searchQuery"
-                  icon="search"
-                  style="margin-left: 16px"
-                >查询</a-button>
-
-                <a-button
-                  type="primary"
-                  @click="searchReset"
-                  style="margin-left: 16px"
-                  icon="reload"
-                >重置</a-button>
+          <a-col :md="4" :sm="6">
+              <a-form-item >
+                <a-button type="primary" @click="searchQuery" style="margin-left: 24px" icon="search" >查询</a-button>
+                <a-button type="primary" @click="searchReset" style="margin-left: 8px" icon="reload" >重置</a-button>
               </a-form-item>
-            </span>
+            
+          </a-col>
+        </a-row>
+          <!-- 更多查询 -->
+        <a-row :gutter="24">
+          <a-col :md="8" :sm="12" v-for="item in items" :key="item.value" v-show="flag">
+            <a-form-item :label="item.text" v-if="item.type === 'select'" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-select v-model="item.defaultValue" :options="item.options" placeholder="请选择"></a-select>
+            </a-form-item>
+            <a-form-item :label="item.text" v-if="item.type === 'input'" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-input v-model="item.defaultValue" placeholder="请输入"></a-input>
+            </a-form-item>
           </a-col>
         </a-row>
       </a-form>
@@ -135,7 +128,7 @@ import JEllipsis from '@/components/jeecg/JEllipsis'
 import { JeecgListMixin } from '@/mixins/JeecgListMixin'
 import { BpmNodeInfoMixin } from '@/views/modules/bpm/mixins/BpmNodeInfoMixin'
 import JDate from '@/components/jeecg/JDate'
-import SuperQuery from './task/SuperQuery.vue'
+
 
 export default {
   name: 'HisProcessList',
@@ -144,10 +137,21 @@ export default {
     HisTaskDealModal,
     JEllipsis,
     JDate,
-    SuperQuery,
+    
   },
   data() {
     return {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 4 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 18 },
+      },
+      values: [],
+      items:[],
+      plainOptions: [],
       flag: false,
       datas:[],
       description: '参与流程',
@@ -274,13 +278,29 @@ export default {
   created() {
     this.initList()
     // this.init()
-    this.close()
   },
   activated() {
     // this.ipagination.pageSize = 5
     console.log(111)
   },
   methods: {
+    changeSel() {
+      this.items = []
+      console.log(this.values)
+      for (let i = 0; i < this.values.length; i++) {
+        let text = this.values[i]
+        for (let j = 0; j < this.fieldList.length; j++) {
+          let arr = {}
+          let t = this.fieldList[j].text
+          if (t === text) {
+            arr = this.fieldList[j]
+            // arr.defaultValue = ''
+            this.items.push(arr)
+          }
+        }
+      }
+      console.log(this.items)
+    },
     handleTableChange(pagination) {
       //分页、排序、筛选变化时触发
       //TODO 筛选
@@ -325,7 +345,7 @@ export default {
 
     searchReset() {
       this.queryParam = {}
-      this.$refs.superQueryModal.handleReset()
+      
       this.search()
       this.flag = false
       this.datas=[]
@@ -335,12 +355,12 @@ export default {
       let code = this.queryParam.code
 
       if (code != null) {
-        let querys = this.$refs.superQueryModal.getValue()
+       
         let param = {}
-        this.$refs.superQueryModal.handleReset()
-        for (let i = 0; i < querys.length; i++) {
-          let name = querys[i].name
-          let value = querys[i].value
+        
+         for (let i = 0; i < this.items.length; i++) {
+          let name = this.items[i].value
+          let value = this.items[i].defaultValue
           param[name] = value
         }
         console.log(param)
@@ -374,11 +394,15 @@ export default {
         }
       })
       this.datas=[]
+      this.items = []
+      this.values = []
     },
     close() {
       this.queryParam = {}
       this.flag = false
       this.datas=[]
+      this.items = []
+      this.values = []
     },
 
 

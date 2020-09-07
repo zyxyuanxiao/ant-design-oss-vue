@@ -2,84 +2,56 @@
   <div>
     <!-- 查询区域 -->
     <div class="table-page-search-wrapper">
-      <a-form layout="inline">
-        <a-row :gutter="24">
-          <!-- <a-col :md="6" :sm="12">
-            <a-form-item label="流程编号">
-              <a-input placeholder="请输入流程编号" v-model="queryParam.processDefinitionId"></a-input>
-            </a-form-item>
-          </a-col> -->
-          <a-col :md="6" :sm="12">
-            <!-- <a-form-item label="工单类型">
-              <a-input placeholder="请输入工单类型" v-model="queryParam.processDefinitionName"></a-input>
-            </a-form-item> -->
-            <a-form-item label="工单类型">
-              <a-select
-                v-model="queryParam.processDefinitionName"
-                style="width: 100%"
-                placeholder="请选择工单类型"
-              >
-                <a-select-option
-                  v-for="type in typeList"
-                  :key="type.procName"
-                  @click="codeChange(type.desformCode)"
-                >{{ type.procName }}</a-select-option>
+      <a-form >
+        <a-row>
+          <a-col :md="8" :sm="12">
+            <a-form-item label="工单类型" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-select v-model="queryParam.processDefinitionName" placeholder="请选择工单类型" >
+                <a-select-option v-for="type in typeList" :key="type.procName" @click="codeChange(type.desformCode)">{{ type.procName }}</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
           <a-col :md="8" :sm="12" v-show="!flag">
-            <a-form-item label="创建人">
-              <a-input-search
-                placeholder="选择创建人"
-                readonly
-                @search="handleSelect"
-                v-model="model.userName"
-              >
+            <a-form-item label="创建人" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-input-search placeholder="选择创建人" readonly @search="handleSelect" v-model="model.userName" >
                 <a-button slot="enterButton" icon="search">选择</a-button>
               </a-input-search>
             </a-form-item>
           </a-col>
 
-          <a-col :md="8" :sm="12" v-show="flag">
-            <a-form-item label="开始时间范围">
-              <a-range-picker
-                :show-time="{ format: 'HH:mm:ss' }"
-                format="YYYY-MM-DD HH:mm:ss"
-                style="width:auto;"
-                @change="onChange"
-                v-model="datas"
+           <a-col :md="8" :sm="12" v-show="flag">
+            <a-form-item label="更多查询" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-select
+                mode="multiple"
+                @change="changeSel"
+                v-model="values"
+                
+                placeholder="请选择需要查询的字段"
               >
-                <template slot="renderExtraFooter">extra footer</template>
-              </a-range-picker>
+                <a-select-option v-for="type in fieldList" :key="type.text">{{ type.text }}</a-select-option>
+              </a-select>
             </a-form-item>
           </a-col>
 
-          <a-col :md="6" :sm="8">
-            <span style="float: right;overflow: hidden;" class="table-page-search-submitButtons">
-              <a-form-item>
-                <!-- 高级查询区域 -->
-                <super-query
-                  v-show="flag"
-                  v-model="param"
-                  :fieldList="fieldList"
-                  ref="superQueryModal"
-                ></super-query>
+         <a-col :md="4" :sm="6"> </a-col>
 
-                <a-button
-                  type="primary"
-                  @click="searchQuery"
-                  icon="search"
-                  style="margin-left: 16px"
-                >查询</a-button>
-
-                <a-button
-                  type="primary"
-                  @click="searchReset"
-                  style="margin-left: 16px"
-                  icon="reload"
-                >重置</a-button>
+          <a-col :md="4" :sm="6">
+              <a-form-item >
+                <a-button type="primary" @click="searchQuery"  icon="search" >查询</a-button>
+                <a-button type="primary" @click="searchReset" style="margin-left: 8px" icon="reload" >重置</a-button>
               </a-form-item>
-            </span>
+            
+          </a-col>
+        </a-row>
+           <!-- 更多查询 -->
+        <a-row >
+          <a-col :md="8" :sm="12" v-for="item in items" :key="item.value" v-show="flag">
+            <a-form-item :label="item.text" v-if="item.type === 'select'" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-select v-model="item.defaultValue" :options="item.options" placeholder="请选择"></a-select>
+            </a-form-item>
+            <a-form-item :label="item.text" v-if="item.type === 'input'" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-input v-model="item.defaultValue" placeholder="请输入"></a-input>
+            </a-form-item>
           </a-col>
         </a-row>
       </a-form>
@@ -146,7 +118,6 @@ import { BpmNodeInfoMixin } from '@/views/modules/bpm/mixins/BpmNodeInfoMixin'
 import TaskNotifyMeModal from '../../../extbpm/process/TaskNotifyMeModal.vue'
 import SelectSingleUserModal from '../../../bpm/task/form/SelectSingleUserModal.vue'
 import JDate from '@/components/jeecg/JDate'
-import SuperQuery from './task/SuperQuery.vue'
 
 export default {
   name: 'MyRunningTaskList',
@@ -158,10 +129,22 @@ export default {
     TaskDealModal,
     JEllipsis,
     JDate,
-    SuperQuery,
+   
   },
   data() {
     return {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 4 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 18 },
+      },
+      
+      items:[],
+      values: [],
+      plainOptions: [],
       flag: false,
       datas: [],
       description: '我的任务',
@@ -252,6 +235,23 @@ export default {
     this.initList()
   },
   methods: {
+    changeSel() {
+      this.items = []
+      console.log(this.values)
+      for (let i = 0; i < this.values.length; i++) {
+        let text = this.values[i]
+        for (let j = 0; j < this.fieldList.length; j++) {
+          let arr = {}
+          let t = this.fieldList[j].text
+          if (t === text) {
+            arr = this.fieldList[j]
+            // arr.defaultValue = ''
+            this.items.push(arr)
+          }
+        }
+      }
+      console.log(this.items)
+    },
     handleTableChange(pagination) {
       //分页、排序、筛选变化时触发
       //TODO 筛选
@@ -297,7 +297,7 @@ export default {
 
     searchReset() {
       this.queryParam = {}
-      this.$refs.superQueryModal.handleReset()
+      
       this.search()
       this.flag = false
       this.datas = []
@@ -309,12 +309,11 @@ export default {
       let code = this.queryParam.code
 
       if (code != null) {
-        let querys = this.$refs.superQueryModal.getValue()
         let param = {}
-        this.$refs.superQueryModal.handleReset()
-        for (let i = 0; i < querys.length; i++) {
-          let name = querys[i].name
-          let value = querys[i].value
+        
+         for (let i = 0; i < this.items.length; i++) {
+          let name = this.items[i].value
+          let value = this.items[i].defaultValue
           param[name] = value
         }
         console.log(param)
@@ -347,12 +346,15 @@ export default {
         }
       })
       this.datas = []
+      this.items = []
+     this.values = []
     },
 
     close() {
       this.queryParam = {}
       this.flag = false
       this.datas = []
+      this.items = []
     },
 
     nameChange(bpmStatus) {
