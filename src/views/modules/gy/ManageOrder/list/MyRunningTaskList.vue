@@ -33,14 +33,13 @@
             </a-form-item>
           </a-col>
 
-         <a-col :md="4" :sm="6"> </a-col>
+         <a-col :md="2" :sm="4"> </a-col>
 
-          <a-col :md="4" :sm="6">
-              <a-form-item >
-                <a-button type="primary" @click="searchQuery"  icon="search" >查询</a-button>
-                <a-button type="primary" @click="searchReset" style="margin-left: 8px" icon="reload" >重置</a-button>
-              </a-form-item>
-            
+           <a-col :md="4" :sm="6" >
+            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
+              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
+              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+            </span>
           </a-col>
         </a-row>
            <!-- 更多查询 -->
@@ -135,7 +134,7 @@ export default {
     return {
       labelCol: {
         xs: { span: 24 },
-        sm: { span: 4 },
+        sm: { span: 6 },
       },
       wrapperCol: {
         xs: { span: 24 },
