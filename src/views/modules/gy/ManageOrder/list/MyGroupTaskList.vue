@@ -24,7 +24,9 @@
             </a-form-item>
           </a-col>
 
-          <a-col :md="6" :sm="8" >
+          <a-col :md="2" :sm="4"> </a-col>
+
+          <a-col :md="4" :sm="6" >
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
@@ -60,7 +62,7 @@
           </template>
           <template v-else>
             <a  @click="handleClaim(record)" >
-              签收
+              办理
             </a>
           </template>
         </span>

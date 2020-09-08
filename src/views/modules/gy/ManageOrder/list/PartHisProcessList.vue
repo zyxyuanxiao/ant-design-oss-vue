@@ -330,6 +330,7 @@ export default {
     },
 
     search() {
+      this.loading = true
       getAction(this.url.list, this.queryParam).then((res) => {
         if (res.success) {
           this.dataSource = res.result.records
@@ -351,6 +352,8 @@ export default {
     },
 
     searchQuery() {
+      this.loading = true;
+
       let code = this.queryParam.code
 
       if (code != null) {
@@ -374,6 +377,7 @@ export default {
         }).then((res) => {
           this.dataSource = res.result.records
           this.ipagination.total = res.result.total
+          this.loading = false
         })
       } else {
         console.log('query为空')

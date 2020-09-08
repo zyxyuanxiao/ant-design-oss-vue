@@ -324,6 +324,7 @@ export default {
       this.searchQuery()
     },
     search() {
+      this.loading = true
       getAction(this.url.list, this.queryParam).then((res) => {
         if (res.success) {
           this.dataSource = res.result.records
@@ -346,6 +347,8 @@ export default {
     },
 
     searchQuery() {
+      this.loading = true
+      console.log(this.loading)
       let code = this.queryParam.code
       let param = {}
       if (code != null) {
@@ -366,6 +369,7 @@ export default {
         }).then((res) => {
           this.dataSource = res.result.records
           this.ipagination.total = res.result.total
+          this.loading = false
         })
       } else {
         console.log('query为空')
