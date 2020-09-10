@@ -80,9 +80,9 @@
           <template v-if="record.taskAssigneeName&&record.taskAssigneeName!=''">
             <a @click="handleProcess(record)">办理</a>
             <!-- <a-divider type="vertical" /> -->
-            <!-- <a  @click="selectEntruster(record)">
+             <a  @click="selectEntruster(record)">
               委托
-            </a>-->
+            </a>
           </template>
           <template v-else>
             <!-- <a  @click="handleClaim(record)" >
