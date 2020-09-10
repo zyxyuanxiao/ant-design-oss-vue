@@ -4,7 +4,10 @@
       <a-layout-content>
         <a-layout>
           <a-layout-sider style="background: #fff">
-            <a-tree @select="onSelect">
+            <a-tree @select="onSelect"
+                    v-if="tree.length>0"
+                    default-expand-all
+                    :default-selected-keys="['Switch']">
               <a-icon slot="icon"
                       type="carry-out" />
               <a-tree-node v-for="item in tree"
@@ -24,31 +27,18 @@
           <a-layout-content :style="{minHeight: '280px',padding:'20px',background:'#fff'}">
             <!-- 查询区域 -->
             <div class="table-page-search-wrapper">
-              <a-form layout="inline">
+              <a-form layout="inline"
+                      @keyup.enter.native="searchQuery">
                 <a-row :gutter="24">
-
                   <a-col :xl="6"
                          :lg="7"
                          :md="8"
-                         :sm="24">
-                    <a-form-item label="设备IP">
-                      <a-input placeholder="请输入ip"></a-input>
-                    </a-form-item>
-                  </a-col>
-                  <a-col :xl="6"
-                         :lg="7"
-                         :md="8"
-                         :sm="24">
-                    <a-form-item label="设备名称">
-                      <a-input placeholder="请输入设备名称"></a-input>
-                    </a-form-item>
-                  </a-col>
-                  <a-col :xl="6"
-                         :lg="7"
-                         :md="8"
-                         :sm="24">
-                    <a-form-item label="序列号">
-                      <a-input placeholder="请输入设备序列号"></a-input>
+                         :sm="24"
+                         v-for="item in designJson"
+                         :key="item.model">
+                    <a-form-item :label="item.name">
+                      <a-input :placeholder="item.options.placeholder"
+                               v-model=queryParam[item.model]></a-input>
                     </a-form-item>
                   </a-col>
                   <a-col :xl="6"
@@ -58,9 +48,11 @@
                     <span style="float: left;overflow: hidden;"
                           class="table-page-search-submitButtons">
                       <a-button type="primary"
+                                @click="searchQuery"
                                 icon="search">查询</a-button>
                       <a-button type="primary"
                                 icon="reload"
+                                @click="searchReset"
                                 style="margin-left: 8px">重置</a-button>
                     </span>
                   </a-col>
@@ -71,12 +63,20 @@
             <!-- 操作按钮区域 -->
             <div class="table-operator">
               <a-button type="primary"
+                        @click="handleAdd"
                         icon="plus">新增</a-button>
               <a-button type="primary"
                         icon="download"
-                        @click="handleExportXls('在线图表')">导出</a-button>
-              <a-button type="primary"
-                        icon="import">导入</a-button>
+                        @click="handleExportXls(tableName)">导出</a-button>
+              <a-upload name="file"
+                        :showUploadList="false"
+                        :multiple="false"
+                        :headers="tokenHeader"
+                        :action="importExcelUrl"
+                        @change="handleImportExcel">
+                <a-button type="primary"
+                          icon="import">导入</a-button>
+              </a-upload>
               <a-dropdown v-if="selectedRowKeys.length > 0">
                 <a-menu slot="overlay">
                   <a-menu-item key="1"
@@ -108,7 +108,7 @@
                        bordered
                        rowKey="id"
                        :columns="columns"
-                       :dataSource="tableData"
+                       :dataSource="dataSource"
                        :pagination="ipagination"
                        :loading="loading"
                        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
@@ -130,38 +130,28 @@
         </a-layout>
       </a-layout-content>
     </a-layout>
+    <resource-info-modal :designJson="designJson"
+                         :tabelName="queryParam.tableName"
+                         ref="modalForm"
+                         @ok="modalFormOk"></resource-info-modal>
   </a-card>
 </template>
 
 <script>
-import { initDictOptions, filterDictText } from '@/components/dict/JDictSelectUtil'
 import OnlCgformHeadModal from '@views/modules/online/cgform/modules/OnlCgformHeadModal'
 import { deleteAction, postAction, getAction } from '@/api/manage'
-import JMultiSelectTag from '@comp/dict/JMultiSelectTag'
 import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-import Clipboard from 'clipboard'
 import JSuperQuery from '@/components/jeecg/JSuperQuery'
-import EnhanceJs from '@views/modules/online/cgform/modules/EnhanceJs'
-import EnhanceSql from '@views/modules/online/cgform/modules/EnhanceSql'
-import EnhanceJava from '@views/modules/online/cgform/modules/EnhanceJava'
-import TransDb2Online from '@views/modules/online/cgform/modules/TransDb2Online'
-import CodeGenerator from '@views/modules/online/cgform/modules/CodeGenerator'
-import OnlCgformButtonList from '@views/modules/online/cgform/button/OnlCgformButtonList'
-import { filterObj } from '@/utils/util';
+import resourceInfoModal from './modules/resourceInfoModal'
+
 
 export default {
   name: 'OnlCgformHeadList',
   mixins: [JeecgListMixin],
   components: {
     OnlCgformHeadModal,
-    EnhanceJs,
-    EnhanceSql,
-    EnhanceJava,
-    TransDb2Online,
-    CodeGenerator,
-    OnlCgformButtonList,
-    JMultiSelectTag,
-    JSuperQuery
+    JSuperQuery,
+    resourceInfoModal
   },
   data () {
     return {
@@ -171,54 +161,74 @@ export default {
         {
           title: '#',
           dataIndex: '',
-          key: 'rowIndex',
+          key: '#',
           width: 60,
           align: 'center',
           customRender: function (t, r, index) {
             return parseInt(index) + 1
           }
+        },
+        {
+          title: 'id',
+          dataIndex: 'id',
+          key: 'id',
+          align: 'center',
         }
       ],
       url: {
         treeList: '/resource/tree/select',
-        list: '/resource/table/select',
-        selectDesignJson: '/resource/table/selectDesignJson'
+        list: '/resource/table/list',
+        selectDesignJson: '/resource/table/selectDesignJson',
+        exportXlsUrl: '/resource/table/export',
+        importExcelUrl: ''
       },
-      tableTypeDictOptions: [],
-      sexDictOptions: [],
-      syncModalVisible: false,
-      syncFormId: '',
-      synMethod: 'normal',
-      syncLoading: false,
-      onlineUrlTitle: '',
-      onlineUrlVisible: false,
-      onlineUrl: '',
       selectedRowKeys: [],
       selectedRows: [],
-      confirmVisible: false,
-
       tree: [],
-      condition: {
-        pageSize: 10,
-        pageNo: 1,
-        tableName: 'switch'
-      },
-      tableData: [],
       desformCode: '',
-      designJson: {}
+      designJson: [],
+      tableName: ''
     }
   },
   created () {
+    this.queryParam['tableName'] = 'Switch'
+    this.tableName = 'Switch'
     this.getTreeList()
-    this.getTableData()
     this.getDesignJson()
+
+  },
+  mounted () {
+    this.loadData()
+  },
+  computed: {
+    importExcelUrl: function () {
+      return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
+    },
   },
   methods: {
     onSelect (selectedKeys, info) {
-      this.condition.tableName = selectedKeys[0]
-      console.log('selected', selectedKeys[0]);
-      console.log('selected', selectedKeys);
-      this.getTableData()
+      this.queryParam = []
+      this.queryParam['tableName'] = selectedKeys[0]
+      this.tableName = selectedKeys[0]
+      this.loadData()
+      this.columns = []
+      this.columns.push({
+        title: '#',
+        dataIndex: '',
+        key: '#',
+        width: 60,
+        align: 'center',
+        customRender: function (t, r, index) {
+          return parseInt(index) + 1
+        }
+      },
+        {
+          title: 'id',
+          dataIndex: 'id',
+          key: 'id',
+          align: 'center',
+        })
+      this.getDesignJson()
     },
     getTreeList () {
       getAction(this.url.treeList).then((res) => {
@@ -227,18 +237,11 @@ export default {
         }
       })
     },
-    getTableData () {
-      postAction(this.url.list, this.condition).then((res) => {
-        if (res.success) {
-          this.tableData = res.result.list
-        }
-      })
-      console.log(this.tableData)
-    },
     getDesignJson () {
-      this.desformCode = this.condition.tableName
+      this.desformCode = this.tableName
       getAction(this.url.selectDesignJson, { desformCode: this.desformCode }).then((res) => {
         if (res.success) {
+          this.designJson = res.result.list
           let list = res.result.list
           for (let item of list) {
             this.columns.push({ 'title': item.name, 'dataIndex': item.model })

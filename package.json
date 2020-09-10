@@ -34,7 +34,7 @@
     "tinymce": "^5.4.0",
     "tui-editor": "^1.4.10",
     "viser-vue": "^2.4.4",
-    "vue": "^2.6.10",
+    "vue": "^2.6.12",
     "vue-area-linkage": "^5.1.0",
     "vue-cropper": "^0.4.8",
     "vue-echarts": "^5.0.0-beta.0",

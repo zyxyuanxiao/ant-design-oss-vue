@@ -1,29 +1,5 @@
 <template>
-  <div>
-    <div class="top-count">
-      <ul>
-        <li>监控设备总数</li>
-        <li class="nums">{{ count.total }} 个</li>
-      </ul>
-      <a-divider type="vertical"
-                 class="ver" />
-      <ul>
-        <li>设备在线数</li>
-        <li class="nums">{{ count.online }} 个</li>
-      </ul>
-      <a-divider type="vertical"
-                 class="ver" />
-      <ul>
-        <li>设备在线率</li>
-        <li class="nums">{{ count.onlineRate*100 }}%</li>
-      </ul>
-      <a-divider type="vertical"
-                 class="ver" />
-      <ul>
-        <li>图像质量完好率</li>
-        <li class="nums"> {{ count.imgIntegrityRate*100 }} %</li>
-      </ul>
-    </div>
+  <div class="hardDick">
     <a-card :bordered="false">
       <!-- 查询区域 -->
       <div class="table-page-search-wrapper">
@@ -32,30 +8,35 @@
                 class="serch-form">
           <a-row :gutter="24">
             <a-col :md="6"
+                   :sm="8">
+              <a-form-item label="NVRIP">
+                <a-input placeholder="请输入NVRIP"
+                         v-model="queryParam.ip"></a-input>
+              </a-form-item>
+            </a-col>
+            <a-col :md="6"
                    :sm="12">
-              <a-form-item label="点位名称">
-                <a-input placeholder="请输入点位名称"
+              <a-form-item label="NVR厂商">
+                <a-input placeholder="请输入NVR厂商"
                          v-model="queryParam.name"></a-input>
               </a-form-item>
             </a-col>
             <a-col :md="6"
                    :sm="12">
-              <a-form-item label="键盘编号">
-                <a-input placeholder="请输入键盘编号"
-                         v-model="queryParam.jpbh"></a-input>
+              <a-form-item label="硬盘状态">
+                <a-select v-model="queryParam.jpbh" @change="handleChange">
+                  <a-select-option value="all">
+                    全部
+                  </a-select-option>
+                  <a-select-option value="online">
+                    在线
+                  </a-select-option>
+                  <a-select-option value="offline">
+                    离线
+                  </a-select-option>
+                </a-select>
               </a-form-item>
             </a-col>
-
-            <template v-if="toggleSearchStatus">
-              <a-col :md="6"
-                     :sm="8">
-                <a-form-item label="IP">
-                  <a-input placeholder="请输入点位IP地址"
-                           v-model="queryParam.ip"></a-input>
-                </a-form-item>
-              </a-col>
-            </template>
-
             <a-col :md="6"
                    :sm="8">
               <span style="float: left;overflow: hidden;"
@@ -107,23 +88,6 @@
             <a-icon type="down" />
           </a-button>
         </a-dropdown>
-
-        <a-radio-group v-model="dotPosition"
-                       @change="radioOnChange"
-                       style="margin-bottom: 8px;float: right;margin-right: 10%">
-          <a-radio-button value="全部">
-            全部
-          </a-radio-button>
-          <a-radio-button value="在线">
-            在线
-          </a-radio-button>
-          <a-radio-button value="离线">
-            离线
-          </a-radio-button>
-          <a-radio-button value="已标记">
-            已标记
-          </a-radio-button>
-        </a-radio-group>
       </div>
 
       <!-- table区域-begin -->
@@ -152,46 +116,26 @@
 
           <template slot="onlinestatus"
                     slot-scope="text, record">
-            <span v-if="text === 1"><img src="../../../assets/online.png">在线</span>
-            <span v-if="text === 0"><img src="../../../assets/offline.png">离线</span>
           </template>
 
           <template slot="streamstatus"
                     slot-scope="text, record">
-            <span v-if="text === 1"><img src="../../../assets/online.png">正常</span>
-            <span v-if="text === 0"><img src="../../../assets/offline.png">异常</span>
           </template>
 
           <template slot="imgstatus"
                     slot-scope="text, record">
-            <span v-if="text === 1"><img src="../../../assets/online.png">正常</span>
-            <span v-if="text === 0"><img src="../../../assets/offline.png">异常</span>
-            <span v-if="text === 3"><img src="../../../assets/unknown.png">未知</span>
           </template>
 
-          <template slot="action"
-                    slot-scope="text, record">
-            <a @click="handleDetail(record)">详情</a>
-
-            <span v-if="record.ismark !=1 ">
-              <a-divider type="vertical" />
-              <a @click="handleMark(record)"
-                 class="ant-dropdown-link">标记
-              </a>
-            </span>
-            <span v-if="record.ismark === 1">
-              <a-divider type="vertical" />
-              <a @click="handleMark(record)"
-                 class="ant-dropdown-link">取消标记
-              </a>
-              <img src="../../../assets/flag.png">
-            </span>
+          <template slot="action" slot-scope="text, record">
+            <a @click="handleDetail(record)">查看详情</a>
           </template>
         </a-table>
       </div>
     </a-card>
-    <video-drawer :detailRow="detailRow"
-                  ref="videoDrawer"></video-drawer>
+    <hard-disk-drawer :detailRow="detailRow"
+                      ref="hardDiskDrawer">
+
+    </hard-disk-drawer>
   </div>
 </template>
 
@@ -199,17 +143,17 @@
 import { postAction, getAction } from '@/api/manage'
 import { JeecgListMixin } from '@/mixins/JeecgListMixin'
 import JSuperQuery from '@/components/jeecg/JSuperQuery'
-import videoDrawer from './videoDrawer'
+import HardDiskDrawer from './HardDiskDrawer'
 export default {
-  name: 'OnlCgformHeadList',
+  name: 'HardDiskMonitoring',
   mixins: [JeecgListMixin],
   components: {
     JSuperQuery,
-    videoDrawer
+    HardDiskDrawer
   },
   data () {
     return {
-      description: '视频监测管理页面',
+      description: '硬盘监测管理页面',
       // 表头
       columns: [
         {
@@ -222,54 +166,42 @@ export default {
           }
         },
         {
-          title: '国标编号',
-          dataIndex: 'devcode',
-          sorter: true,
-          align: 'left',
-          key: 'devcode'
-        }, {
-          title: '点位名称',
-          dataIndex: 'name',
-          align: 'left',
-          key: 'name'
-        }, {
-          title: 'IP地址',
+          title: 'NVRIP',
           dataIndex: 'ip',
           align: 'left',
           key: 'ip'
-        }, {
-          title: '键盘编号',
+        },
+        {
+          title: 'nvr厂商',
           dataIndex: 'jpbh',
           align: 'left',
           key: 'jpbh'
-        }, {
-          title: '归属单位',
+        },
+        {
+          title: '管理单位',
           dataIndex: 'dept',
           align: 'left',
           key: 'dept'
-        }, {
-          title: '设备类型',
+        },
+        {
+          title: '硬盘数量',
           dataIndex: 'funtype',
           align: 'left',
           key: 'funtype'
-        }, {
-          title: '在线状态',
+        },
+        {
+          title: '硬盘状态',
           dataIndex: 'onlinestatus',
           align: 'left',
           key: 'onlinestatus',
           scopedSlots: { customRender: 'onlinestatus' }
-        }, {
-          title: '取流状态',
+        },
+        {
+          title: '获取时间',
           dataIndex: 'streamstatus',
           align: 'left',
           key: 'streamstatus',
           scopedSlots: { customRender: 'streamstatus' }
-        }, {
-          title: '图像状态',
-          dataIndex: 'imgstatus',
-          align: 'left',
-          key: 'imgstatus',
-          scopedSlots: { customRender: 'imgstatus' }
         },
         {
           title: '操作',
@@ -369,7 +301,7 @@ export default {
     },
     handleDetail (record) {
       this.detailRow = record
-      this.$refs.videoDrawer.visible = true
+      this.$refs.hardDiskDrawer.visible = true
     },
     radioOnChange (e) {
       delete this.queryParam.ismark
@@ -393,61 +325,61 @@ export default {
 }
 </script>
 <style scoped>
-@import '~@assets/less/common.less';
+  @import '~@assets/less/common.less';
 </style>
-<style lang="less" scoped>
-/** 横向滚动设置配合样式 */
-.ant-table td,
-th {
-  white-space: nowrap;
-}
-.anty-row-operator button {
-  margin: 0 5px;
-}
-
-.ant-btn-danger {
-  background-color: #ffffff;
-}
-
-.valid-error-cust {
-  .ant-select-selection {
-    border: 2px solid #f5222d;
+<style lang="less">
+  /** 横向滚动设置配合样式 */
+  .hardDick .ant-table td,
+  th {
+    white-space: nowrap;
   }
-}
-.top-count {
-  padding: 20px;
-  margin: 0 auto;
-  margin-bottom: 10px;
-  background: #ffffff;
-}
-.serch-form {
-  clear: both;
-}
-.top-count ul li {
-  padding: 0;
-  margin: 0;
-  list-style: none;
-}
-.top-count ul {
-  overflow: hidden;
-  white-space: nowrap;
-  display: inline-block;
-  text-align: center;
-  margin: 0 80px;
-}
-.top-count li {
-}
-.top-count .ver {
-  position: relative;
-  top: -1.06em;
-  display: inline-block;
-  width: 1px;
-  height: 1.9em;
-  margin: 0 8px;
-  vertical-align: middle;
-}
-.nums {
-  font-size: 24px;
-  color: #101010;
-}
+  .hardDick .anty-row-operator button {
+    margin: 0 5px;
+  }
+
+  .hardDick .ant-btn-danger {
+    background-color: #ffffff;
+  }
+
+  .valid-error-cust {
+    .ant-select-selection {
+      border: 2px solid #f5222d;
+    }
+  }
+  .top-count {
+    padding: 20px;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    background: #ffffff;
+  }
+  .serch-form {
+    clear: both;
+  }
+  .top-count ul li {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+  .top-count ul {
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline-block;
+    text-align: center;
+    margin: 0 80px;
+  }
+  .top-count li {
+  }
+  .top-count .ver {
+    position: relative;
+    top: -1.06em;
+    display: inline-block;
+    width: 1px;
+    height: 1.9em;
+    margin: 0 8px;
+    vertical-align: middle;
+  }
+  .nums {
+    font-size: 24px;
+    color: #101010;
+  }
 </style>

@@ -35,7 +35,24 @@
                 <div id="myChart"
                      ref="myChart"
                      :style="{width: '800px', height: '200px'}">
+                </div>
+              </a-card>
 
+              <a-card :bordered="false"
+                      title="取流状态"
+                      :style="{ marginTop: '24px' }">
+                <div id="streamChart"
+                     ref="streamChart"
+                     :style="{width: '800px', height: '200px'}">
+                </div>
+              </a-card>
+
+              <a-card :bordered="false"
+                      title="图像状态"
+                      :style="{ marginTop: '24px' }">
+                <div id="imgChart"
+                     ref="imgChart"
+                     :style="{width: '800px', height: '200px'}">
                 </div>
               </a-card>
 
@@ -61,10 +78,16 @@ export default {
     detailRow (newVal) {
       if (newVal != null) {
         this.$nextTick(function () {
-          this.metricForm.tags.object.push(newVal.cid)
+          this.onlineMetricForm.tags.object.push(newVal.cid)
+          this.streamMetricForm.tags.object.push(newVal.cid)
+          this.imgMetricForm.tags.object.push(newVal.cid)
           this.getOnlineStatus()
+          this.getStreamStatus()
+          this.getimgStatus()
           setTimeout(() => {
-            this.onlineLine();
+            this.onlineLine()
+            this.streamLine()
+            this.imgLine()
           }, 1000);
         });
       }
@@ -82,13 +105,27 @@ export default {
       url: {
         metricQuery: '/api/video/view/metric_query'
       },
-      metricForm: {
+      onlineMetricForm: {
         metric: 'img_online_status',
         tags: { object: [] },
         start: 1597420800000,
       },
+      streamMetricForm: {
+        metric: 'img_stream_status',
+        tags: { object: [] },
+        start: 1597420800000,
+      },
+      imgMetricForm: {
+        metric: 'img_img_status',
+        tags: { object: [] },
+        start: 1597420800000,
+      },
       onlineLabel: [],
-      onlineData: []
+      onlineData: [],
+      streamLabel: [],
+      streamData: [],
+      imgLabel: [],
+      imgDate: []
     }
   },
   mounted () {
@@ -128,13 +165,66 @@ export default {
         }]
       });
     },
+    streamLine () {
+      let myChart = this.$echarts.init(this.$refs.streamChart)
+      // 绘制图表
+      myChart.setOption({
+        xAxis: {
+          type: 'category',
+          data: this.streamLabel
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: [{
+          data: this.streamData,
+          type: 'line',
+          smooth: true
+        }]
+      });
+    },
+    imgLine () {
+      let myChart = this.$echarts.init(this.$refs.imgChart)
+      // 绘制图表
+      myChart.setOption({
+        xAxis: {
+          type: 'category',
+          data: this.imgLabel
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: [{
+          data: this.imgData,
+          type: 'line',
+          smooth: true
+        }]
+      });
+    },
     getOnlineStatus () {
-      this.metricForm.metric = 'img_online_status'
-      postAction(this.url.metricQuery, this.metricForm).then(res => {
+      postAction(this.url.metricQuery, this.onlineMetricForm).then(res => {
         if (res.success) {
           this.onlineLabel = res.result.label
           this.onlineData = res.result.value
-          this.metricForm.tags.object = []
+          this.onlineMetricForm.tags.object = []
+        }
+      })
+    },
+    getStreamStatus () {
+      postAction(this.url.metricQuery, this.streamMetricForm).then(res => {
+        if (res.success) {
+          this.streamLabel = res.result.label
+          this.streamData = res.result.value
+          this.streamMetricForm.tags.object = []
+        }
+      })
+    },
+    getimgStatus () {
+      postAction(this.url.metricQuery, this.imgMetricForm).then(res => {
+        if (res.success) {
+          this.imgLabel = res.result.label
+          this.imgData = res.result.value
+          this.imgMetricForm.tags.object = []
         }
       })
     }

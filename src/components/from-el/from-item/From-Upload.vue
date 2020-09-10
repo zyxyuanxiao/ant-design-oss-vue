@@ -10,7 +10,7 @@
         选择文件
       </a-button>
     </a-upload>
-    <a-button
+   <!-- <a-button
       @click="upLoad()"
       type="primary"
       v-if="item.fileList.length !== 0"
@@ -19,7 +19,7 @@
       style="margin-top: 16px"
     >
       {{ uploading ? '上传文件' : '上传文件' }}
-    </a-button>
+    </a-button>-->
   </div>
 </template>
 
@@ -43,9 +43,6 @@ export default {
         sm: { span: 16 }
       }
     }
-  },
-  mounted () {
-    this.item.conf.default_value = []
   },
   methods: {
     handleChange (info) {
@@ -71,7 +68,12 @@ export default {
       this.fileNameList = newNameList
     },
     async beforeUpload (file) {
-      let fileImg = this.fileNameList.find(item => file.name === item)
+      this.item.fileList.push(file)
+      this.fileNameList.push(file.name)
+      const files = await this.getBase64(file)
+      this.item.conf.default_value.push(files)
+      console.log(this.item.conf.default_value)
+     /*  let fileImg = this.fileNameList.find(item => file.name === item)
       if (fileImg) {
         this.$message.info('该文件已上传！')
         return false
@@ -82,7 +84,7 @@ export default {
         this.item.conf.default_value.push(files)
         console.log(this.item.conf.default_value)
         return true
-      }
+      } */
     },
     // 自定义上传图片
     async customRequest (obj) {
