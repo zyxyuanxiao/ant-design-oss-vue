@@ -3,7 +3,7 @@
     <!-- 查询区域 -->
     <div class="table-page-search-wrapper test">
       <a-form>
-        <a-row >
+        <a-row>
           <a-col :md="8" :sm="12">
             <!-- <a-form-item label="工单类型">
               <a-input placeholder="请输入工单类型" v-model="queryParam.processName"></a-input>
@@ -53,36 +53,53 @@
             </a-form-item>
           </a-col>
 
-          <a-col :md="3" :sm="4"> </a-col>
+          <a-col :md="3" :sm="4"></a-col>
 
-           <a-col :md="4" :sm="6" >
+          <a-col :md="4" :sm="6">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
-              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+              <a-button
+                type="primary"
+                @click="searchReset"
+                icon="reload"
+                style="margin-left: 8px"
+              >重置</a-button>
             </span>
           </a-col>
-
         </a-row>
         <!-- 更多查询 -->
-        <a-row >
+        <a-row>
           <a-col :md="8" :sm="12" v-for="item in items" :key="item.value" v-show="flag">
-            <a-form-item :label="item.text" v-if="item.type === 'select'" :labelCol="labelCol" :wrapperCol="wrapperCol">
+            <a-form-item
+              :label="item.text"
+              v-if="item.type === 'select'"
+              :labelCol="labelCol"
+              :wrapperCol="wrapperCol"
+            >
               <a-select v-model="item.defaultValue" :options="item.options" placeholder="请选择"></a-select>
             </a-form-item>
-            <a-form-item :label="item.text" v-if="item.type === 'input'" :labelCol="labelCol" :wrapperCol="wrapperCol">
+            <a-form-item
+              :label="item.text"
+              v-if="item.type === 'input'"
+              :labelCol="labelCol"
+              :wrapperCol="wrapperCol"
+            >
               <a-input v-model="item.defaultValue" placeholder="请输入"></a-input>
             </a-form-item>
           </a-col>
         </a-row>
-
       </a-form>
-
     </div>
     <!-- table区域-begin -->
     <div>
       <a-table
-        ref="table"
        
+        :expandedRowKeys="expandedKeys"
+        @expand="onExpand"
+        :expandRowByClick = "true"
+        :expandIconAsCell="false"
+        :expandIconColumnIndex=-1
+        ref="table"
         bordered
         size="middle"
         rowKey="id"
@@ -91,6 +108,7 @@
         :pagination="ipagination"
         :loading="loading"
         @change="handleTableChange"
+        class="components-table-demo-nested"
       >
         <span slot="action" slot-scope="text, record">
           <template v-if="record.endTime&&record.endTime!=''">
@@ -125,6 +143,14 @@
         <span slot="bpmBizTitle" slot-scope="text">
           <j-ellipsis :value="text" :length="10" />
         </span>
+
+        <a-table 
+          rowKey="id"
+          slot="expandedRowRender"
+          :columns="innerColumns"
+          :data-source="innerData"
+          :pagination="false"
+        ></a-table>
       </a-table>
     </div>
     <!-- table区域-end -->
@@ -142,8 +168,8 @@ import JEllipsis from '@/components/jeecg/JEllipsis'
 import { JeecgListMixin } from '@/mixins/JeecgListMixin'
 import { BpmNodeInfoMixin } from '@/views/modules/bpm/mixins/BpmNodeInfoMixin'
 import JDate from '@/components/jeecg/JDate'
-
 import { postAction } from '../../../../../api/manage'
+
 
 export default {
   name: 'HisProcessList',
@@ -155,6 +181,9 @@ export default {
   },
   data() {
     return {
+      expandedKeys:[],
+      innerData:[],
+      innerColumns: [],
       labelCol: {
         xs: { span: 24 },
         sm: { span: 8 },
@@ -165,17 +194,10 @@ export default {
       },
 
       values: [],
-      plainOptions: [],
+     
       flag: false,
       description: '历史流程',
-      bpmStatusList: [
-        { name: '待提交', bpmStatus: '1' },
-        { name: '处理中', bpmStatus: '2' },
-        { name: '已完成', bpmStatus: '3' },
-        { name: '已驳回', bpmStatus: 'rejectProcess' },
-        { name: '已取回', bpmStatus: 'callBackProcess' },
-        { name: '已作废', bpmStatus: 'invalidProcess' },
-      ],
+     
       queryParam: {},
       dataSource: [],
       typeList: [],
@@ -272,7 +294,7 @@ export default {
         {
           title: '操作',
           dataIndex: 'action',
-          fixed: 'right',
+          
           scopedSlots: { customRender: 'action' },
           align: 'center',
           width: 100,
@@ -285,6 +307,7 @@ export default {
         getDynamicData: '/moreFilter/getDynamicData',
         roleDegisnList: '/designform/designFormCommuse/roleDegisnList',
         codeChange: '/act/task/codeChange',
+        detail: '/moreFilter/detail',
       },
       path: 'modules/bpm/task/form/FormLoading',
       formData: {},
@@ -296,6 +319,27 @@ export default {
     this.initList()
   },
   methods: {
+    onExpand(expanded, record){
+      if(expanded){
+         this.expandedKeys = []
+         this.detail(record.processInstanceId)
+         this.onExpandedRowsChange(record);
+      }else{
+        this.expandedKeys = []
+      }
+    },
+    onExpandedRowsChange(rows) {
+      
+      this.expandedKeys.push(rows.processInstanceId);
+    },
+    detail(id){
+      console.log("id="+id)
+      getAction(this.url.detail,{id:id}).then((res)=>{
+        this.innerData = res.result.data
+        this.innerColumns = res.result.columns
+      
+      })
+    },
     changeSel() {
       this.items = []
       console.log(this.values)

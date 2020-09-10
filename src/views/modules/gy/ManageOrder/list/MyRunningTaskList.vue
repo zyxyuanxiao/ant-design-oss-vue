@@ -59,6 +59,12 @@
     <!-- table区域-begin -->
     <div>
       <a-table
+        
+        @expand="onExpand"
+        :expandedRowKeys="expandedKeys"
+        :expandRowByClick = "true"
+        :expandIconAsCell="false"
+        :expandIconColumnIndex=-1
         ref="table"
         size="middle"
         bordered
@@ -69,6 +75,7 @@
         :loading="loading"
         @change="handleTableChange"
       >
+       
         <span slot="action" slot-scope="text, record">
           <template v-if="record.taskAssigneeName&&record.taskAssigneeName!=''">
             <a @click="handleProcess(record)">办理</a>
@@ -96,6 +103,15 @@
           />
           <j-ellipsis :value="text" :length="15" />
         </span>
+
+        <a-table 
+          rowKey="id"
+          slot="expandedRowRender"
+          :columns="innerColumns"
+          :data-source="innerData"
+          :pagination="false"
+        ></a-table>
+       
       </a-table>
     </div>
     <!-- 弹出框 -->
@@ -132,6 +148,9 @@ export default {
   },
   data() {
     return {
+      expandedKeys:[],
+      innerData:[],
+      innerColumns: [],
       labelCol: {
         xs: { span: 24 },
         sm: { span: 8 },
@@ -210,7 +229,7 @@ export default {
           title: '操作',
           align: 'center',
           dataIndex: 'action',
-          fixed: 'right',
+          
           width: 150,
           scopedSlots: { customRender: 'action' },
         },
@@ -224,6 +243,7 @@ export default {
         roleDegisnList: '/designform/designFormCommuse/roleDegisnList',
         getDynamicData: '/moreFilter/getDynamicData',
         codeChange: '/act/task/codeChange',
+        detail: '/moreFilter/detail',
       },
       fieldList: [],
       param: [],
@@ -234,6 +254,28 @@ export default {
     this.initList()
   },
   methods: {
+    onExpand(expanded, record){
+      if(expanded){
+         this.expandedKeys = []
+         this.detail(record.processInstanceId)
+         this.onExpandedRowsChange(record);
+      }else{
+        this.expandedKeys = []
+      }
+    },
+    onExpandedRowsChange(rows) {
+     
+      this.expandedKeys.push(rows.id);
+      console.log(this.expandedKeys)
+    },
+    detail(id){
+      console.log("id="+id)
+      getAction(this.url.detail,{id:id}).then((res)=>{
+        this.innerData = res.result.data
+        this.innerColumns = res.result.columns
+      
+      })
+    },
     changeSel() {
       this.items = []
       console.log(this.values)

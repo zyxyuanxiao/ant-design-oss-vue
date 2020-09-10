@@ -65,6 +65,11 @@
     <div>
       <!-- :scroll="{x: 1600}" 去除table的右滑条-->
       <a-table
+        :expandedRowKeys="expandedKeys"
+        @expand="onExpand"
+        :expandRowByClick = "true"
+        :expandIconAsCell="false"
+        :expandIconColumnIndex=-1
         ref="table"
         bordered
         size="middle"
@@ -110,6 +115,13 @@
         <span slot="bpmBizTitle" slot-scope="text">
           <j-ellipsis :value="text" :length="10" />
         </span>
+        <a-table 
+          rowKey="id"
+          slot="expandedRowRender"
+          :columns="innerColumns"
+          :data-source="innerData"
+          :pagination="false"
+        ></a-table>
       </a-table>
     </div>
     <!-- table区域-end -->
@@ -140,6 +152,9 @@ export default {
   },
   data() {
     return {
+      expandedKeys:[],
+      innerData:[],
+      innerColumns: [],
       labelCol: {
         xs: { span: 24 },
         sm: { span: 8 },
@@ -254,7 +269,6 @@ export default {
         {
           title: '操作',
           dataIndex: 'action',
-          fixed: 'right',
           scopedSlots: { customRender: 'action' },
           align: 'center',
           width: 100,
@@ -267,6 +281,7 @@ export default {
         roleDegisnList: '/designform/designFormCommuse/roleDegisnList',
         getDynamicData: '/moreFilter/getDynamicData',
         codeChange: '/act/task/codeChange',
+        detail: '/moreFilter/detail',
       },
       path: 'modules/bpm/task/form/FormLoading',
       formData: {},
@@ -283,6 +298,27 @@ export default {
     console.log(111)
   },
   methods: {
+    onExpand(expanded, record){
+      if(expanded){
+        this.expandedKeys = []
+        this.detail(record.processInstanceId)
+        this.onExpandedRowsChange(record);
+      }else{
+        this.expandedKeys = []
+      }
+    },
+    onExpandedRowsChange(rows) {
+      
+      this.expandedKeys.push(rows.processInstanceId);
+    },
+    detail(id){
+      console.log("id="+id)
+      getAction(this.url.detail,{id:id}).then((res)=>{
+        this.innerData = res.result.data
+        this.innerColumns = res.result.columns
+      
+      })
+    },
     changeSel() {
       this.items = []
       console.log(this.values)
