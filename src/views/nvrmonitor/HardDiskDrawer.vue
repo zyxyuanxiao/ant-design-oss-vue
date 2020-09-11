@@ -1,6 +1,6 @@
 <template>
   <div class="hardDick">
-    <a-drawer :title="'NVRIP：' + detailRow.ip + ' ' + '硬盘数量：' + detailRow.jpbh"
+    <a-drawer :title="'NVRIP：' + detailRow.ip + ' ' + '硬盘数量：' + detailRow.count"
               :maskClosable="true"
               width="70%"
               placement="right"
@@ -12,15 +12,15 @@
               style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;color: white">
       <div>
         <div class="search">
-          <a-select default-value="all" style="width: 20%" @change="handleChange">
-            <a-select-option value="all">
+          <a-select v-model="queryParam.state" default-value="all" style="width: 20%" @change="handleChange">
+            <a-select-option value="">
               全部
             </a-select-option>
-            <a-select-option value="online">
-              在线
+            <a-select-option value="1">
+              正常
             </a-select-option>
-            <a-select-option value="offline">
-              离线
+            <a-select-option value="0">
+              异常
             </a-select-option>
           </a-select>
           <a-button type="primary"
@@ -33,15 +33,21 @@
         <div>
           <a-table ref="table"
                    size="middle"
-                   :rowKey="record => record.devcode"
+                   :rowKey="record => record.name"
                    :columns="columns"
                    :dataSource="dataSource"
                    :pagination="ipagination"
                    :loading="loading"
                    @change="handleTableChange"
                    class="j-table-force-nowrap">
-            <template slot="onlinestatus"
+            <template slot="state"
                       slot-scope="text, record">
+              <img v-if="text === '1'" src="../../assets/spOnline.png" alt="">
+              <img v-else src="../../assets/spOffline.png" alt="">
+            </template>
+            <template slot="size"
+                      slot-scope="text, record">
+              <span>{{converSize(text)}}</span>
             </template>
           </a-table>
         </div>
@@ -51,17 +57,25 @@
 </template>
 <script>
 
-import { postAction } from '@/api/manage'
-import { JeecgListMixin } from '@/mixins/JeecgListMixin'
+import { getAction } from '@/api/manage'
 import JSuperQuery from '@/components/jeecg/JSuperQuery'
+import { JeecgListMixin } from '@/mixins/JeecgListMixin'
 
 export default {
   name: 'HardDiskDrawer',
-  components: {},
   mixins: [JeecgListMixin],
+  components: {},
   props: {
     detailRow: {
       required: true
+    }
+  },
+  watch: {
+    detailRow (newVal) {
+      if (newVal != null) {
+        this.queryParam['ip'] = this.detailRow.ip
+        this.loadData()
+      }
     }
   },
   data () {
@@ -69,7 +83,7 @@ export default {
       modalWidth: 800,
       visible: false,
       url: {
-        list: '/api/video/view/list',
+        list: '/api/nvr/info/queryDetails'
       },
       columns: [
         {
@@ -80,41 +94,41 @@ export default {
         },
         {
           title: '型号',
-          dataIndex: 'ip',
+          dataIndex: 'model',
           align: 'center',
           key: 'ip'
         },
         {
           title: '盘符',
-          dataIndex: 'jpbh',
+          dataIndex: 'driveletter',
           align: 'center',
-          key: 'jpbh'
+          key: 'driveletter'
         },
         {
           title: '总容量(TB)',
-          dataIndex: 'dept',
+          dataIndex: 'size',
           align: 'center',
-          key: 'dept'
+          key: 'size',
+          scopedSlots: { customRender: 'size' }
         },
         {
           title: '剩余容量(GB)',
-          dataIndex: 'funtype',
+          dataIndex: 'sursize',
           align: 'center',
-          key: 'funtype'
+          key: 'sursize'
         },
         {
           title: '硬盘状态',
-          dataIndex: 'onlinestatus',
+          dataIndex: 'state',
           align: 'center',
-          key: 'onlinestatus',
-          scopedSlots: { customRender: 'onlinestatus' }
+          key: 'state',
+          scopedSlots: { customRender: 'state' }
         },
         {
           title: '获取时间',
-          dataIndex: 'streamstatus',
+          dataIndex: 'time',
           align: 'center',
-          key: 'streamstatus',
-          scopedSlots: { customRender: 'streamstatus' }
+          key: 'time'
         }
       ],
       onlineLabel: [],
@@ -126,50 +140,42 @@ export default {
     }
   },
   mounted () {
-
   },
   methods: {
     handleCancel () {
       this.visible = false
     },
-    toggleScreen () {
-
-    },
-    searchQuery () {
-
-    },
     handleChange (value) {
       console.log(`selected ${value}`)
     },
+    converSize (limit) {
+      let size = ''
+      if (limit < 0.1 * 1024) { //如果小于0.1KB转化成B
+        size = limit.toFixed(2) + 'B'
+
+      } else if (limit < 0.01 * 1024 * 1024) {//如果小于0.01MB转化成KB
+        size = (limit / 1024).toFixed(2) + 'KB'
+
+      } else if (limit < 0.01 * 1024 * 1024 * 1024) { //如果小于0.01GB转化成MB
+        size = (limit / (1024 * 1024)).toFixed(2) + 'MB'
+
+      } else if (limit < 0.01 * 1024 * 1024 * 1024 * 1024) { //如果小于0.01TB转化成GB
+        size = (limit / (1024 * 1024 * 1024)).toFixed(2) + 'GB'
+
+      } else { //其他转化成TB
+        size = (limit / (1024 * 1024 * 1024 * 1024)).toFixed(2) + 'TB'
+      }
+
+      let sizeStr = size + ''
+      let len = sizeStr.indexOf('\.')
+      let dec = sizeStr.substr(len + 1, 2)
+      if (dec === '00') {//当小数点后为00时 去掉小数部分
+        return sizeStr.substring(0, len) + sizeStr.substr(len + 3, 2)
+      }
+      return sizeStr
+    },
     callback (key) {
       console.log(key)
-    },
-    getOnlineStatus () {
-      postAction(this.url.metricQuery, this.onlineMetricForm).then(res => {
-        if (res.success) {
-          this.onlineLabel = res.result.label
-          this.onlineData = res.result.value
-          this.onlineMetricForm.tags.object = []
-        }
-      })
-    },
-    getStreamStatus () {
-      postAction(this.url.metricQuery, this.streamMetricForm).then(res => {
-        if (res.success) {
-          this.streamLabel = res.result.label
-          this.streamData = res.result.value
-          this.streamMetricForm.tags.object = []
-        }
-      })
-    },
-    getimgStatus () {
-      postAction(this.url.metricQuery, this.imgMetricForm).then(res => {
-        if (res.success) {
-          this.imgLabel = res.result.label
-          this.imgData = res.result.value
-          this.imgMetricForm.tags.object = []
-        }
-      })
     }
   }
 }

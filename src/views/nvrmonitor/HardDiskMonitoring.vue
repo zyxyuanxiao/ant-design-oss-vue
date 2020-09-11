@@ -18,21 +18,21 @@
                    :sm="12">
               <a-form-item label="NVR厂商">
                 <a-input placeholder="请输入NVR厂商"
-                         v-model="queryParam.name"></a-input>
+                         v-model="queryParam.company"></a-input>
               </a-form-item>
             </a-col>
             <a-col :md="6"
                    :sm="12">
               <a-form-item label="硬盘状态">
-                <a-select v-model="queryParam.jpbh" @change="handleChange">
-                  <a-select-option value="all">
+                <a-select v-model="queryParam.state" >
+                  <a-select-option value="">
                     全部
                   </a-select-option>
-                  <a-select-option value="online">
-                    在线
+                  <a-select-option value="1">
+                    正常
                   </a-select-option>
-                  <a-select-option value="offline">
-                    离线
+                  <a-select-option value="0">
+                    异常
                   </a-select-option>
                 </a-select>
               </a-form-item>
@@ -66,7 +66,7 @@
                 icon="plus">新增</a-button> -->
         <a-button type="primary"
                   icon="download"
-                  @click="handleExportXls('视频诊断结果')">导出</a-button>
+                  @click="handleExportXls('NVR监测结果')">导出</a-button>
         <!-- <a-button type="primary"
                   icon="import">导入</a-button> -->
         <a-dropdown v-if="selectedRowKeys.length > 0">
@@ -104,7 +104,7 @@
 
         <a-table ref="table"
                  size="middle"
-                 :rowKey="record => record.devcode"
+                 :rowKey="record => record.rowIndex"
                  :columns="columns"
                  :dataSource="dataSource"
                  :pagination="ipagination"
@@ -114,18 +114,11 @@
                  @change="handleTableChange"
                  class="j-table-force-nowrap">
 
-          <template slot="onlinestatus"
+          <template slot="state"
                     slot-scope="text, record">
+            <img v-if="text === '1'" src="../../assets/spOnline.png">
+            <img v-else src="../../assets/spOffline.png">
           </template>
-
-          <template slot="streamstatus"
-                    slot-scope="text, record">
-          </template>
-
-          <template slot="imgstatus"
-                    slot-scope="text, record">
-          </template>
-
           <template slot="action" slot-scope="text, record">
             <a @click="handleDetail(record)">查看详情</a>
           </template>
@@ -173,9 +166,9 @@ export default {
         },
         {
           title: 'nvr厂商',
-          dataIndex: 'jpbh',
+          dataIndex: 'company',
           align: 'left',
-          key: 'jpbh'
+          key: 'company'
         },
         {
           title: '管理单位',
@@ -185,23 +178,22 @@ export default {
         },
         {
           title: '硬盘数量',
-          dataIndex: 'funtype',
+          dataIndex: 'count',
           align: 'left',
-          key: 'funtype'
+          key: 'count'
         },
         {
           title: '硬盘状态',
-          dataIndex: 'onlinestatus',
+          dataIndex: 'state',
           align: 'left',
-          key: 'onlinestatus',
-          scopedSlots: { customRender: 'onlinestatus' }
+          key: 'state',
+          scopedSlots: { customRender: 'state' }
         },
         {
           title: '获取时间',
-          dataIndex: 'streamstatus',
+          dataIndex: 'time',
           align: 'left',
-          key: 'streamstatus',
-          scopedSlots: { customRender: 'streamstatus' }
+          key: 'time'
         },
         {
           title: '操作',
@@ -213,10 +205,8 @@ export default {
         }
       ],
       url: {
-        list: '/api/video/view/list',
-        getcountResult: '/api/video/view/getcountResult',
-        insertMarks: '/api/video/view/insertMarks',
-        exportXlsUrl: '/api/video/view/exportXls'
+        list: '/api/nvr/info/list',
+        exportXlsUrl: '/api/nvr/info/dataExport'
       },
       tableTypeDictOptions: [],
       sexDictOptions: [],
