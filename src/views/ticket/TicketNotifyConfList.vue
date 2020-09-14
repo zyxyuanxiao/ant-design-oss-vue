@@ -35,26 +35,33 @@
       </a-form>
     </div>
     <!-- 查询区域-END -->
-    
+
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
       <a-button type="primary" icon="download" @click="handleExportXls('工单通知配置表')">导出</a-button>
-      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
+      <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl"
+                @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
-          <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
+          <a-menu-item key="1" @click="batchDel">
+            <a-icon type="delete"/>
+            删除
+          </a-menu-item>
         </a-menu>
-        <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
+        <a-button style="margin-left: 8px"> 批量操作
+          <a-icon type="down"/>
+        </a-button>
       </a-dropdown>
     </div>
 
     <!-- table区域-begin -->
     <div>
       <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
-        <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
+        <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{
+        selectedRowKeys.length }}</a>项
         <a style="margin-left: 24px" @click="onClearSelected">清空</a>
       </div>
 
@@ -76,7 +83,8 @@
         </template>
         <template slot="imgSlot" slot-scope="text">
           <span v-if="!text" style="font-size: 12px;font-style: italic;">无图片</span>
-          <img v-else :src="getImgView(text)" height="25px" alt="" style="max-width:80px;font-size: 12px;font-style: italic;"/>
+          <img v-else :src="getImgView(text)" height="25px" alt=""
+               style="max-width:80px;font-size: 12px;font-style: italic;"/>
         </template>
         <template slot="fileSlot" slot-scope="text">
           <span v-if="!text" style="font-size: 12px;font-style: italic;">无文件</span>
@@ -94,9 +102,9 @@
         <span slot="action" slot-scope="text, record">
           <a @click="handleEdit(record)">编辑</a>
 
-          <a-divider type="vertical" />
+          <a-divider type="vertical"/>
           <a-dropdown>
-            <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
+            <a class="ant-dropdown-link">更多 <a-icon type="down"/></a>
             <a-menu slot="overlay">
               <a-menu-item>
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
@@ -116,91 +124,91 @@
 
 <script>
 
-  import '@/assets/less/TableExpand.less'
-  import { mixinDevice } from '@/utils/mixin'
-  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import TicketNotifyConfModal from './modules/TicketNotifyConfModal'
-  import JDictSelectTag from '@/components/dict/JDictSelectTag.vue'
-  import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
-  import JMultiSelectTag from '@/components/dict/JMultiSelectTag'
+import '@/assets/less/TableExpand.less'
+import { mixinDevice } from '@/utils/mixin'
+import { JeecgListMixin } from '@/mixins/JeecgListMixin'
+import TicketNotifyConfModal from './modules/TicketNotifyConfModal'
+import JDictSelectTag from '@/components/dict/JDictSelectTag.vue'
+import { filterMultiDictText } from '@/components/dict/JDictSelectUtil'
+import JMultiSelectTag from '@/components/dict/JMultiSelectTag'
 
-  export default {
-    name: "TicketNotifyConfList",
-    mixins:[JeecgListMixin, mixinDevice],
-    components: {
-      JDictSelectTag,
-      JMultiSelectTag,
-      TicketNotifyConfModal
-    },
-    data () {
-      return {
-        description: '工单通知配置表管理页面',
-        // 表头
-        columns: [
-          {
-            title: '#',
-            dataIndex: '',
-            key:'rowIndex',
-            width:60,
-            align:"center",
-            customRender:function (t,r,index) {
-              return parseInt(index)+1;
-            }
-          },
-          {
-            title:'模型名称',
-            align:"center",
-            dataIndex: 'modelId_dictText'
-          },
-          {
-            title:'流程环节',
-            align:"center",
-            dataIndex: 'actId_dictText'
-          },
-          {
-            title:'通知类型',
-            align:"center",
-            dataIndex: 'notifyType_dictText'
-          },
-          {
-            title:'描述',
-            align:"center",
-            dataIndex: 'description'
-          },
-          {
-            title:'创建时间',
-            align:"center",
-            dataIndex: 'createTime'
-          },
-          {
-            title: '操作',
-            dataIndex: 'action',
-            align:"center",
-            // fixed:"right",
-            width:147,
-            scopedSlots: { customRender: 'action' }
+export default {
+  name: 'TicketNotifyConfList',
+  mixins: [JeecgListMixin, mixinDevice],
+  components: {
+    JDictSelectTag,
+    JMultiSelectTag,
+    TicketNotifyConfModal
+  },
+  data () {
+    return {
+      description: '工单通知配置表管理页面',
+      // 表头
+      columns: [
+        {
+          title: '#',
+          dataIndex: '',
+          key: 'rowIndex',
+          width: 60,
+          align: 'center',
+          customRender: function(t, r, index) {
+            return parseInt(index) + 1
           }
-        ],
-        url: {
-          list: "/ticket/ticketNotifyConf/list",
-          delete: "/ticket/ticketNotifyConf/delete",
-          deleteBatch: "/ticket/ticketNotifyConf/deleteBatch",
-          exportXlsUrl: "/ticket/ticketNotifyConf/exportXls",
-          importExcelUrl: "ticket/ticketNotifyConf/importExcel",
         },
-        dictOptions:{},
-      }
-    },
-    computed: {
-      importExcelUrl: function(){
-        return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`;
+        {
+          title: '模型名称',
+          align: 'center',
+          dataIndex: 'modelId_dictText'
+        },
+        {
+          title: '流程环节',
+          align: 'center',
+          dataIndex: 'actId_dictText'
+        },
+        {
+          title: '通知类型',
+          align: 'center',
+          dataIndex: 'notifyType_dictText'
+        },
+        {
+          title: '描述',
+          align: 'center',
+          dataIndex: 'description'
+        },
+        {
+          title: '创建时间',
+          align: 'center',
+          dataIndex: 'createTime'
+        },
+        {
+          title: '操作',
+          dataIndex: 'action',
+          align: 'center',
+          // fixed:"right",
+          width: 147,
+          scopedSlots: { customRender: 'action' }
+        }
+      ],
+      url: {
+        list: '/ticket/ticketNotifyConf/list',
+        delete: '/ticket/ticketNotifyConf/delete',
+        deleteBatch: '/ticket/ticketNotifyConf/deleteBatch',
+        exportXlsUrl: '/ticket/ticketNotifyConf/exportXls',
+        importExcelUrl: 'ticket/ticketNotifyConf/importExcel'
       },
-    },
-    methods: {
-      initDictConfig(){
-      }
+      dictOptions: {}
+    }
+  },
+  computed: {
+    importExcelUrl: function() {
+      return `${window._CONFIG['domianURL']}/${this.url.importExcelUrl}`
+    }
+  },
+  methods: {
+    initDictConfig () {
     }
   }
+}
 </script>
 <style scoped>
   @import '~@assets/less/common.less';

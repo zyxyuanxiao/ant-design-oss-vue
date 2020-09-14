@@ -15,6 +15,21 @@ export function getTicketsList (data) {
 }
 
 /**
+ * 获取我的待办
+ * @param data 参数
+ * @param params 参数
+ */
+export function getMytodoList (data, param) {
+  return axios({
+    url: '/api/itsm/db/mytodo',
+    method: 'post',
+    params: param,
+    data: data
+  })
+}
+
+
+/**
  * 获取工单详情
  * @param query 根据id获取详情
  */
@@ -36,6 +51,33 @@ export function getModelList (apiKey) {
     method: 'post',
     params: { apikey: apiKey },
     data: {}
+  })
+}
+
+/**
+ * 根据modeIds 获取流程列表数据
+ * @param modelIds 模型id
+ * @param apiKey 参数
+ */
+export function getFlowListByModeId (data, apiKey) {
+  return axios({
+    url: '/api/itsm/getProcess',
+    method: 'post',
+    params: { apikey: apiKey },
+    data
+  })
+}
+
+/**
+ * 获取模型列表
+ * @param apiKey 参数
+ */
+export function getFieldListByProcess (data, apiKey) {
+  return axios({
+    url: '/api/itsm/getFields',
+    method: 'post',
+    params: { apikey: apiKey },
+    data
   })
 }
 
@@ -142,5 +184,17 @@ export function getTicketsProcess (ticketId) {
     url: '/api/itsm/getProcessRecord',
     method: 'get',
     params: { ticketId: ticketId }
+  })
+}
+
+/**
+ * 同步工单字典值
+ * @param query 根据登录用户名获取
+ */
+export function getInsertBatch (data) {
+  return axios({
+    url: '/sys/dictItem/insertBatch',
+    method: 'post',
+    data
   })
 }

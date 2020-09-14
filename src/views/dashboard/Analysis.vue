@@ -1,147 +1,131 @@
 <template>
-  <a-card :bordered="false">
-    <!-- 查询区域 -->
-    <!-- <div style="margin-bottom: 20px">
-       <div style="display: flex;width: 100%;margin-bottom: 15px;margin-right: 20px;">
-         <div class="gd-status-sjzy">
-           <div style="text-align:right;border-bottom: 1px solid white">
-             <span class="gd-status-text">监控类：<span style="font-size: 20px;">11110</span></span>
-             <span class="gd-status-text">其他类：<span style="font-size: 20px;">122222</span></span>
-           </div>
-           <a-row>
-             <a-col :span="12">
-               <a-row>
-                 <a-col :span="24">
-                   <div class="gd-status-total">今日工单数</div>
-                   <div class="gd-status-total-num">1000</div>
-                 </a-col>
-               </a-row>
-             </a-col>
-             <a-col :span="12" style="text-align: right">
-               <a-icon type="fund" style="font-size: 62px;color: white;padding-right: 30px;padding-top: 15px;"/>
-             </a-col>
-           </a-row>
-         </div>
-         <div class="gd-status-ztsy">
-           <div class="gd-status-total">当前未完成工单数： <span style="font-size: 28px;">10</span></div>
-           <div style="display: flex;">
-             <div style="background-color: white;color: #f78463;width: 50%">监控类：<span style="font-size: 28px;">8</span></div>
-             <div class="gd-status-text">其他类：<span style="font-size: 28px;">2</span></div>
-           </div>
-         </div>
-         <div class="gd-status-yxj">
-           <div class="gd-status-total">逾期工单数： <span style="font-size: 28px;">10</span></div>
-           <div style="display: flex;">
-             <div class="gd-status-text">监控类：<span style="font-size: 28px;">10</span></div>
-             <div class="gd-status-text">其他类：<span style="font-size: 28px;">0</span></div>
-           </div>
-         </div>
-       </div>
-     </div>-->
-    <div class="topbar">
-      <div class="topbar-item item1">
-        <header class="header">
-          今日工单数:
-          <strong>{{workCount.toDay.toDayCount}}</strong>
-        </header>
-        <div class="content">
-          <div class="info-left">
-            监控类:
-            <strong>{{workCount.toDay.jkTypeTodayCount}}</strong>
+  <div class="tickets-list">
+    <a-card :bordered="false">
+      <div class="topbar">
+        <div class="topbar-item item1">
+          <header class="header">
+            今日工单数:
+            <strong>{{workCount.toDay.toDayCount}}</strong>
+          </header>
+          <div class="content">
+            <div class="info-left">
+              监控类:
+              <strong>{{workCount.toDay.jkTypeTodayCount}}</strong>
+            </div>
+            <div class="info-right">其他:{{workCount.toDay.otherTypeTodayCount}}</div>
           </div>
-          <div class="info-right">其他:{{workCount.toDay.otherTypeTodayCount}}</div>
+        </div>
+        <div class="topbar-item item2">
+          <header class="header">
+            未完成工单数:
+            <strong>{{workCount.finish.unFinishCount}}</strong>
+          </header>
+          <div class="content">
+            <div class="info-left">
+              监控类:
+              <strong>{{workCount.finish.jkUnFinishCount}}</strong>
+            </div>
+            <div class="info-right">其他:{{workCount.finish.otherUnFinishCount}}</div>
+          </div>
+        </div>
+        <div class="topbar-item item3">
+          <header class="header">
+            逾期工单数:
+            <strong>{{workCount.overdue.overdueStateCount}}</strong>
+          </header>
+          <div class="content">
+            <div class="info-left">
+              监控类:
+              <strong>{{workCount.overdue.jkTypeYqztCount}}</strong>
+            </div>
+            <div class="info-right">其他:{{workCount.overdue.otherTypeYqztCount}}</div>
+          </div>
         </div>
       </div>
-      <div class="topbar-item item2">
-        <header class="header">
-          未完成工单数:
-          <strong>{{workCount.finish.unFinishCount}}</strong>
-        </header>
-        <div class="content">
-          <div class="info-left">
-            监控类:
-            <strong>{{workCount.finish.jkUnFinishCount}}</strong>
-          </div>
-          <div class="info-right">其他:{{workCount.finish.otherUnFinishCount}}</div>
+    </a-card>
+    <a-card :bordered="false" style="margin-top: 8px;">
+      <!-- 查询区域 -->
+      <!-- <div style="margin-bottom: 20px">
+         <div style="display: flex;width: 100%;margin-bottom: 15px;margin-right: 20px;">
+           <div class="gd-status-sjzy">
+             <div style="text-align:right;border-bottom: 1px solid white">
+               <span class="gd-status-text">监控类：<span style="font-size: 20px;">11110</span></span>
+               <span class="gd-status-text">其他类：<span style="font-size: 20px;">122222</span></span>
+             </div>
+             <a-row>
+               <a-col :span="12">
+                 <a-row>
+                   <a-col :span="24">
+                     <div class="gd-status-total">今日工单数</div>
+                     <div class="gd-status-total-num">1000</div>
+                   </a-col>
+                 </a-row>
+               </a-col>
+               <a-col :span="12" style="text-align: right">
+                 <a-icon type="fund" style="font-size: 62px;color: white;padding-right: 30px;padding-top: 15px;"/>
+               </a-col>
+             </a-row>
+           </div>
+           <div class="gd-status-ztsy">
+             <div class="gd-status-total">当前未完成工单数： <span style="font-size: 28px;">10</span></div>
+             <div style="display: flex;">
+               <div style="background-color: white;color: #f78463;width: 50%">监控类：<span style="font-size: 28px;">8</span></div>
+               <div class="gd-status-text">其他类：<span style="font-size: 28px;">2</span></div>
+             </div>
+           </div>
+           <div class="gd-status-yxj">
+             <div class="gd-status-total">逾期工单数： <span style="font-size: 28px;">10</span></div>
+             <div style="display: flex;">
+               <div class="gd-status-text">监控类：<span style="font-size: 28px;">10</span></div>
+               <div class="gd-status-text">其他类：<span style="font-size: 28px;">0</span></div>
+             </div>
+           </div>
+         </div>
+       </div>-->
+
+      <!-- 操作按钮区域 -->
+      <div class="btn-query">
+        <div style="float: left;">
+          <a-button @click="handleAddBpm" type="primary" icon="plus">发起流程</a-button>
+        </div>
+        <div style="float: right">
+          <a-input-search @search="searchQuery" v-model="formData.flowNo" style="width: 220px;"
+                          placeholder="请输入流水号"></a-input-search>
+          <a-button-group style="margin-left: 10px;">
+            <a-button @click="handleToggleSearch" :icon="toggleSearchStatus ? 'down' : 'up'">更多</a-button>
+            <a-button @click="handleAddBpm" icon="to-top">导入</a-button>
+            <a-button @click="handleAddBpm" icon="vertical-align-bottom">导出</a-button>
+          </a-button-group>
         </div>
       </div>
-      <div class="topbar-item item3">
-        <header class="header">
-          逾期工单数:
-          <strong>{{workCount.overdue.overdueStateCount}}</strong>
-        </header>
-        <div class="content">
-          <div class="info-left">
-            监控类:
-            <strong>{{workCount.overdue.jkTypeYqztCount}}</strong>
-          </div>
-          <div class="info-right">其他:{{workCount.overdue.otherTypeYqztCount}}</div>
-        </div>
-      </div>
-    </div>
-    <div
-      style="border: 1px solid #f1f1f1;padding-top: 15px;padding-right:10px;background-color: #f1f1f1;margin-bottom: 20px;">
-      <!-- <a-form layout="inline">
-         <a-row :gutter="24">
-           <a-col :md="6" :sm="8">
-             <a-form-item label="工单状态">
-               <a-select
-                 showSearch
-                 mode="multiple"
-                 :options="statusList"
-                 :filterOption="filterOption"
-                 v-model="stateList"
-                 placeholder="请选择状态"
-                 allowClear
-               />
-             </a-form-item>
-           </a-col>
-           <a-col :md="6" :sm="8">
-             <a-form-item label="工单标题">
-               <a-input placeholder="请输入工单标题" v-model="workName"></a-input>
-             </a-form-item>
-           </a-col>
-           &lt;!&ndash; <a-col :md="6" :sm="8">
-              <a-form-item label="流程名称">
-                <a-input placeholder="请输入流程名称" v-model="queryParam.processName"></a-input>
-              </a-form-item>
-            </a-col>&ndash;&gt;
-           <a-col :md="6" :sm="8">
-             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
-               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
-               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-             </span>
-           </a-col>
-         </a-row>
-       </a-form>-->
-      <a-form-model ref="ruleForm" :model="formData" :label-col="labelCol" :wrapper-col="wrapperCol">
-        <a-row :gutter="24">    
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-model-item label="工单标题" prop="title">            
-              <a-input placeholder="请输入工单标题" v-model="formData.title"></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-model-item label="工单模板" prop="modelId">            
-              <a-select mode="tags" v-model="formData.modelId" style="width: 100%" placeholder="请选择工单模板">
-                <a-select-option v-for="item in workTypeList" :key="item.id">
-                  {{item.name}}
-                </a-select-option>
-              </a-select>
-            </a-form-model-item>
-          </a-col>
-          <template v-if="toggleSearchStatus">
-            <a-col :xl="6" :lg="7" :md="8" :sm="24">
+      <div class="form-query" v-show="toggleSearchStatus">
+        <a-form-model ref="ruleForm" :model="formData" :label-col="labelCol" :wrapper-col="wrapperCol">
+          <a-row :gutter="24" style="margin-bottom: 0">    
+            <a-col :xl="6" :lg="8" :md="8" :sm="24">
+              <a-form-model-item label="工单标题" prop="title">            
+                <a-input placeholder="请输入工单标题" v-model="formData.title"></a-input>
+              </a-form-model-item>
+            </a-col>
+            <a-col :xl="6" :lg="8" :md="8" :sm="24">
+              <a-form-model-item label="工单模板" prop="modelId">            
+                <a-select mode="tags" v-model="formData.modelId" style="width: 100%" placeholder="请选择工单模板">
+                  <a-select-option v-for="item in workTypeList" :key="item.id">
+                    {{item.name}}
+                  </a-select-option>
+                </a-select>
+              </a-form-model-item>
+            </a-col>
+            <a-col :xl="6" :lg="8" :md="8" :sm="24">
               <a-form-model-item label="流水号" prop="flowNo">            
                 <a-input placeholder="请输入流水号" v-model="formData.flowNo"></a-input>
               </a-form-model-item>
             </a-col>
-            <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-col :xl="6" :lg="8" :md="8" :sm="24">
               <a-form-model-item label="报修人" prop="repairman">            
                 <a-input placeholder="请输入报修人" v-model="formData.repairman"></a-input>
               </a-form-model-item>
             </a-col>
-            <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-col :xl="6" :lg="8" :md="8" :sm="24">
               <a-form-model-item label="报修时间" prop="createTime">
                 <a-range-picker
                   style="width: 100%;"
@@ -155,7 +139,7 @@
                           v-model="formData.bxsj"></j-date>-->
               </a-form-model-item>
             </a-col>
-            <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-col :xl="6" :lg="8" :md="8" :sm="24">
               <a-form-model-item label="工单状态" prop="hiddenOrderSate">           
                 <a-select
                   showSearch
@@ -168,17 +152,17 @@
                 />
               </a-form-model-item>
             </a-col>
-            <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-col :xl="6" :lg="8" :md="8" :sm="24">
               <a-form-model-item label="设备编码" prop="deviceid">
                 <a-input placeholder="请输入设备编码" v-model="formData.deviceid"></a-input>
               </a-form-model-item>
             </a-col>
-            <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-col :xl="6" :lg="8" :md="8" :sm="24">
               <a-form-model-item label="设备IP" prop="IP">
                 <a-input placeholder="请输入设备IP" v-model="formData.IP"></a-input>
               </a-form-model-item>
             </a-col>
-            <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-col :xl="6" :lg="8" :md="8" :sm="24">
               <a-form-model-item label="报修类型" prop="bxlx">
                 <a-select
                   showSearch
@@ -191,7 +175,7 @@
                 />
               </a-form-model-item>
             </a-col>
-            <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-col :xl="6" :lg="8" :md="8" :sm="24">
               <a-form-model-item label="工单等级" prop="gddj">
                 <a-select
                   showSearch
@@ -204,7 +188,7 @@
                 />
               </a-form-model-item>
             </a-col>
-            <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <a-col :xl="6" :lg="8" :md="8" :sm="24">
               <a-form-model-item label="工单类型" prop="gdlx">
                 <a-select
                   showSearch
@@ -217,242 +201,191 @@
                 />
               </a-form-model-item>
             </a-col>
-          </template>
-          <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <span style="float: left;overflow: hidden;padding-left: 25px;" class="table-page-search-submitButtons">
-              <a-button type="primary" icon="search" @click="searchQuery">查询</a-button>
-              <a-button type="primary" icon="reload" @click="searchReset" style="margin-left: 8px;">重置</a-button>
-              <a @click="handleToggleSearch()" style="margin-left: 8px">
-                {{ toggleSearchStatus ? '收起' : '展开' }}
-                <a-icon :type="toggleSearchStatus ? 'up' : 'down'"/>
-              </a>
-            </span>
-          </a-col>
-        </a-row>
-      </a-form-model>
-    </div>
-
-    <!-- 操作按钮区域 -->
-    <div class="table-operator">
-      <a-button @click="handleAddBpm" type="primary" icon="plus">发起流程</a-button>
-    </div>
-
-    <!-- table区域-begin -->
-    <div>
-      <a-spin :spinning="spinningShow">
-        <a-tabs v-model="activeKey" @change="onChangeTabs">
-          <a-tab-pane key="1">
+          </a-row>
+        </a-form-model>
+        <div
+          style="width: 100%;position: relative;display: inline-block;cursor: pointer;padding: 0 10px;color: #464c55;">
+          <div style="float: right">
+            <a-button type="primary" icon="search" @click="searchQuery">查询</a-button>
+            <a-button icon="reload" @click="searchReset" style="margin-left: 8px;">重置</a-button>
+          </div>
+        </div>
+      </div>
+      <!-- table区域-begin -->
+      <div>
+        <a-spin :spinning="spinningShow">
+          <a-tabs v-model="activeKey" @change="onChangeTabs">
+            <a-tab-pane key="1">
           <span slot="tab">
             <a-icon type="solution" style="font-size: 16px;"/>
            我的待办
           </span>
-          </a-tab-pane>
-          <a-tab-pane key="2">
+            </a-tab-pane>
+            <a-tab-pane key="2">
           <span slot="tab">
            <a-icon type="file-done" style="font-size: 16px;"/>
            关于我的
           </span>
-          </a-tab-pane>
-        </a-tabs>
-        <a-table
-          ref="table"
-          size="middle"
-          bordered
-          rowKey="flowNo"
-          :columns="columns"
-          :dataSource="dataSource"
-          :pagination="false"
-          :loading="loading"
-        >
+            </a-tab-pane>
+          </a-tabs>
+          <a-table
+            ref="table"
+            size="middle"
+            bordered
+            rowKey="flowNo"
+            :columns="columns"
+            :dataSource="dataSource"
+            :pagination="false"
+          >
         <span slot="status" slot-scope="status">
        <!--   <a-icon type="exclamation-circle" />-->
           <a-tag v-if="item.value === status +''" :color="item.color"
                  v-for="item in orderSateList"> {{item.label}}</a-tag>
         </span>
-          <template slot="type" slot-scope="type">
+            <template slot="type" slot-scope="type">
           <span v-if="item.value === type +''" :color="item.color"
                 v-for="item in orderTypeList"> {{item.label}}
           </span>
-          </template>
-          <span slot="create_time" slot-scope="create_time">
+            </template>
+            <span slot="create_time" slot-scope="create_time">
            {{getLongTime(create_time, true)}}
          </span>
-          <span slot="action" slot-scope="text, record">
+            <span slot="action" slot-scope="text, record">
           <a-button @click="handleDetail(record)">查看详情</a-button>
-            <!-- <a-dropdown>
-               <a class="ant-dropdown-link">更多 <a-icon type="down"/></a>
-               <a-menu slot="overlay">
-                 <template v-if="record.bpmStatus === '1'">
+              <!-- <a-dropdown>
+                 <a class="ant-dropdown-link">更多 <a-icon type="down"/></a>
+                 <a-menu slot="overlay">
+                   <template v-if="record.bpmStatus === '1'">
+                     <a-menu-item>
+                       <a @click="handleEdit(record)">编辑</a>
+                     </a-menu-item>
+                   </template>
                    <a-menu-item>
-                     <a @click="handleEdit(record)">编辑</a>
+                     <a href="javascript:;" @click="handleDetail(record)">详情</a>
                    </a-menu-item>
-                 </template>
-                 <a-menu-item>
-                   <a href="javascript:;" @click="handleDetail(record)">详情</a>
-                 </a-menu-item>
-                 <a-menu-item v-if="record.bpmStatus === '1'">
-                   <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-                     <a>删除</a>
-                   </a-popconfirm>
-                 </a-menu-item>
-                 <a-menu-item v-else @click="handleTrack(record)">审批进度</a-menu-item>
-               </a-menu>
-             </a-dropdown>-->
+                   <a-menu-item v-if="record.bpmStatus === '1'">
+                     <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
+                       <a>删除</a>
+                     </a-popconfirm>
+                   </a-menu-item>
+                   <a-menu-item v-else @click="handleTrack(record)">审批进度</a-menu-item>
+                 </a-menu>
+               </a-dropdown>-->
         </span>
 
-          <span slot="modelName" slot-scope="text, record">
+            <span slot="modelName" slot-scope="text, record">
           <j-ellipsis :value="'工单【'+text+'】'" :length="15"/>
         </span>
-          <!-- 字符串超长截取省略号显示-->
-          <span slot="executors" slot-scope="executors, record">
+            <!-- 字符串超长截取省略号显示-->
+            <span slot="executors" slot-scope="executors, record">
           <j-ellipsis :value="getExecutors(executors)" :length="15"/>
         </span>
-        </a-table>
-        <a-pagination
-          style="text-align: right;margin-top: 15px;"
-          :total="total"
-          show-size-changer
-          :show-total="(total, range) => `${range[0]}-${range[1]} 共 ${total} 条`"
-          :page-size="data.pageSize"
-          :default-current="1"
-          @change="onChange"
-          @showSizeChange="onShowSizeChange"
-        />
-      </a-spin>
-    </div>
-    <!-- table区域-end -->
-    <!--模型选择区域-->
-    <a-modal
-      :title="ModalText"
-      :width="1000"
-      :visible="visibleModel"
-      :confirm-loading="confirmLoading"
-      @ok="handleOk"
-      @cancel="handleCancel"
-      :footer="null"
-      style="min-height: 500px;"
-    >
-      <div>
-        <tickets-model-type :items="workTypeList" @click="getModelDetails"></tickets-model-type>
+          </a-table>
+          <a-pagination
+            style="text-align: right;margin-top: 15px;"
+            :total="total"
+            show-size-changer
+            :show-total="(total, range) => `${range[0]}-${range[1]} 共 ${total} 条`"
+            :page-size="data.pageSize"
+            :default-current="1"
+            @change="onChange"
+            @showSizeChange="onShowSizeChange"
+          />
+        </a-spin>
       </div>
-    </a-modal>
-
-    <!-- 表单区域 -->
-    <a-modal
-      :title="ModalText"
-      :width="widthModel"
-      :centered="true"
-      :visible="visible"
-      :confirm-loading="confirmLoading"
-      @cancel="handleCancel"
-      :footer="null"
-    >
-      <tickets-from-flow
-        :form-config="formConfig"
-        :submit-btn="submitBtn"
-        :allot-show="allotShow"
-        :operation="operation"
-        :spinnings="spinning"
-        :flow-list="flowList"
-        v-if="operation === 'details'"
-        @updateFeedback="updateOrder"
-        @uploadFile="uploadFile"
-        @click="onSubmit">
-      </tickets-from-flow>
-      <!--    <div style="width: 65%;border: 1px solid #dee3ea;height: 700px;">
-            <div style="border-bottom: 1px solid #dee3ea;background-color: #f4f7fd" class="work-detail-main-title"
-                 @click="isShowData()">
-              <div class="header-left-icon"></div>
-              <span style="margin-left: 8px">基本信息</span>
-              <div style="text-align: right;float: right">
-                <a-icon :type="isShow ?'down' : 'right'" class="work-detail-title-icon"/>
-              </div>
-            </div>
-            <div style="padding-right: 25px;padding-top: 15px;height:655px;overflow-x: hidden" v-show="isShow">
-              <tickets-from :form-config="formConfig"
-                            :submit-btn="submitBtn"
-                            :allot-show="allotShow"
-                            :operation="operation"
-                            @updateFeedback="updateOrder"
-                            @uploadFile="uploadFile"
-                            @click="onSubmit">
-              </tickets-from>
-            </div>
-          </div>
-          <div style="width: 35%;border: 1px solid #dee3ea;margin-left:20px;">
-            <div style="background-color: #f4f7fd" class="work-detail-main-title">
-              <div class="header-left-icon"></div>
-              <span style="margin-left: 8px">流程信息</span>
-            </div>
-            <div style="padding-left: 25px;padding-top: 20px;">
-              <a-timeline>
-                <a-timeline-item>
-                  <p>流程环节：【开始】</p>
-                  <p>事件：admin 创建 了工单给 赵墨希</p>
-                  <p>开始时间：2020-08-18 15:45:36</p>
-                </a-timeline-item>
-                <a-timeline-item>
-                  <p>时间：2020-08-18 15:45:36</p>
-                  <p>流程环节：【开始】</p>
-                  <p>事件：2020-08-18 15:45:36</p>
-                  <p>时间：2020-08-18 15:45:36</p>
-                </a-timeline-item>
-                <a-timeline-item>
-                  <p>时间：2020-08-18 15:45:36</p>
-                  <p>流程环节：【开始】</p>
-                  <p>事件：2020-08-18 15:45:36</p>
-                  <p>时间：2020-08-18 15:45:36</p>
-                </a-timeline-item>
-                <a-timeline-item>
-                  <p>时间：2020-08-18 15:45:36</p>
-                  <p>流程环节：【开始】</p>
-                  <p>事件：2020-08-18 15:45:36</p>
-                  <p>时间：2020-08-18 15:45:36</p>
-                </a-timeline-item>
-              </a-timeline>
-            </div>
-          </div>-->
-      <tickets-form
-        :form-config="formConfig"
-        :submit-btn="submitBtn"
-        :allot-show="allotShow"
-        :spinnings="spinning"
-        :operation="operation"
-        @updateFeedback="updateOrder"
-        @uploadFile="uploadFile"
-        @click="onSubmit"
-        v-if="operation === 'add'"
+      <!-- table区域-end -->
+      <!--模型选择区域-->
+      <a-modal
+        :title="ModalText"
+        :width="1000"
+        :visible="visibleModel"
+        :confirm-loading="confirmLoading"
+        @ok="handleOk"
+        @cancel="handleCancel"
+        :footer="null"
+        style="min-height: 500px;"
       >
-      </tickets-form>
-    </a-modal>
-    <a-modal
-      title="请选择下一节点处理人"
-      :width="600"
-      :centered="true"
-      :visible="showRollback"
-      @cancel="handleCancelShow"
-      @ok="handleShow"
-    >
-      <a-spin :spinning="spinningShow">
-        <a-form-model :labelCol="labelCol2" :wrapperCol="wrapperCol2">
-          <a-form-model-item label="处理人" v-if="userList.length>0">
-            <a-select mode="multiple" showSearch allowClear v-model="userIdList" placeholder="请选择处理人">
-              <a-select-option v-for="item in userList" :key="item.id">
-                {{item.name}}
-              </a-select-option>
-            </a-select>
-          </a-form-model-item>
-          <a-form-model-item label="用户组" v-if="userGroup.length>0">
-            <a-select mode="multiple" showSearch allowClear v-model="userIdList" placeholder="请选择用户组">
-              <a-select-option v-for="item in userGroup" :key="item.id">
-                {{item.name}}
-              </a-select-option>
-            </a-select>
-          </a-form-model-item>
-        </a-form-model>
-      </a-spin>
-    </a-modal>
-  </a-card>
+        <div>
+          <tickets-model-type :items="workTypeList" @click="getModelDetails"></tickets-model-type>
+        </div>
+      </a-modal>
+
+      <!-- 表单区域 -->
+      <a-modal
+        :title="ModalText"
+        :width="widthModel"
+        :centered="true"
+        :visible="visible"
+        :confirm-loading="confirmLoading"
+        @cancel="handleCancel"
+        :footer="null"
+      >
+        <tickets-from-flow
+          :form-config="formConfig"
+          :submit-btn="submitBtn"
+          :allot-show="allotShow"
+          :operation="operation"
+          :spinnings="spinning"
+          :flow-list="flowList"
+          v-if="operation === 'details'"
+          @updateFeedback="updateOrder"
+          @uploadFile="uploadFile"
+          @click="onSubmit">
+        </tickets-from-flow>
+        <tickets-form
+          :form-config="formConfig"
+          :submit-btn="submitBtn"
+          :allot-show="allotShow"
+          :spinnings="spinning"
+          :operation="operation"
+          @updateFeedback="updateOrder"
+          @uploadFile="uploadFile"
+          @click="onSubmit"
+          v-if="operation === 'add'"
+        >
+        </tickets-form>
+      </a-modal>
+      <a-modal
+        title="请选择下一节点处理人"
+        :width="600"
+        :centered="true"
+        :visible="showRollback"
+        @cancel="handleCancelShow"
+        @ok="handleShow"
+      >
+        <a-spin :spinning="spinningShow">
+          <a-form-model :labelCol="labelCol2" :wrapperCol="wrapperCol2">
+            <a-form-model-item label="处理人" v-if="userList.length>0">
+              <a-select
+                showSearch
+                mode="multiple"
+                :options="userList"
+                :filterOption="filterOption"
+                v-model="userIdList"
+                ref="userIdList"
+                placeholder="请选择处理人"
+                allowClear
+                @change="selectChangeUser"
+              />
+            </a-form-model-item>
+            <a-form-model-item label="用户组" v-if="userGroup.length>0">
+              <a-select
+                showSearch
+                mode="multiple"
+                :options="userGroup"
+                :filterOption="filterOption"
+                v-model="groupIdList"
+                ref="groupIdList"
+                placeholder="请选择用户组"
+                allowClear
+                @change="selectChangeGroup"
+              />
+            </a-form-model-item>
+          </a-form-model>
+        </a-spin>
+      </a-modal>
+    </a-card>
+  </div>
 </template>
 
 <script>
@@ -483,13 +416,13 @@ export default {
     return {
       labelCol: {
         xs: { span: 24 },
-        sm: { span: 4 },
+        sm: { span: 6 },
         xl: { span: 6 },
         lg: { span: 7 }
       },
       wrapperCol: {
         xs: { span: 24 },
-        sm: { span: 12 },
+        sm: { span: 18 },
         xl: { span: 18 },
         lg: { span: 17 }
       },
@@ -509,6 +442,9 @@ export default {
       workTypeList: [],
       ModalText: '创建工单',
       visible: false,
+      /**
+       * 显示选择模型
+       */
       visibleModel: false,
       confirmLoading: false,
       loading: false,
@@ -532,12 +468,12 @@ export default {
           dataIndex: 'formData.hiddenOrderSate',
           scopedSlots: { customRender: 'status' }
         },
-        {
+        /* {
           title: '工单标题',
           align: 'center',
           width: 230,
           dataIndex: 'title'
-        },
+        },*/
         {
           title: '流水号',
           align: 'center',
@@ -559,42 +495,66 @@ export default {
           scopedSlots: { customRender: 'type' }
         },
         {
-          title: '当前阶段',
+          title: '地点',
           align: 'center',
-          width: 180,
-          dataIndex: 'activityName'
+          width: 250,
+          dataIndex: 'formData.dd'
         },
         {
-          title: '报修人',
+          title: '设备IP',
           align: 'center',
-          width: 150,
-          dataIndex: 'formData.repairman'
+          width: 220,
+          dataIndex: 'formData.IP'
         },
         {
-          title: '报修人联系方式',
+          title: '内容',
           align: 'center',
-          width: 150,
-          dataIndex: 'formData.telephone'
-        },
-        {
-          title: '签收人',
-          align: 'center',
-          width: 150,
-          dataIndex: 'formData.qsr'
+          width: 220,
+          dataIndex: 'formData.nr'
         },
         /* {
-           title: '处理人',
+           title: '流程环节',
            align: 'center',
-           width: 200,
-           dataIndex: 'executors',
-           scopedSlots: { customRender: 'executors' }
+           width: 180,
+           dataIndex: 'activityName'
          },*/
+        /* {
+           title: '当前流程环节',
+           align: 'center',
+           width: 150,
+           dataIndex: 'formData.repairman'
+         },
+         {
+           title: '报修人联系方式',
+           align: 'center',
+           width: 150,
+           dataIndex: 'formData.telephone'
+         },*/
+        /*  {
+            title: '签收人',
+            align: 'center',
+            width: 150,
+            dataIndex: 'formData.qsr'
+          },*/
         {
-          title: '创建时间',
+          title: '处理人',
+          align: 'center',
+          width: 200,
+          dataIndex: 'executor',
+          scopedSlots: { customRender: 'executors' }
+        },
+        {
+          title: '报修时间',
           align: 'center',
           width: 180,
           dataIndex: 'createTime',
           scopedSlots: { customRender: 'createTime' }
+        },
+        {
+          title: '当前流程环节',
+          align: 'center',
+          width: 150,
+          dataIndex: 'activityName'
         },
         {
           title: '操作',
@@ -608,15 +568,18 @@ export default {
       dataSource: [],
       orderInfo: {},
       submitBtn: [],
+      /**
+       * 模型数据
+       */
       formConfig: {
-        formFiles: []
+        formFiles: [] //
       },
       flowList: [],  // 流程数据
       formData: {
         title: '',
         repairman: '',
         modelId: [],
-        createTime: '',
+        createTime: [],
         flowNo: '',
         deviceid: '',
         gdlx: [],
@@ -626,38 +589,6 @@ export default {
         gddj: []
       },
       formFileds: [],
-      statusList: [
-        {
-          value: '1',
-          label: '待处理',
-          color: 'rgb(73,171,222)'
-        },
-        {
-          value: '2',
-          label: '处理中',
-          color: 'rgb(82,237,203)'
-        },
-        {
-          value: '3',
-          label: '已完成',
-          color: 'rgb(69, 195, 88)'
-        },
-        {
-          value: '7',
-          label: '已关闭',
-          color: 'rgb(255,82,42)'
-        },
-        {
-          value: '10',
-          label: '挂起',
-          color: 'rgb(255,174,47)'
-        },
-        {
-          value: '11',
-          label: '已废除',
-          color: 'rgb(250,220,35)'
-        }
-      ],
       orderSateList: [
         {
           value: 'wcl',
@@ -665,29 +596,19 @@ export default {
           color: 'rgb(73,171,222)'
         },
         {
-          value: 'wjs',
-          label: '未签收',
+          value: 'qsz',
+          label: '签收中',
           color: 'rgb(76,197,171)'
         },
         {
-          value: 'yqs',
-          label: '已签收',
-          color: 'rgb(69, 195, 88)'
-        },
-        {
-          value: 'wfk',
-          label: '未反馈',
-          color: 'rgb(255,82,42)'
-        },
-        {
-          value: 'yfk',
-          label: '已反馈',
-          color: 'rgb(255,174,47)'
-        },
-        {
-          value: 'js',
-          label: '结束',
+          value: 'fkz',
+          label: '反馈中',
           color: 'rgb(250,220,35)'
+        },
+        {
+          value: 'dqr',
+          label: '待确认',
+          color: 'rgb(255,174,47)'
         },
         {
           value: 'ywc',
@@ -801,7 +722,10 @@ export default {
       spinning: false,
       spinningShow: false,
       activeKey: '1',
-      imgUrl: 'http://192.168.1.103:8080/oss/api/itsm/getFileById?isOnLine=true&fileId=',
+      imgUrl: window._CONFIG['domianURL'] + '/api/itsm/getFileById?isOnLine=true&fileId=',
+      /**
+       * 查询参数
+       */
       data: {
         pageSize: 10,
         pageNum: 1,
@@ -844,8 +768,21 @@ export default {
       this.subItem = item
       if (item.policy === 0) {
         this.showRollback = true
-        this.userList = item.user
-        this.userGroup = item.group
+        // this.userList = item.user
+        item.user.forEach((itemA) => { // 转换成select组件需要的格式
+          let objA = {
+            value: itemA.id,
+            label: itemA.name
+          }
+          this.userList.push(objA)
+        })
+        item.group.forEach((itemA) => {
+          let objA = {
+            value: itemA.id,
+            label: itemA.name
+          }
+          this.userGroup.push(objA)
+        })
         return
       }
       // alert(JSON.stringify(this.formFileds))
@@ -875,6 +812,7 @@ export default {
           [item.nextActivityId]: {}
         }
       }
+      delete this.workForm.file
       let data = {
         description: this.workForm.ticketDesc,
         form: this.workForm,
@@ -920,6 +858,7 @@ export default {
           [item.nextActivityId]: {}
         }
       }
+      delete this.workForm.file
       let data = {
         activity_id: this.orderInfo.activity_id,
         handle_type: 1,
@@ -989,6 +928,7 @@ export default {
         return
       }
       this.spinningShow = true
+      delete this.workForm.file
       let data = {
         activity_id: this.orderInfo.activity_id,
         handle_type: 1,
@@ -1032,6 +972,7 @@ export default {
           }
         }
       })
+      delete this.workForm.file
       let data = {
         ticket_id: this.orderInfo.ticketId,
         form: this.workForm
@@ -1055,6 +996,7 @@ export default {
     handleDetail (record) {
       this.spinningShow = true
       this.formFileds = []
+      this.workForm = {}
       this.submitBtn = []
       let params = {
         id: record.ticketId,
@@ -1090,19 +1032,22 @@ export default {
               } else {
                 this.$set(itemA, 'fileList', [])
               }
-            } else if (itemA.type === 'dateTime') {
-              if (itemA.conf.default_value === '') {
-                itemA.conf.default_value = getSelectTime(new Date(), true)
-              }
-            } else if (itemA.type === 'cascader') {
-              if (itemA.conf.default_value === '') {
-                itemA.conf.default_value = []
-              }
             }
           })
         } else {
           this.isFile = 0
         }
+        this.formFileds.forEach((itemA, index) => {
+          if (itemA.type === 'dateTime') {
+            if (itemA.conf.default_value === '') {
+              itemA.conf.default_value = getSelectTime(new Date(), true)
+            }
+          } else if (itemA.type === 'cascader') {
+            if (itemA.conf.default_value === '') {
+              itemA.conf.default_value = []
+            }
+          }
+        })
         this.operation = 'details'
         this.showRollback = false
         this.spinningShow = false
@@ -1115,9 +1060,10 @@ export default {
 
     },
     getModelDetails (id) {
-      this.loading = true
+      this.spinning = true
       this.formFileds = [] //清空数据
       this.submitBtn = []
+      this.workForm = {}
       let apiKey = this.userInfo().apikey
       getModelDetails(apiKey, id).then(response => {
         this.modeId = id
@@ -1153,11 +1099,9 @@ export default {
         }
         this.operation = 'add'
         this.visibleModel = false
-        this.spinningShow = false
-        this.spinning = false
         this.allotShow = true
         this.visible = true
-        this.loading = false
+        this.spinning = false
       }).catch(error => {
         console.log(error)
       })
@@ -1394,6 +1338,12 @@ export default {
     onChangeDate (dates, dateStrings) {
       console.log('From: ', dates[0], ', to: ', dates[1])
       console.log('From: ', dateStrings[0], ', to: ', dateStrings[1])
+    },
+    selectChangeUser () {
+      this.$refs.userIdList.blur()
+    },
+    selectChangeGroup () {
+      this.$refs.groupIdList.blur()
     }
   },
   mounted () {
@@ -1405,9 +1355,11 @@ export default {
   }
 }
 </script>
-<style lang="less" scoped>
+<style lang="less">
   @import '~@assets/less/common.less';
-
+  .tickets-list .ant-card-body {
+    padding: 15px 20px;
+  }
   .gd-status-sjzy {
     width: 23%;
     border: 1px solid #65c6f3;
@@ -1459,10 +1411,6 @@ export default {
   .topbar {
     position: relative;
     display: flex;
-    // justify-content: space-between;
-    // align-items: center;
-    // box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-    padding-bottom: 20px;
 
     .topbar-item {
       overflow: hidden;
@@ -1571,5 +1519,35 @@ export default {
         }
       }
     }
+  }
+
+  .form-query {
+    border: 1px solid #e6eaef;
+    padding-top: 10px;
+    padding-right: 10px;
+    background-color: #f4f7fd;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    margin-top: 10px;
+  }
+
+  .form-query .ant-row {
+    position: relative;
+    height: auto;
+    margin-right: 0;
+    margin-left: 0;
+    margin-bottom: 10px;
+    zoom: 1;
+    display: block;
+  }
+  .btn-query{
+    width: 100%;
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    color: #464c55;
+  }
+  .btn-query .ant-btn {
+    line-height: 1.5;
   }
 </style>
