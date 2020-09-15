@@ -13,7 +13,7 @@
           </a-col>
           <a-col :md="8" :sm="12" v-show="!flag">
             <a-form-item label="创建人" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <a-input-search placeholder="选择创建人" readonly @search="handleSelect" v-model="model.userName" >
+              <a-input-search placeholder="选择创建人"  @search="handleSelect" v-model="model.userName" >
                 <a-button slot="enterButton" icon="search">选择</a-button>
               </a-input-search>
             </a-form-item>
@@ -104,13 +104,20 @@
           <j-ellipsis :value="text" :length="15" />
         </span>
 
-        <a-table 
-          rowKey="id"
-          slot="expandedRowRender"
-          :columns="innerColumns"
-          :data-source="innerData"
-          :pagination="false"
-        ></a-table>
+         <div slot="expandedRowRender"
+        class="expansionWrapper"
+        >
+          <div
+          class="expansionWrapper-item"
+          :key='item.dataIndex'
+          v-for="item in selectedData">
+          <div
+          v-if="item.value"
+          >
+          {{item.title}} : {{item.value}}
+          </div>
+          </div>
+        </div>
        
       </a-table>
     </div>
@@ -149,8 +156,9 @@ export default {
   data() {
     return {
       expandedKeys:[],
-      innerData:[],
-      innerColumns: [],
+      // innerData:[],
+      // innerColumns: [],
+      selectedData: [],
       labelCol: {
         xs: { span: 24 },
         sm: { span: 8 },
@@ -270,10 +278,19 @@ export default {
     },
     detail(id){
       console.log("id="+id)
-      getAction(this.url.detail,{id:id}).then((res)=>{
-        this.innerData = res.result.data
-        this.innerColumns = res.result.columns
-      
+     getAction(this.url.detail,{id:id}).then((res)=>{
+        const { data,columns } = res.result
+        console.log(data,columns)
+        const result = columns.map((item) =>{
+          return {
+            ...item,
+            value: data[0][item.dataIndex]
+          }
+        })
+        const filteredResult = result.filter(item => item.value)
+        this.selectedData = [...filteredResult]
+        this.innerData = data
+        this.innerColumns = columns
       })
     },
     changeSel() {
@@ -498,5 +515,18 @@ export default {
 /** Button按钮间距 */
 .ant-btn {
   margin-left: 3px;
+}
+.expansionWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  border-radius: 5px;
+  font-size: 18px;
+  font-weight: 800;
+  width: 100%;
+  margin: auto;
+}
+.expansionWrapper-item {
+  width: 33%;
+  padding: 10px 40px;
 }
 </style>

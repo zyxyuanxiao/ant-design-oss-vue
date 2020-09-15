@@ -58,12 +58,8 @@
           <a-col :md="4" :sm="6">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
-              <a-button
-                type="primary"
-                @click="searchReset"
-                icon="reload"
-                style="margin-left: 8px"
-              >重置</a-button>
+              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+              <a-button v-show="btn" style="margin-left: 8px" type="primary" @click="delects" icon="close-circle">批量删除</a-button>
             </span>
           </a-col>
         </a-row>
@@ -92,8 +88,9 @@
     </div>
     <!-- table区域-begin -->
     <div>
+      <!-- :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"  选择框-->
       <a-table
-       
+        
         :expandedRowKeys="expandedKeys"
         @expand="onExpand"
         :expandRowByClick = "true"
@@ -102,7 +99,7 @@
         ref="table"
         bordered
         size="middle"
-        rowKey="id"
+        rowKey = "processInstanceId"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
@@ -113,6 +110,17 @@
         <span slot="action" slot-scope="text, record">
           <template v-if="record.endTime&&record.endTime!=''">
             <a @click="showHistory(record)">历史</a>
+            <!-- <a-dropdown>
+              <a class="ant-dropdown-link">
+                更多
+                <a-icon type="down" />
+              </a>
+              <a-menu slot="overlay">
+                <a-menu-item @click="showHistory(record)">历史</a-menu-item>
+                <a-menu-item @click="delectOne(record)">删除流程</a-menu-item>
+              </a-menu>
+            </a-dropdown> -->
+           
           </template>
           <template v-else>
             <a-dropdown>
@@ -134,6 +142,7 @@
                       </a-popconfirm>
                 </a-menu-item>-->
                 <a-menu-item @click="showHistory(record)">历史</a-menu-item>
+                <!-- <a-menu-item @click="delectOne(record)">删除流程</a-menu-item> -->
               </a-menu>
             </a-dropdown>
           </template>
@@ -144,13 +153,27 @@
           <j-ellipsis :value="text" :length="10" />
         </span>
 
-        <a-table 
+        <!-- <a-table 
           rowKey="id"
           slot="expandedRowRender"
           :columns="innerColumns"
           :data-source="innerData"
           :pagination="false"
-        ></a-table>
+        ></a-table> -->
+        <div slot="expandedRowRender"
+        class="expansionWrapper"
+        >
+          <div
+          class="expansionWrapper-item"
+          :key='item.dataIndex'
+          v-for="item in selectedData">
+          <div
+          v-if="item.value"
+          >
+          {{item.title}} : {{item.value}}
+          </div>
+          </div>
+        </div>
       </a-table>
     </div>
     <!-- table区域-end -->
@@ -181,9 +204,12 @@ export default {
   },
   data() {
     return {
+      btn : false,
+      selectedRowKeys:[],
       expandedKeys:[],
-      innerData:[],
-      innerColumns: [],
+      // innerData:[],
+      // innerColumns: [],
+      selectedData: [],
       labelCol: {
         xs: { span: 24 },
         sm: { span: 8 },
@@ -294,10 +320,10 @@ export default {
         {
           title: '操作',
           dataIndex: 'action',
-          
+          width: 100,
           scopedSlots: { customRender: 'action' },
           align: 'center',
-          width: 100,
+          
         },
       ],
       url: {
@@ -319,13 +345,28 @@ export default {
     this.initList()
   },
   methods: {
+    delectOne(row){
+      console.log(row)
+    },
+    delects(){
+      console.log(this.selectedRowKeys)
+    },
+    onSelectChange(selectedRowKeys){
+      console.log('selectedRowKeys changed: ', selectedRowKeys);
+      if(selectedRowKeys.length>0){
+        this.btn = true
+      }else{
+        this.btn = false
+      }
+      this.selectedRowKeys = selectedRowKeys;
+    },
     onExpand(expanded, record){
       if(expanded){
          this.expandedKeys = []
          this.detail(record.processInstanceId)
          this.onExpandedRowsChange(record);
       }else{
-        this.expandedKeys = []
+         this.expandedKeys = []
       }
     },
     onExpandedRowsChange(rows) {
@@ -333,11 +374,21 @@ export default {
       this.expandedKeys.push(rows.processInstanceId);
     },
     detail(id){
+      console.log('请求发送了')
       console.log("id="+id)
       getAction(this.url.detail,{id:id}).then((res)=>{
-        this.innerData = res.result.data
-        this.innerColumns = res.result.columns
-      
+        const { data,columns } = res.result
+        console.log(data,columns)
+        const result = columns.map((item) =>{
+          return {
+            ...item,
+            value: data[0][item.dataIndex]
+          }
+        })
+        const filteredResult = result.filter(item => item.value)
+        this.selectedData = [...filteredResult]
+        this.innerData = data
+        this.innerColumns = columns
       })
     },
     changeSel() {
@@ -553,5 +604,19 @@ export default {
 /** Button按钮间距 */
 .ant-btn {
   margin-left: 3px;
+}
+
+.expansionWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  border-radius: 5px;
+  font-size: 18px;
+  font-weight: 800;
+  width: 100%;
+  margin: auto;
+}
+.expansionWrapper-item {
+  width: 33%;
+  padding: 10px 40px;
 }
 </style>
