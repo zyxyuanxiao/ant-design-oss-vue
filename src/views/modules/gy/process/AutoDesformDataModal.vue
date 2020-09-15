@@ -19,14 +19,16 @@
     </template>
 
 
-    <desform-view :mode="mode" :dataId="dataId" :height="fullScreenProps.height" :desformCode="desform.desformCode" @success="handleSuccess" @dialogChange="handleDialogChange"/>
+    <desform-view :mode="mode" :dataId="dataId" :height="fullScreenProps.height" :desformCode="desform.desformCode"
+                  @success="handleSuccess" @dialogChange="handleDialogChange"/>
 
   </a-modal>
 </template>
 
 <script>
   import DesformView from '@/components/online/desform/DesformView'
-  
+  import { deleteAction, getAction, postAction, putAction, httpAction } from '@/api/manage'
+
   export default {
     name: 'AutoDesformDataModal',
     components: { DesformView },
@@ -39,19 +41,26 @@
         fullScreen: false,
         buttonIcon: 'fullscreen',
         modalWidth: '70%',
-        bodyStyle:{
-          padding: "0",
-          height:(window.innerHeight*0.8)+"px",
-          "overflow-y":"auto"
+        bodyStyle: {
+          padding: '0',
+          height: (window.innerHeight * 0.8) + 'px',
+          'overflow-y': 'auto'
         },
-        style:"top: 40px;",
-        height:window.innerHeight,
+        style: 'top: 40px;',
+        height: window.innerHeight,
         desform: {},
         dataId: null,
         // 强制全屏
-        forceFullScreen: false
-
+        forceFullScreen: false,
+        tableList: [],
+        isShowB: true,
+        url: {
+          getTableName: '/bpm/getTable/name'
+        }
       }
+    },
+    created() {
+      this.getTableName()
     },
     computed: {
       fullScreenProps() {
@@ -87,17 +96,32 @@
         this.dataId = dataId
         this.desform = desform
         this.visible = true
-        this.showB()
+        console.log('tableList=' + this.tableList)
+        for (let item = 0; item < this.tableList.length; item++) {
+          var tableName = this.tableList[item].tableName
+          console.log('tableName=' + tableName)
+          if (this.desform.desformCode != null && this.desform.desformCode != ''
+            && this.desform.desformCode === this.tableList[item].tableName) {
+            this.isShowB = false
+            break
+          }
+        }
+        if (this.isShowB) {
+          this.showB()
+        } else {
+          this.isShowB = true
+        }
+
       },
 
-      showB(){
+      showB() {
         window.setTimeout(() => {
-          var iframe = document.getElementById('create-iframe');//获取那个iframe，也可以bai用$('#iframe')[0]替代
-          var iframeWindow = iframe.contentWindow;//获取iframe里的duwindow对象
-          var ifr_document = iframe.contentWindow.document;//iframe中的文档内容
+          var iframe = document.getElementById('create-iframe')//获取那个iframe，也可以bai用$('#iframe')[0]替代
+          var iframeWindow = iframe.contentWindow//获取iframe里的duwindow对象
+          var ifr_document = iframe.contentWindow.document//iframe中的文档内容
           var bList = ifr_document.getElementsByClassName('dialog-footer')
           bList[0].style.display = 'unset'
-          that.$message.warning('unset');
+          that.$message.warning('unset')
         }, 1800)
       },
 
@@ -114,14 +138,14 @@
       toggleFullScreen() {
         if (this.fullScreen) {
           this.modalWidth = '70%'
-          this.buttonIcon = 'fullscreen';
-          this.style = "top: 40px;";
-          this.bodyStyle.height = (window.innerHeight*0.8) + 'px';
+          this.buttonIcon = 'fullscreen'
+          this.style = 'top: 40px;'
+          this.bodyStyle.height = (window.innerHeight * 0.8) + 'px'
         } else {
           this.modalWidth = '100%'
           this.buttonIcon = 'fullscreen-exit',
-          this.style = "top: 0px;";
-          this.bodyStyle.height = (window.innerHeight-80) + 'px';
+            this.style = 'top: 0px;'
+          this.bodyStyle.height = (window.innerHeight - 80) + 'px'
         }
         this.fullScreen = !this.fullScreen
       },
@@ -136,6 +160,14 @@
       },
       handleDialogChange(data) {
         this.forceFullScreen = data
+      },
+
+      getTableName() {
+        getAction(this.url.getTableName).then((res) => {
+          if (res.success) {
+            this.tableList = res.result
+          }
+        })
       }
 
     }
