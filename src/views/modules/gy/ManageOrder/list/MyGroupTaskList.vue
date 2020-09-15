@@ -1,11 +1,9 @@
 <template>
   <div>
-
     <!-- 查询区域 -->
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="24">
-
           <a-col :md="8" :sm="12">
             <a-form-item label="流程编号">
               <a-input placeholder="请输入流程编号" v-model="queryParam.processDefinitionId"></a-input>
@@ -14,37 +12,46 @@
           <a-col :md="8" :sm="12">
             <!-- <a-form-item label="工单类型">
               <a-input placeholder="请输入工单类型" v-model="queryParam.processDefinitionName"></a-input>
-            </a-form-item> -->
+            </a-form-item>-->
             <a-form-item label="工单类型">
-              <a-select v-model="queryParam.processDefinitionName" style="width: 100%" placeholder="请选择工单类型" >
-                <a-select-option v-for="type in typeList" :key="type.procName">
-                  {{ type.procName }}
-                </a-select-option>
+              <a-select
+                v-model="queryParam.processDefinitionName"
+                style="width: 100%"
+                placeholder="请选择工单类型"
+              >
+                <a-select-option v-for="type in typeList" :key="type.procName">{{ type.procName }}</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
 
-          <a-col :md="2" :sm="4"> </a-col>
+          <a-col :md="2" :sm="4"></a-col>
 
-          <a-col :md="4" :sm="6" >
+          <a-col :md="4" :sm="6">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
-              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+              <a-button
+                type="primary"
+                @click="searchReset"
+                icon="reload"
+                style="margin-left: 8px"
+              >重置</a-button>
             </span>
           </a-col>
-
         </a-row>
       </a-form>
     </div>
 
     <!-- 操作按钮区域 -->
 
-
     <!-- table区域-begin -->
     <div>
       <a-table
+        :expandedRowKeys="expandedKeys"
+        @expand="onExpand"
+        :expandRowByClick="true"
+        :expandIconAsCell="false"
+        :expandIconColumnIndex="-1"
         ref="table"
-       
         size="middle"
         bordered
         rowKey="id"
@@ -52,26 +59,28 @@
         :dataSource="dataSource"
         :pagination="ipagination"
         :loading="loading"
-        @change="handleTableChange">
-
+        @change="handleTableChange"
+      >
         <span slot="action" slot-scope="text, record">
           <template v-if="record.taskAssigneeName&&record.taskAssigneeName!=''">
-            <a  @click="handleProcess(record)">
-              办理
-            </a>
+            <a @click="handleProcess(record)">办理</a>
           </template>
           <template v-else>
-            <a  @click="handleClaim(record)" >
-              办理
-            </a>
+            <a @click="handleClaim(record)">办理</a>
           </template>
         </span>
 
         <!-- 字符串超长截取省略号显示-->
         <span slot="bpmBizTitle" slot-scope="text">
-          <j-ellipsis :value="text" :length="15"/>
+          <j-ellipsis :value="text" :length="15" />
         </span>
-
+        <a-table
+          rowKey="id"
+          slot="expandedRowRender"
+          :columns="innerColumns"
+          :data-source="innerData"
+          :pagination="false"
+        ></a-table>
       </a-table>
     </div>
     <!-- table区域-end -->
@@ -81,146 +90,171 @@
 </template>
 
 <script>
-  import { filterObj } from '@/utils/util'
-  import { deleteAction,getAction,postAction,putAction,httpAction } from '@/api/manage'
-  import TaskDealModal from "./task/TaskDealModal1";
-  import JEllipsis from '@/components/jeecg/JEllipsis'
-  import {JeecgListMixin} from '@/mixins/JeecgListMixin'
-  import {BpmNodeInfoMixin} from '@/views/modules/bpm/mixins/BpmNodeInfoMixin'
+import { filterObj } from '@/utils/util'
+import { deleteAction, getAction, postAction, putAction, httpAction } from '@/api/manage'
+import TaskDealModal from './task/TaskDealModal1'
+import JEllipsis from '@/components/jeecg/JEllipsis'
+import { JeecgListMixin } from '@/mixins/JeecgListMixin'
+import { BpmNodeInfoMixin } from '@/views/modules/bpm/mixins/BpmNodeInfoMixin'
 
-  export default {
-    name: "MyGroupTaskList",
-    mixins: [JeecgListMixin,BpmNodeInfoMixin],
-    components: {
-      TaskDealModal,
-      JEllipsis
-    },
-    data () {
-      return {
-        description: '我的组任务',
-        // 查询条件
-        queryParam: {},
-        typeList: [],
-        // 表头
-        columns: [
-          {
-            title: '#',
-            width: 60,
-            dataIndex: '',
-            key: 'rowIndex',
-            align: 'center',
-            customRender: function(t, r, index) {
-              return parseInt(index) + 1
-            }
-          }, {
-            title: '工单标题',
-            align: 'center',
-            dataIndex: 'bpmBizTitle',
-            scopedSlots: { customRender: 'bpmBizTitle' }
+export default {
+  name: 'MyGroupTaskList',
+  mixins: [JeecgListMixin, BpmNodeInfoMixin],
+  components: {
+    TaskDealModal,
+    JEllipsis,
+  },
+  data() {
+    return {
+      expandedKeys: [],
+      innerData: [],
+      innerColumns: [],
+      description: '我的组任务',
+      // 查询条件
+      queryParam: {},
+      typeList: [],
+      // 表头
+      columns: [
+        {
+          title: '#',
+          width: 60,
+          dataIndex: '',
+          key: 'rowIndex',
+          align: 'center',
+          customRender: function (t, r, index) {
+            return parseInt(index) + 1
           },
-          //  {
-          //   title: '流程编号',
-          //   align: 'center',
-          //   dataIndex: 'processDefinitionId'
-          // },
-          {
-            title: '工单类型',
-            align: 'center',
-            dataIndex: 'processDefinitionName'
-          },
-          // {
-          //   title: '工单编号',
-          //   align: 'center',
-          //   dataIndex: 'processInstanceId'
-          // },
-          // {
-          //   title: '任务ID',
-          //   align: 'center',
-          //   dataIndex: 'taskId'
-          // },
-          {
-            title: '创建人',
-            align: 'center',
-            dataIndex: 'processApplyUserName'
-          },{
-            title: '开始时间',
-            align: 'center',
-            dataIndex: 'taskBeginTime'
-          }, 
-          // {
-          //   title: '结束时间',
-          //   align: 'center',
-          //   dataIndex: 'taskEndTime'
-          // }, 
-          {
-            title: '当前环节',
-            align: 'center',
-            dataIndex: 'taskName'
-          }, {
-            title: '操作',
-            dataIndex: 'action',
-            align: 'center',
-            fixed: 'right',
-            width:150,
-            scopedSlots: {customRender: 'action'}
-          }
-        ],
-        path:"modules/bpm/task/form/FormLoading",
-        formData:{},
-		    url: {
-          list: "/act/task/taskGroupList",
-          claim: "/act/task/claim",
-          roleDegisnList: "/designform/designFormCommuse/roleDegisnList"
         },
-        
-      }
-    },
-    created() {
-      this.initList()
-    },
-    methods: {
-      // 
-      init (url) {
-        getAction(url, {}, 'GET').then((data) => {
-          this.dataSource = data.result.records
-          this.ipagination.total = data.result.total
-        })
+        {
+          title: '工单标题',
+          align: 'center',
+          dataIndex: 'bpmBizTitle',
+          scopedSlots: { customRender: 'bpmBizTitle' },
+        },
+        //  {
+        //   title: '流程编号',
+        //   align: 'center',
+        //   dataIndex: 'processDefinitionId'
+        // },
+        {
+          title: '工单类型',
+          align: 'center',
+          dataIndex: 'processDefinitionName',
+        },
+        // {
+        //   title: '工单编号',
+        //   align: 'center',
+        //   dataIndex: 'processInstanceId'
+        // },
+        // {
+        //   title: '任务ID',
+        //   align: 'center',
+        //   dataIndex: 'taskId'
+        // },
+        {
+          title: '创建人',
+          align: 'center',
+          dataIndex: 'processApplyUserName',
+        },
+        {
+          title: '开始时间',
+          align: 'center',
+          dataIndex: 'taskBeginTime',
+        },
+        // {
+        //   title: '结束时间',
+        //   align: 'center',
+        //   dataIndex: 'taskEndTime'
+        // },
+        {
+          title: '当前环节',
+          align: 'center',
+          dataIndex: 'taskName',
+        },
+        {
+          title: '操作',
+          dataIndex: 'action',
+          align: 'center',
+          fixed: 'right',
+          width: 150,
+          scopedSlots: { customRender: 'action' },
+        },
+      ],
+      path: 'modules/bpm/task/form/FormLoading',
+      formData: {},
+      url: {
+        list: '/act/task/taskGroupList',
+        claim: '/act/task/claim',
+        roleDegisnList: '/designform/designFormCommuse/roleDegisnList',
+        detail: '/moreFilter/detail',
       },
-      handleProcess(record){
-        this.getProcessNodeInfo(record);
-      },
-      handleClaim(record){
-        var that = this;
-        var params = {taskId:record.id};//查询条件
-        // this.$confirm({
-        //   title:"确认签收吗",
-        //   content:"是否签收该任务?",
-        //   onOk: function(){
-            putAction(that.url.claim, params).then((res) => {
-              if (res.success) {
-                that.$message.success(res.message);
-                this.getProcessNodeInfo(record);
-                // that.loadData();
-              } else {
-                that.$message.warning(res.message);
-                that.loadData();
-              }
-            })
-        //   }
-        // });
-      },
-      handleOk(){
-        this.loadData();
-      },
-      // 加载下拉
-      initList(){
-        httpAction(this.url.roleDegisnList, {}, "GET").then((data) => {
-          this.typeList = data.result
-        })
-      }
     }
-  }
+  },
+  created() {
+    this.initList()
+  },
+  methods: {
+    onExpand(expanded, record) {
+      if (expanded) {
+        this.expandedKeys = []
+        this.detail(record.processInstanceId)
+        this.onExpandedRowsChange(record)
+      } else {
+        this.expandedKeys = []
+      }
+    },
+    onExpandedRowsChange(rows) {
+      this.expandedKeys.push(rows.processInstanceId)
+      console.log(this.expandedKeys)
+    },
+    detail(id) {
+      console.log('id=' + id)
+      getAction(this.url.detail, { id: id }).then((res) => {
+        this.innerData = res.result.data
+        this.innerColumns = res.result.columns
+      })
+    },
+    //
+    init(url) {
+      getAction(url, {}, 'GET').then((data) => {
+        this.dataSource = data.result.records
+        this.ipagination.total = data.result.total
+      })
+    },
+    handleProcess(record) {
+      this.getProcessNodeInfo(record)
+    },
+    handleClaim(record) {
+      var that = this
+      var params = { taskId: record.id } //查询条件
+      // this.$confirm({
+      //   title:"确认签收吗",
+      //   content:"是否签收该任务?",
+      //   onOk: function(){
+      putAction(that.url.claim, params).then((res) => {
+        if (res.success) {
+          that.$message.success(res.message)
+          this.getProcessNodeInfo(record)
+          // that.loadData();
+        } else {
+          that.$message.warning(res.message)
+          that.loadData()
+        }
+      })
+      //   }
+      // });
+    },
+    handleOk() {
+      this.loadData()
+    },
+    // 加载下拉
+    initList() {
+      httpAction(this.url.roleDegisnList, {}, 'GET').then((data) => {
+        this.typeList = data.result
+      })
+    },
+  },
+}
 </script>
 <style lang="less" scoped>
-
 </style>
