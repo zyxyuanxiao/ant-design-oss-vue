@@ -1395,7 +1395,7 @@ export default {
             },{
               field: 'sgdw',
               value: departName,
-              operator: 'eq'
+              operator: 'like'
             }
           ]
           dataArr2.forEach((item) => {
@@ -1412,7 +1412,7 @@ export default {
             {
               field: 'cjdw',
               value: departName,
-              operator: 'eq'
+              operator: 'like'
             }
           ]
           dataArr2.forEach((item) => {
@@ -1428,7 +1428,7 @@ export default {
             {
               field: 'bxbm',
               value: departName,
-              operator: 'eq'
+              operator: 'like'
             }
           ]
           dataArr2.forEach((item) => {
