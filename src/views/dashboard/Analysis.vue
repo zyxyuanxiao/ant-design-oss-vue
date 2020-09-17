@@ -5,40 +5,40 @@
         <div class="topbar-item item1">
           <header class="header">
             今日工单数:
-            <strong>{{workCount.toDay.toDayCount}}</strong>
+            <strong>{{workCount.toDay.count ? workCount.toDay.count : 0}}</strong>
           </header>
           <div class="content">
             <div class="info-left">
               监控类:
-              <strong>{{workCount.toDay.jkTypeTodayCount}}</strong>
+              <strong>{{workCount.toDay.monitor ? workCount.toDay.monitor : 0}}</strong>
             </div>
-            <div class="info-right">其他:{{workCount.toDay.otherTypeTodayCount}}</div>
+            <div class="info-right">其他:{{workCount.toDay.other ? workCount.toDay.other : 0}}</div>
           </div>
         </div>
         <div class="topbar-item item2">
           <header class="header">
             未完成工单数:
-            <strong>{{workCount.finish.unFinishCount}}</strong>
+            <strong>{{workCount.undone.count ? workCount.undone.count : 0}}</strong>
           </header>
           <div class="content">
             <div class="info-left">
               监控类:
-              <strong>{{workCount.finish.jkUnFinishCount}}</strong>
+              <strong>{{workCount.undone.monitor ? workCount.undone.monitor : 0}}</strong>
             </div>
-            <div class="info-right">其他:{{workCount.finish.otherUnFinishCount}}</div>
+            <div class="info-right">其他:{{workCount.undone.other ? workCount.undone.other : 0}}</div>
           </div>
         </div>
         <div class="topbar-item item3">
           <header class="header">
             逾期工单数:
-            <strong>{{workCount.overdue.overdueStateCount}}</strong>
+            <strong>{{workCount.overdue.count ? workCount.overdue.count : 0}}</strong>
           </header>
           <div class="content">
             <div class="info-left">
               监控类:
-              <strong>{{workCount.overdue.jkTypeYqztCount}}</strong>
+              <strong>{{workCount.overdue.monitor ? workCount.overdue.monitor : 0}}</strong>
             </div>
-            <div class="info-right">其他:{{workCount.overdue.otherTypeYqztCount}}</div>
+            <div class="info-right">其他:{{workCount.overdue.other ? workCount.overdue.other : 0}}</div>
           </div>
         </div>
       </div>
@@ -106,15 +106,6 @@
                   <a-input placeholder="请输入工单标题" v-model="formData.title"></a-input>
                 </a-form-model-item>
               </a-col>-->
-            <a-col :xl="6" :lg="8" :md="8" :sm="24">
-              <a-form-model-item label="工单模板" prop="modelId">            
-                <a-select mode="tags" v-model="formData.modelId" style="width: 100%" placeholder="请选择工单模板">
-                  <a-select-option v-for="item in workTypeList" :key="item.id">
-                    {{item.name}}
-                  </a-select-option>
-                </a-select>
-              </a-form-model-item>
-            </a-col>
             <!-- <a-col :xl="6" :lg="8" :md="8" :sm="24">
                <a-form-model-item label="流水号" prop="flowNo">            
                  <a-input placeholder="请输入流水号" v-model="formData.flowNo"></a-input>
@@ -139,6 +130,20 @@
                           v-model="formData.bxsj"></j-date>-->
               </a-form-model-item>
             </a-col>
+            <a-col :xl="6" :lg="8" :md="8" :sm="24">
+              <a-form-model-item label="地点" prop="dd">
+                <a-input placeholder="请输入地点" v-model="formData.dd"></a-input>
+              </a-form-model-item>
+            </a-col>
+            <!-- <a-col :xl="6" :lg="8" :md="8" :sm="24">
+               <a-form-model-item label="工单模板" prop="modelId">            
+                 <a-select mode="tags" v-model="formData.modelId" style="width: 100%" placeholder="请选择工单模板">
+                   <a-select-option v-for="item in workTypeList" :key="item.id">
+                     {{item.name}}
+                   </a-select-option>
+                 </a-select>
+               </a-form-model-item>
+             </a-col>-->
             <a-col :xl="6" :lg="8" :md="8" :sm="24">
               <a-form-model-item label="工单状态" prop="hiddenOrderSate">           
                 <a-select
@@ -216,16 +221,16 @@
         <a-spin :spinning="spinningShow">
           <a-tabs v-model="activeKey" @change="onChangeTabs">
             <a-tab-pane key="1">
-          <span slot="tab">
-            <a-icon type="solution" style="font-size: 16px;"/>
-           我的待办
-          </span>
+              <span slot="tab">
+                <a-icon type="solution" style="font-size: 16px;"/>
+                我的待办
+              </span>
             </a-tab-pane>
             <a-tab-pane key="2">
-          <span slot="tab">
-           <a-icon type="file-done" style="font-size: 16px;"/>
-           全部工单
-          </span>
+              <span slot="tab">
+                <a-icon type="file-done" style="font-size: 16px;"/>
+                全部工单
+              </span>
             </a-tab-pane>
           </a-tabs>
           <a-table
@@ -393,8 +398,8 @@
 import {
   getTicketsList, getTicketsDetails, getModelList,
   getModelDetails, saveWorkOrder, handleOrder, updateTickets,
-  uploadFileByTicketId, getTicketCountByUser, getTicketsProcess,
-  getMytodoList, getUserGroup
+  uploadFileByTicketId, getTicketTodoCountByUser, getTicketsProcess,
+  getMytodoList, getUserGroup, getTicketAllCountByUser
 } from '../../api/tickets'
 import JEllipsis from '@/components/jeecg/JEllipsis'
 import JDate from '@/components/jeecg/JDate.vue'
@@ -595,6 +600,7 @@ export default {
         gdlx: [],
         bxlx: [],
         IP: '',
+        dd: '',
         hiddenOrderSate: [],
         gddj: []
       },
@@ -746,7 +752,7 @@ export default {
       workCount: {
         overdue: {},
         toDay: {},
-        finish: {}
+        undone: {}
       },
       ticketsLevel: [
         {
@@ -770,7 +776,11 @@ export default {
       userIdList: [],
       userGroup: [],
       groupIdList: [],
-      subItem: {}
+      subItem: {},
+      // 保存当前登录人角色信息
+      identity: '',
+      //保存当前登录人所在部门
+      departName: ''
     }
   },
   methods: {
@@ -1231,55 +1241,94 @@ export default {
         })
       }
     },
-    getTicketCountByUser () {
-      let userId = this.userInfo().uyunid
-      getTicketCountByUser(userId).then(response => {
+    getTicketTodoCountByUser () {
+      let data = {
+        userid: this.userInfo().uyunid,
+        roleid: this.rolesA()[0]
+      }
+      this.workCount.overdue = {}
+      this.workCount.toDay = {}
+      this.workCount.undone = {}
+      getTicketTodoCountByUser(data).then(response => {
         this.workCount.overdue = response.result.overdue
         this.workCount.toDay = response.result.toDay
-        this.workCount.finish = response.result.finish
+        this.workCount.undone = response.result.undone
         this.loading = false
       }).catch(error => {
         console.log(error)
       })
     },
+    getTicketAllCountByUser () {
+      let data = {}
+      if (this.identity === '') {
+        data = {}
+      } else {
+        data = {
+          userid: this.userInfo().uyunid,
+          roleid: this.rolesA()[0],
+          [this.identity]: this.departName
+        }
+      }
+      this.workCount.overdue = {}
+      this.workCount.toDay = {}
+      this.workCount.undone = {}
+      getTicketAllCountByUser(data).then(response => {
+        this.workCount.overdue = response.result.overdue
+        this.workCount.toDay = response.result.toDay
+        this.workCount.undone = response.result.undone
+        this.loading = false
+      }).catch(error => {
+        console.log(error)
+      })
+    }
+    ,
     getLongTime (val, isFull) {
       if (val === '' || val === 0) {
         return '- -'
       }
       return getSelectTime(new Date(val), isFull)
-    },
+    }
+    ,
     getExecutors (arr) {
       return arr != null && arr.length >= 0 ? arr.join(',') : ' '
-    },
+    }
+    ,
     getExecutionGroups (arr) {
       return arr != null && arr.length >= 0 ? arr.join(',') : ' '
-    },
+    }
+    ,
     onChange (page, pageSize) {
       this.data.pageNum = page
       this.data.pageSize = pageSize
       this.getTicketsList()
-    },
+    }
+    ,
     onChangeTabs (key) {
-      if (key === 1) {
-
+      this.getQueryTerms()
+      this.getTicketsList()
+      if (key === '1') {
+        this.getTicketTodoCountByUser()
       } else {
-        this.getQueryTerms()
-        this.getTicketsList()
+        this.getTicketAllCountByUser()
       }
-    },
+    }
+    ,
     onShowSizeChange (current, size) {
       this.data.pageNum = current
       this.data.pageSize = size
       this.getTicketsList()
-    },
+    }
+    ,
     handleChange (value) {
       console.log(`selected ${value}`)
-    },
+    }
+    ,
     filterOption (input, option) {
       return (
         option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
       )
-    },
+    }
+    ,
     searchQuery () {
       this.getQueryTerms()
       for (let key in this.formData) {
@@ -1330,15 +1379,18 @@ export default {
         }
       }
       this.getTicketsList()
-    },
+    }
+    ,
     searchReset () {
       this.$refs.ruleForm.resetFields()
       this.getQueryTerms()
       this.getTicketsList()
-    },
+    }
+    ,
     handleToggleSearch () {
       this.toggleSearchStatus = !this.toggleSearchStatus
-    },
+    }
+    ,
     getQueryTerms () {
       let rolesB = this.rolesA()
       let serviceGroups = ['3468e3f179ec47a993aa71cebf611465']
@@ -1352,6 +1404,7 @@ export default {
       if ((Array.isArray(departObj) && departObj.length > 0) && departObj) {
         departName = departObj[0].departName
       }
+      this.departName = departName // 保存部门名称在统计时使用
       let dataArr2 = []
       dataArr2 = [
         {
@@ -1385,15 +1438,17 @@ export default {
         this.data.conditions = []
 
         if (serviceGroups.indexOf(rolesB[0]) > -1) {
+          this.identity = ''
           dataArr2 = []
         } else if (outfields.indexOf(rolesB[0]) > -1) {
+          this.identity = 'sgdw'
           let cond = [
             {
               field: 'participation',
               value: [this.userInfo().uyunid],
               operator: 'in'
-            },{
-              field: 'sgdw',
+            }, {
+              field: 'formData.sgdw',
               value: departName,
               operator: 'like'
             }
@@ -1402,7 +1457,7 @@ export default {
             item.conditions = [...item.conditions, ...cond]
           })
         } else if (infields.indexOf(rolesB[0]) > -1) {
-
+          this.identity = 'cjdw'
           let cond = [
             {
               field: 'participation',
@@ -1410,7 +1465,7 @@ export default {
               operator: 'in'
             },
             {
-              field: 'cjdw',
+              field: 'formData.cjdw',
               value: departName,
               operator: 'like'
             }
@@ -1419,6 +1474,7 @@ export default {
             item.conditions = [...item.conditions, ...cond]
           })
         } else if (normalUser.indexOf(rolesB[0]) > -1) {
+          this.identity = 'bxbm'
           let cond = [
             {
               field: 'participation',
@@ -1426,10 +1482,11 @@ export default {
               operator: 'in'
             },
             {
-              field: 'bxbm',
+              field: 'formData.bxbm',
               value: departName,
               operator: 'like'
             }
+
           ]
           dataArr2.forEach((item) => {
             item.conditions = [...item.conditions, ...cond]
@@ -1437,27 +1494,30 @@ export default {
         }
         this.data.ass = dataArr2
       }
-    },
+    }
+    ,
     onChangeDate (dates, dateStrings) {
       console.log('From: ', dates[0], ', to: ', dates[1])
       console.log('From: ', dateStrings[0], ', to: ', dateStrings[1])
-    },
+    }
+    ,
     selectChangeUser () {
       this.$refs.userIdList.blur()
-    },
+    }
+    ,
     selectChangeGroup () {
       this.$refs.groupIdList.blur()
     }
   },
   created () {
-    this.getUserGroup()
+    // this.getUserGroup()
   },
   mounted () {
     // this.getMyToDoList()
     this.getQueryTerms()
     this.getTicketsList()
     this.getModelList()
-    this.getTicketCountByUser()
+    this.getTicketTodoCountByUser()
     // this.initDictConfig()
   }
 }

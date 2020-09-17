@@ -214,6 +214,11 @@ export default {
           dataIndex: 'fieldCode_dictText'
         },
         {
+          title: '是否只读',
+          align: 'center',
+          dataIndex: 'isOnly_dictText'
+        },
+        {
           title: '是否必填',
           align: 'center',
           dataIndex: 'isRequired_dictText'

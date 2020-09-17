@@ -61,6 +61,10 @@
             <j-dict-select-tag type="radio" v-decorator="['isRequired', validatorRules.isRequired]" :trigger-change="true"
                                dictCode="isRequired" placeholder="请选择是否必填"/>
           </a-form-item>
+          <a-form-item label="是否只读" :labelCol="labelCol" :wrapperCol="wrapperCol">
+            <j-dict-select-tag type="radio" v-decorator="['isOnly', validatorRules.isOnly]" :trigger-change="true"
+                               dictCode="isOnly" placeholder="请选择是否只读"/>
+          </a-form-item>
           <a-form-item label="是否隐藏" :labelCol="labelCol" :wrapperCol="wrapperCol">
             <j-dict-select-tag type="radio" v-decorator="['isHidden', validatorRules.isHidden]" :trigger-change="true"
                                dictCode="isHidden" placeholder="请选择是否隐藏"/>
@@ -103,6 +107,10 @@
           <a-form-item label="是否必填" :labelCol="labelCol" :wrapperCol="wrapperCol">
             <j-dict-select-tag type="radio" v-decorator="['isRequired', validatorRules.isRequired]" :trigger-change="true"
                                dictCode="isRequired" placeholder="请选择是否必填"/>
+          </a-form-item>
+          <a-form-item label="是否只读" :labelCol="labelCol" :wrapperCol="wrapperCol">
+            <j-dict-select-tag type="radio" v-decorator="['isOnly', validatorRules.isOnly]" :trigger-change="true"
+                               dictCode="isOnly" placeholder="请选择是否只读"/>
           </a-form-item>
           <a-form-item label="是否隐藏" :labelCol="labelCol" :wrapperCol="wrapperCol">
             <j-dict-select-tag type="radio" v-decorator="['isHidden', validatorRules.isHidden]" :trigger-change="true"
@@ -184,12 +192,17 @@ export default {
         },
         isRequired: {
           rules: [
-            { required: true, message: '请输入是否必填!' }
+            { required: true, message: '请选择是否必填!' }
+          ]
+        },
+        isOnly: {
+          rules: [
+            { required: true, message: '请选择是否只读!' }
           ]
         },
         isHidden: {
           rules: [
-            { required: true, message: '请输入是否隐藏!' }
+            { required: true, message: '请选择是否隐藏!' }
           ]
         },
         defaultType: {
@@ -218,14 +231,14 @@ export default {
         this.model = Object.assign({}, record)
         this.visible = true
         this.$nextTick(() => {
-          this.formAdd.setFieldsValue(pick(this.model, 'modelId', 'actId', 'fieldName', 'fieldCode', 'isRequired', 'isHidden', 'defaultType', 'defaultValue', 'createTime'))
+          this.formAdd.setFieldsValue(pick(this.model, 'modelId', 'actId', 'fieldName', 'fieldCode', 'isRequired', 'isOnly', 'isHidden', 'defaultType', 'defaultValue', 'createTime'))
         })
       } else {
         this.formUp.resetFields()
         this.model = Object.assign({}, record)
         this.visible2 = true
         this.$nextTick(() => {
-          this.formUp.setFieldsValue(pick(this.model, 'modelId', 'actId', 'fieldName', 'fieldCode', 'isRequired', 'isHidden', 'defaultType', 'defaultValue', 'createTime'))
+          this.formUp.setFieldsValue(pick(this.model, 'modelId', 'actId', 'fieldName', 'fieldCode', 'isRequired', 'isOnly', 'isHidden', 'defaultType', 'defaultValue', 'createTime'))
         })
       }
     },
@@ -278,7 +291,7 @@ export default {
     },
     popupCallback (row) {
       let form = this.isTypeId === 'add' ? this.formAdd : this.formUp
-      form.setFieldsValue(pick(row, 'modelId', 'actId', 'fieldName', 'fieldCode', 'isRequired', 'isHidden', 'defaultType', 'defaultValue', 'createTime'))
+      form.setFieldsValue(pick(row, 'modelId', 'actId', 'fieldName', 'fieldCode', 'isRequired', 'isOnly', 'isHidden', 'defaultType', 'defaultValue', 'createTime'))
     },
     getFlowListByModeId () {
       let apiKey = this.userInfo().apikey

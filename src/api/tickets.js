@@ -104,14 +104,25 @@ export function getModelDetails (apiKey, id) {
 }
 
 /**
- * 获取工单统计数据
- * @param query 根据用户id获取工单统计
+ * 获取我的待办工单统计数据
+ * @param query 根据用户id，用户组id获取工单统计
  */
-export function getTicketCountByUser (userId) {
+export function getTicketTodoCountByUser (query) {
   return axios({
-    url: '/api/itsm/getTicketCountByUser',
-    method: 'get',
-    params: {userId: userId}
+    url: '/api/itsm/db/counttodo',
+    method: 'post',
+    data: query
+  })
+}
+/**
+ * 获取工单统计数据
+ * @param query 根据用户id，用户组id以及所属部门获取工单统计
+ */
+export function getTicketAllCountByUser (query) {
+  return axios({
+    url: '/api/itsm/db/count',
+    method: 'post',
+    data: query
   })
 }
 
