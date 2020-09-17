@@ -3,7 +3,7 @@
     <a-upload :file-list="item.fileList"
               :custom-request="customRequest"
               :remove="handleRemove"
-              :disabled="item.disabled || item.readOnly"
+              :disabled="item.disabled || item.is_readOnly"
               :before-upload="beforeUpload">
       <a-button>
         <a-icon type="upload"/>

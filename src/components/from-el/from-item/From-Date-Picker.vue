@@ -1,7 +1,7 @@
 <template>
   <div style="width: 100%">
     <a-date-picker
-      :disabled="item.disabled || item.readOnly"
+      :disabled="item.disabled || item.is_readOnly"
       :placeholder="item.placeholder"
       @change="handleDateChange"
       :defaultValue="moment(item.conf.default_value, 'YYYY-MM-DD HH:mm:ss')"

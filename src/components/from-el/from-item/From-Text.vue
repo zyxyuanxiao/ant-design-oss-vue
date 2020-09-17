@@ -1,7 +1,7 @@
 <template>
   <a-input
     :maxLength="maxLength"
-    :disabled="item.disabled || item.readOnly"
+    :disabled="item.disabled || item.is_readOnly"
     v-model="item.conf.default_value"
   />
 </template>

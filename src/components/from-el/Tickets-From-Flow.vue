@@ -64,12 +64,14 @@
                   <p>处理人：{{itemC.exectorName}}</p>
                   <p>开始时间：{{itemC.exectorTime}}</p>
                   <p>事件：{{itemC.remark}}</p>
+                  <p v-if="itemC.msg">留言：{{itemC.msg}}</p>
                 </a-timeline-item>
                 <a-timeline-item v-else>
                   <p>流程环节：<span style="color: #218af4">【{{itemC.activityName}}】</span></p>
                   <p>处理人：{{itemC.exectorName}}</p>
                   <p>开始时间：{{itemC.exectorTime}}</p>
                   <p>事件：{{itemC.remark}}</p>
+                  <p v-if="itemC.msg">留言：{{itemC.msg}}</p>
                 </a-timeline-item>
               </template>
             </a-timeline>

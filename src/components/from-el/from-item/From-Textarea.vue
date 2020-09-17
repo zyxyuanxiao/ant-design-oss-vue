@@ -2,7 +2,7 @@
   <div>
     <a-textarea
       :placeholder="item.placeholder"
-      :disabled="item.disabled || item.readOnly"
+      :disabled="item.disabled || item.is_readOnly"
       v-model="item.conf.default_value"
       :autoSize="{ minRows: 6, maxRows: 24 }"
     />

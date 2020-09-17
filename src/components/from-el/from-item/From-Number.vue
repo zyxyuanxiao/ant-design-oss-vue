@@ -4,6 +4,7 @@
       :size="item.size ? item.size : 'default'"
       :max="item.conf.int_max"
       :min="item.conf.int_min"
+      :disabled="item.disabled || item.is_readOnly"
       style="width: 100%"
       v-model="item.conf.default_value"
       :placeholder="item.placeholder"

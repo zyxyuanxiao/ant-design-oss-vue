@@ -3,7 +3,7 @@
     <a-cascader
       :size="item.size ? item.size : 'default'"
       :options="item.conf.params"
-      :disabled="item.disabled || item.readOnly"
+      ::disabled="item.disabled || item.is_readOnly"
       :showSearch="{ cascaderFilter }"
       placeholder=""
       v-model="item.conf.default_value"

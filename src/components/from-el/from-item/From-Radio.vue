@@ -2,7 +2,7 @@
   <div>
     <a-radio-group
       buttonStyle="solid"
-      :disabled="item.disabled || item.readOnly"
+      :disabled="item.disabled || item.is_readOnly"
       v-model="item.conf.default_value"
     >
       <a-radio v-for="(itemA, key) in item.conf.params"

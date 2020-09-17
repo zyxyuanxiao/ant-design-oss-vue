@@ -111,11 +111,11 @@
                  <a-input placeholder="请输入流水号" v-model="formData.flowNo"></a-input>
                </a-form-model-item>
              </a-col>-->
-            <a-col :xl="6" :lg="8" :md="8" :sm="24">
-              <a-form-model-item label="报修人" prop="repairman">            
-                <a-input placeholder="请输入报修人" v-model="formData.repairman"></a-input>
-              </a-form-model-item>
-            </a-col>
+            <!-- <a-col :xl="6" :lg="8" :md="8" :sm="24">
+               <a-form-model-item label="报修人" prop="repairman">            
+                 <a-input placeholder="请输入报修人" v-model="formData.repairman"></a-input>
+               </a-form-model-item>
+             </a-col>-->
             <a-col :xl="6" :lg="8" :md="8" :sm="24">
               <a-form-model-item label="报修时间" prop="createTime">
                 <a-range-picker
@@ -157,11 +157,11 @@
                 />
               </a-form-model-item>
             </a-col>
-            <!-- <a-col :xl="6" :lg="8" :md="8" :sm="24">
-               <a-form-model-item label="设备编码" prop="deviceid">
-                 <a-input placeholder="请输入设备编码" v-model="formData.deviceid"></a-input>
-               </a-form-model-item>
-             </a-col>-->
+            <a-col :xl="6" :lg="8" :md="8" :sm="24">
+              <a-form-model-item label="设备编码" prop="deviceid">
+                <a-input placeholder="请输入设备编码" v-model="formData.deviceid"></a-input>
+              </a-form-model-item>
+            </a-col>
             <a-col :xl="6" :lg="8" :md="8" :sm="24">
               <a-form-model-item label="设备IP" prop="IP">
                 <a-input placeholder="请输入设备IP" v-model="formData.IP"></a-input>
@@ -1364,7 +1364,7 @@ export default {
               obj = {
                 field: key + '',
                 value: this.formData[key],
-                operator: 'BETWEEN'
+                operator: 'range'
               }
               this.data.conditions.push(obj)
             } else {

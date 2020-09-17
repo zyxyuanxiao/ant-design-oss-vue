@@ -1,5 +1,6 @@
 <template>
   <div>
+    {{item.readOnly}}
     <a-select
       style="width: 100%"
       showSearch

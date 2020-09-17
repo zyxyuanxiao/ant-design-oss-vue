@@ -111,11 +111,11 @@
                  <a-input placeholder="请输入流水号" v-model="formData.flowNo"></a-input>
                </a-form-model-item>
              </a-col>-->
-            <a-col :xl="6" :lg="8" :md="8" :sm="24">
-              <a-form-model-item label="报修人" prop="repairman">            
-                <a-input placeholder="请输入报修人" v-model="formData.repairman"></a-input>
-              </a-form-model-item>
-            </a-col>
+            <!-- <a-col :xl="6" :lg="8" :md="8" :sm="24">
+               <a-form-model-item label="报修人" prop="repairman">            
+                 <a-input placeholder="请输入报修人" v-model="formData.repairman"></a-input>
+               </a-form-model-item>
+             </a-col>-->
             <a-col :xl="6" :lg="8" :md="8" :sm="24">
               <a-form-model-item label="报修时间" prop="createTime">
                 <a-range-picker
@@ -135,15 +135,15 @@
                 <a-input placeholder="请输入地点" v-model="formData.dd"></a-input>
               </a-form-model-item>
             </a-col>
-           <!-- <a-col :xl="6" :lg="8" :md="8" :sm="24">
-              <a-form-model-item label="工单模板" prop="modelId">            
-                <a-select mode="tags" v-model="formData.modelId" style="width: 100%" placeholder="请选择工单模板">
-                  <a-select-option v-for="item in workTypeList" :key="item.id">
-                    {{item.name}}
-                  </a-select-option>
-                </a-select>
-              </a-form-model-item>
-            </a-col>-->
+            <!-- <a-col :xl="6" :lg="8" :md="8" :sm="24">
+               <a-form-model-item label="工单模板" prop="modelId">            
+                 <a-select mode="tags" v-model="formData.modelId" style="width: 100%" placeholder="请选择工单模板">
+                   <a-select-option v-for="item in workTypeList" :key="item.id">
+                     {{item.name}}
+                   </a-select-option>
+                 </a-select>
+               </a-form-model-item>
+             </a-col>-->
             <a-col :xl="6" :lg="8" :md="8" :sm="24">
               <a-form-model-item label="工单状态" prop="hiddenOrderSate">           
                 <a-select
@@ -157,11 +157,11 @@
                 />
               </a-form-model-item>
             </a-col>
-            <!-- <a-col :xl="6" :lg="8" :md="8" :sm="24">
-               <a-form-model-item label="设备编码" prop="deviceid">
-                 <a-input placeholder="请输入设备编码" v-model="formData.deviceid"></a-input>
-               </a-form-model-item>
-             </a-col>-->
+            <a-col :xl="6" :lg="8" :md="8" :sm="24">
+              <a-form-model-item label="设备编码" prop="deviceid">
+                <a-input placeholder="请输入设备编码" v-model="formData.deviceid"></a-input>
+              </a-form-model-item>
+            </a-col>
             <a-col :xl="6" :lg="8" :md="8" :sm="24">
               <a-form-model-item label="设备IP" prop="IP">
                 <a-input placeholder="请输入设备IP" v-model="formData.IP"></a-input>
@@ -1364,7 +1364,7 @@ export default {
               obj = {
                 field: key + '',
                 value: this.formData[key],
-                operator: 'BETWEEN'
+                operator: 'range'
               }
               this.data.conditions.push(obj)
             } else {

@@ -2,7 +2,7 @@
   <div>
     <a-checkbox-group
       v-model="item.conf.default_value"
-      :disabled="item.disabled || item.readOnly"
+      :disabled="item.disabled || item.is_readOnly"
       name="checkboxGroup"
       :options="item.conf.params"
     />

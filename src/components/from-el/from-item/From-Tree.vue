@@ -16,7 +16,7 @@
         style="width: 100%"
         :tree-data="treeData"
         tree-checkable
-        :disabled="item.disabled || item.readOnly"
+        :disabled="item.disabled || item.is_readOnly"
         :show-checked-strategy="SHOW_PARENT"
         search-placeholder="Please select"
       />
