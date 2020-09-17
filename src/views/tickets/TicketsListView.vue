@@ -779,7 +779,8 @@ export default {
       this.subItem = item
       if (item.policy === 0) {
         this.showRollback = true
-        // this.userList = item.user
+        this.userList = []
+        this.userGroup = []
         item.user.forEach((itemA) => { // 转换成select组件需要的格式
           let objA = {
             value: itemA.id,
