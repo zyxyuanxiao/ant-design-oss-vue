@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <a-table rowKey="value" :columns="columns" :data-source="data" :pagination="false" bordered>
+  <div class="from-table">
+    <!--<a-table rowKey="value" :columns="columns" :data-source="data" :pagination="false" bordered>
       <template
         v-for="col in dataList"
         :slot="col"
@@ -39,11 +39,127 @@
         </span>
         </div>
       </template>
-    </a-table>
-    <div style="margin-top: 15px;" v-if="!item.disabled">
+    </a-table>-->
+    <div style="padding-top: 15px;">
+      <a-timeline>
+        <template v-for="(itemC, index) in data">
+          <a-timeline-item v-if="index===0" color="green" style="color: #42bf42">
+            <span>时间：<span style="color: #42bf42">【{{itemC['a3a99824161a487e815a0b2055bd6da9']}}】</span></span>
+            <span style="margin-left: 15px;">名称：{{itemC['a41257505b4b4d63b7f5164157e88fe0']}}</span>
+            <span style="margin-left: 15px;">内容：{{itemC['fc6661cf74474f708734558cb6530598']}}</span>
+          </a-timeline-item>
+          <a-timeline-item v-else>
+            <span>时间：<span style="color: #218af4">【{{itemC['a3a99824161a487e815a0b2055bd6da9']}}】</span></span>
+            <span style="margin-left: 15px;">名称：{{itemC['a41257505b4b4d63b7f5164157e88fe0']}}</span>
+            <span style="margin-left: 15px;">内容：{{itemC['fc6661cf74474f708734558cb6530598']}}</span>
+          </a-timeline-item>
+        </template>
+      </a-timeline>
+    </div>
+    <div v-if="!item.disabled">
       <a-button @click="() => edit()" type="primary" :disabled="item.disabled">增加</a-button>
       <a-button @click="() => save()" type="primary" :disabled="item.disabled" style="margin-left: 10px;"> 提交</a-button>
     </div>
+    <!-- <div style="margin-top: 15px;">
+       <a-carousel :dot-position="dotPosition" :dots="false" autoplay>
+         <div style="text-align: left;padding: 5px 10px; font-size: 12px;" @click="checkFlow">
+           <div>
+             <div style="float: left">
+               反馈时间：
+             </div>
+             <div style="float: left">
+               2020-09-11 14:30:21
+             </div>
+           </div>
+           <div style="clear: both;display: flex;margin-top: 5px;">
+             <div style="display: inline-block;
+             vertical-align: middle;width: 50px;padding-top: 5px;">
+               <img src="../../../assets/flowImg.png" style="height: 35px;width: 35px;"/>
+             </div>
+             <div style="display: inline-block;">
+               <div style="color: #4099ff">名称：左宏波</div>
+               <div>内容：维修完成测试数据周五测试完成了</div>
+             </div>
+           </div>
+         </div>
+         <div style="text-align: left;padding: 5px 10px; font-size: 12px;" @click="checkFlow">
+           <div>
+             <div style="float: left">
+               反馈时间：
+             </div>
+             <div style="float: left">
+               2020-09-11 14:30:21
+             </div>
+           </div>
+           <div style="clear: both;display: flex;margin-top: 5px;">
+             <div style="display: inline-block;
+             vertical-align: middle;width: 50px;padding-top: 5px;">
+               <img src="../../../assets/flowImg.png" style="height: 35px;width: 35px;"/>
+             </div>
+             <div style="display: inline-block;">
+               <div style="color: #4099ff">名称：左宏波</div>
+               <div>内容：维修完成测试数据周五测试完成了</div>
+             </div>
+           </div>
+         </div>
+         <div style="text-align: left;padding: 5px 10px; font-size: 12px;" @click="checkFlow">
+           <div>
+             <div style="float: left">
+               反馈时间：
+             </div>
+             <div style="float: left">
+               2020-09-11 14:30:21
+             </div>
+           </div>
+           <div style="clear: both;display: flex;margin-top: 5px;">
+             <div style="display: inline-block;
+             vertical-align: middle;width: 50px;padding-top: 5px;">
+               <img src="../../../assets/flowImg.png" style="height: 35px;width: 35px;"/>
+             </div>
+             <div style="display: inline-block;">
+               <div style="color: #4099ff">名称：左宏波</div>
+               <div>内容：测试呀测试呀测试呀</div>
+             </div>
+           </div>
+         </div>
+         <div style="text-align: left;padding: 5px 10px; font-size: 12px;" @click="checkFlow">
+           <div>
+             <div style="float: left">
+               反馈时间：
+             </div>
+             <div style="float: left">
+               2020-09-10 14:30:21
+             </div>
+           </div>
+           <div style="clear: both;display: flex;margin-top: 5px;">
+             <div style="display: inline-block;
+             vertical-align: middle;width: 50px;padding-top: 5px;">
+               <img src="../../../assets/flowImg.png" style="height: 35px;width: 35px;"/>
+             </div>
+             <div style="display: inline-block;">
+               <div style="color: #4099ff">名称：刘芷含</div>
+               <div>内容：测试数据完成测试99999</div>
+             </div>
+           </div>
+         </div>
+         &lt;!&ndash; <div><h3>2</h3></div>
+          <div><h3>3</h3></div>
+          <div><h3>4</h3></div>&ndash;&gt;
+       </a-carousel>
+     </div>-->
+    <a-modal v-model="visible" title="增加反馈记录" ok-text="确认" cancel-text="取消" @ok="hideModal">
+      <a-form-model ref="ruleForm" :label-col="labelCol" :wrapper-col="wrapperCol">
+        <a-row :gutter="24" style="margin-bottom: 0">    
+          <template v-for="itemA in list">
+            <a-col :xl="24" :lg="24" :md="24" :sm="24" v-if="itemA.label !== '时间'">
+              <a-form-model-item :label="itemA.label"  :prop="itemA.description">            
+                <a-input :placeholder="'请输入' + itemA.label" v-model="itemA.description"></a-input>
+              </a-form-model-item>
+            </a-col>
+          </template>
+        </a-row>
+      </a-form-model>
+    </a-modal>
   </div>
 </template>
 
@@ -57,23 +173,38 @@ export default {
   props: ['item'],
   data () {
     return {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 24 },
+        xl: { span: 24 },
+        lg: { span: 7 }
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 24 },
+        xl: { span: 24 },
+        lg: { span: 17 }
+      },
       data: [],
       columns: [],
       dataList: [],
       list: [],
       searchText: '',
       searchInput: null,
-      searchedColumn: ''
+      visible: false,
+      searchedColumn: '',
+      dotPosition: 'right'
     }
   },
   watch: {
     // 页面不刷新，监听值的变化，重新绑定数据
-    'item.conf.default_value':function(newValue) {
-      if(newValue === '') { this.item.conf.default_value = []}
+    'item.conf.default_value': function(newValue) {
+      if (newValue === '') { this.item.conf.default_value = []}
       let data = this.item.conf.default_value
       this.data = data
     },
-    'item.conf.params':function(newValue) {
+    'item.conf.params': function(newValue) {
+      this.list = newValue
       this.columns = []
       newValue.forEach((item) => {
         this.columns.push(
@@ -90,7 +221,7 @@ export default {
   },
   mounted () {
     this.list = this.item.conf.params
-    if (this.list) {
+    /*if (this.list) {
       this.list.forEach((item) => {
         this.columns.push(
           {
@@ -102,8 +233,8 @@ export default {
         )
         this.dataList.push(item.value)
       })
-    }
-    if( this.item.conf.default_value === '') { this.item.conf.default_value = []}
+    }*/
+    if (this.item.conf.default_value === '') { this.item.conf.default_value = []}
     let data = this.item.conf.default_value
     this.data = data
   },
@@ -114,48 +245,48 @@ export default {
       this.data = newData
     },
     edit () {
-      const { count, data } = this
-      let newData = {}
-      this.list.forEach((item) => {
-        newData[item.value] = item.label !== '时间' ? '' : getSelectTime(new Date(), true)
-        newData.isCol = true
-      })
-      this.data = [...data, newData]
+      this.visible = true
     },
-    ...mapGetters(["userInfo"]),
+    ...mapGetters(['userInfo']),
     save () {
-      this.data.forEach((item) => {
-        let lcObj = {}
-        if(item.isCol) {
-          lcObj = item
-          this.item.conf.default_value.push(lcObj)
-        }
-        delete item.isCol
+
+    },
+    cancel (index) {
+      const newData = [...this.data]
+      newData.splice(index, 1)
+      this.data = newData
+    },
+    hideModal () {
+      //console.log(this.data)
+      let lcObj = {}
+      this.list.forEach((item) => {
+        lcObj[item.value] = item.description !== '' ? item.description : getSelectTime(new Date(), true)
+        // console.log(lcObj)
       })
+      this.data.push(lcObj)
       let data = {
         form: {
-          fkjl: this.item.conf.default_value
+          fkjl: this.data
         },
         ticket_id: sessionStorage.getItem('tickedId')
       }
       let apiKey = this.userInfo().apikey
       updateFeedback(data, apiKey).then(response => {
         this.$message.success('提交成功')
-        this.show = false
+        this.visible = false
       }).catch(error => {
         console.log(error)
       })
     },
-    cancel (index) {
-      const newData = [...this.data]
-      newData.splice(index, 1)
-      this.data = newData
-    }
+    onChangeDate (dates, dateStrings) {
+      console.log('From: ', dates[0], ', to: ', dates[1])
+      console.log('From: ', dateStrings[0], ', to: ', dateStrings[1])
+    },
   }
 }
 </script>
-<style scoped>
-  .editable-row-operations a {
-    margin-right: 8px;
+<style>
+  .from-table .ant-timeline-item-last > .ant-timeline-item-content {
+    min-height: 0;
   }
 </style>

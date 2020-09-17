@@ -8,7 +8,7 @@ import { axios } from '@/utils/request'
  */
 export function getTicketsList (data) {
   return axios({
-    url: '/api/itsm/queryTicketDB',
+    url: '/api/itsm/db/query',
     method: 'post',
     data: data
   })
@@ -65,6 +65,15 @@ export function getFlowListByModeId (data, apiKey) {
     method: 'post',
     params: { apikey: apiKey },
     data
+  })
+}
+/**
+ * 获取用户组数据
+ */
+export function getUserGroup () {
+  return axios({
+    url: '/sys/role/getUserGroup',
+    method: 'get'
   })
 }
 

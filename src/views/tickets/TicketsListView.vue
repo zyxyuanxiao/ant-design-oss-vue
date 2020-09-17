@@ -101,11 +101,11 @@
       <div class="form-query" v-show="toggleSearchStatus">
         <a-form-model ref="ruleForm" :model="formData" :label-col="labelCol" :wrapper-col="wrapperCol">
           <a-row :gutter="24" style="margin-bottom: 0">    
-            <a-col :xl="6" :lg="8" :md="8" :sm="24">
-              <a-form-model-item label="工单标题" prop="title">            
-                <a-input placeholder="请输入工单标题" v-model="formData.title"></a-input>
-              </a-form-model-item>
-            </a-col>
+            <!--  <a-col :xl="6" :lg="8" :md="8" :sm="24">
+                <a-form-model-item label="工单标题" prop="title">            
+                  <a-input placeholder="请输入工单标题" v-model="formData.title"></a-input>
+                </a-form-model-item>
+              </a-col>-->
             <a-col :xl="6" :lg="8" :md="8" :sm="24">
               <a-form-model-item label="工单模板" prop="modelId">            
                 <a-select mode="tags" v-model="formData.modelId" style="width: 100%" placeholder="请选择工单模板">
@@ -115,11 +115,11 @@
                 </a-select>
               </a-form-model-item>
             </a-col>
-            <a-col :xl="6" :lg="8" :md="8" :sm="24">
-              <a-form-model-item label="流水号" prop="flowNo">            
-                <a-input placeholder="请输入流水号" v-model="formData.flowNo"></a-input>
-              </a-form-model-item>
-            </a-col>
+            <!-- <a-col :xl="6" :lg="8" :md="8" :sm="24">
+               <a-form-model-item label="流水号" prop="flowNo">            
+                 <a-input placeholder="请输入流水号" v-model="formData.flowNo"></a-input>
+               </a-form-model-item>
+             </a-col>-->
             <a-col :xl="6" :lg="8" :md="8" :sm="24">
               <a-form-model-item label="报修人" prop="repairman">            
                 <a-input placeholder="请输入报修人" v-model="formData.repairman"></a-input>
@@ -152,11 +152,11 @@
                 />
               </a-form-model-item>
             </a-col>
-            <a-col :xl="6" :lg="8" :md="8" :sm="24">
-              <a-form-model-item label="设备编码" prop="deviceid">
-                <a-input placeholder="请输入设备编码" v-model="formData.deviceid"></a-input>
-              </a-form-model-item>
-            </a-col>
+            <!-- <a-col :xl="6" :lg="8" :md="8" :sm="24">
+               <a-form-model-item label="设备编码" prop="deviceid">
+                 <a-input placeholder="请输入设备编码" v-model="formData.deviceid"></a-input>
+               </a-form-model-item>
+             </a-col>-->
             <a-col :xl="6" :lg="8" :md="8" :sm="24">
               <a-form-model-item label="设备IP" prop="IP">
                 <a-input placeholder="请输入设备IP" v-model="formData.IP"></a-input>
@@ -224,7 +224,7 @@
             <a-tab-pane key="2">
           <span slot="tab">
            <a-icon type="file-done" style="font-size: 16px;"/>
-           关于我的
+           全部工单
           </span>
             </a-tab-pane>
           </a-tabs>
@@ -237,21 +237,26 @@
             :dataSource="dataSource"
             :pagination="false"
           >
-        <span slot="status" slot-scope="status">
-       <!--   <a-icon type="exclamation-circle" />-->
-          <a-tag v-if="item.value === status +''" :color="item.color"
-                 v-for="item in orderSateList"> {{item.label}}</a-tag>
-        </span>
+            <span slot="status" slot-scope="status">
+              <a-tag v-if="item.value === status +''" :color="item.color"
+                     v-for="item in orderSateList"> {{item.label}}</a-tag>
+            </span>
             <template slot="type" slot-scope="type">
-          <span v-if="item.value === type +''" :color="item.color"
-                v-for="item in orderTypeList"> {{item.label}}
-          </span>
+              <span v-if="item.value === type +''" :color="item.color"
+                    v-for="item in orderTypeList"> {{item.label}}
+              </span>
             </template>
+            <span slot="executors" slot-scope="executors, record">
+              <j-ellipsis :value="getExecutors(executors)" :length="15"/>
+            </span>
+            <span slot="executionGroups" slot-scope="executionGroups, record">
+              <j-ellipsis :value="getExecutionGroups(executionGroups)" :length="15"/>
+            </span>
             <span slot="create_time" slot-scope="create_time">
-           {{getLongTime(create_time, true)}}
-         </span>
+              {{getLongTime(create_time, true)}}
+            </span>
             <span slot="action" slot-scope="text, record">
-          <a-button @click="handleDetail(record)">查看详情</a-button>
+              <a-button @click="handleDetail(record)">查看详情</a-button>
               <!-- <a-dropdown>
                  <a class="ant-dropdown-link">更多 <a-icon type="down"/></a>
                  <a-menu slot="overlay">
@@ -271,15 +276,11 @@
                    <a-menu-item v-else @click="handleTrack(record)">审批进度</a-menu-item>
                  </a-menu>
                </a-dropdown>-->
-        </span>
-
-            <span slot="modelName" slot-scope="text, record">
-          <j-ellipsis :value="'工单【'+text+'】'" :length="15"/>
-        </span>
+            </span>
+            <!--<span slot="modelName" slot-scope="text, record">
+              <j-ellipsis :value="'工单【'+text+'】'" :length="15"/>
+            </span>-->
             <!-- 字符串超长截取省略号显示-->
-            <span slot="executors" slot-scope="executors, record">
-          <j-ellipsis :value="getExecutors(executors)" :length="15"/>
-        </span>
           </a-table>
           <a-pagination
             style="text-align: right;margin-top: 15px;"
@@ -393,7 +394,7 @@ import {
   getTicketsList, getTicketsDetails, getModelList,
   getModelDetails, saveWorkOrder, handleOrder, updateTickets,
   uploadFileByTicketId, getTicketCountByUser, getTicketsProcess,
-  getMytodoList
+  getMytodoList, getUserGroup
 } from '../../api/tickets'
 import JEllipsis from '@/components/jeecg/JEllipsis'
 import JDate from '@/components/jeecg/JDate.vue'
@@ -439,6 +440,7 @@ export default {
         xl: { span: 20 },
         lg: { span: 15 }
       },
+      rolesList: [],
       widthModel: '85%',
       workTypeList: [],
       ModalText: '创建工单',
@@ -541,8 +543,15 @@ export default {
           title: '处理人',
           align: 'center',
           width: 200,
-          dataIndex: 'executor',
+          dataIndex: 'executorCN',
           scopedSlots: { customRender: 'executors' }
+        },
+        {
+          title: '处理组',
+          align: 'center',
+          width: 200,
+          dataIndex: 'executionGroupCN',
+          scopedSlots: { customRender: 'executionGroups' }
         },
         {
           title: '报修时间',
@@ -730,7 +739,8 @@ export default {
       data: {
         pageSize: 10,
         pageNum: 1,
-        param: []
+        conditions: [],
+        ass: []
       },
       total: 0, // 列表数据总数
       workCount: {
@@ -786,7 +796,6 @@ export default {
         })
         return
       }
-      // alert(JSON.stringify(this.formFileds))
       if (this.operation === 'add') {
         this.saveTickets(item)
         return
@@ -873,7 +882,6 @@ export default {
         handle_rules: handleRules
       }
       let apiKey = this.userInfo().apikey
-      console.log('---->>--', this.images.length)
       handleOrder(data, apiKey).then(response => {
         this.disabled = true
         this.spinning = false
@@ -943,7 +951,6 @@ export default {
         handle_rules: handleRules
       }
       let apiKey = this.userInfo().apikey
-      console.log('///**---***', data)
       handleOrder(data, apiKey).then(response => {
         this.disabled = true
         if (this.isFile === 1 && this.images.length > 0) {
@@ -1009,13 +1016,13 @@ export default {
         this.submitBtn = response.result.submitBtn
         this.formConfig.formFiles = this.formFileds
         this.imgs = []
-        this.getUserInfo()
+        this.getUserInfo(record.executionGroup, record.executor)
         sessionStorage.setItem('tickedId', response.result.ticketId)
         this.ModalText = '工单详情'
         let url = ''
         let type = 'attachfile'
-        let executor = this.formFileds.find((item) => type === item.type)
-        if (executor !== undefined) {
+        let fileType = this.formFileds.find((item) => type === item.type)
+        if (fileType !== undefined) {
           this.isFile = 1
           this.formFileds.forEach((itemA, index) => {
             if (itemA.type === 'attachfile') {
@@ -1159,14 +1166,18 @@ export default {
       // this.getQueryTerms()
       this.loading = true
       getTicketsList(this.data).then((res) => {
-        this.dataSource = res.result.ticket_list
-        this.total = res.result.counts
-        console.log(this.total)
+        this.dataSource = res.result.dataList
+        this.total = res.result.totalRecords
+        this.loading = false
+      })
+    },
+    getUserGroup () {
+      this.loading = true
+      getUserGroup(this.data).then((res) => {
         this.loading = false
       })
     },
     getMyToDoList () {
-      console.log(this.userInfo())
       this.loading = true
       delete this.data.param
       let param = {
@@ -1176,7 +1187,6 @@ export default {
       getMytodoList(this.data).then((res) => {
         this.dataSource = res.result.ticket_list
         this.total = res.result.counts
-        console.log(this.total)
         this.loading = false
       })
     },
@@ -1198,12 +1208,16 @@ export default {
         console.log(error)
       })
     },
-    ...mapGetters(['userInfo']),
-    getUserInfo () {
-      let executors = this.orderInfo.executors
+    ...mapGetters(['userInfo', 'rolesA', 'departs']),
+    getUserInfo (executionGroups, executors) {
       let uyunId = this.userInfo().uyunid
+      let rolesB = this.rolesA()
       let executor = executors.find((item) => uyunId === item && this.orderInfo.activity_name !== '结束')
-      if (executor) {
+      let executionGroup = executionGroups != null && executionGroups.length >= 0 ? executionGroups.filter((item) => rolesB.indexOf(item) > -1 && this.orderInfo.activity_name !== '结束') : undefined
+      if (Array.isArray(executionGroup) && executionGroup.length === 0) {  // 判断executionGroup为[]的情况
+        executionGroup = undefined
+      }
+      if (executor || executionGroup) {
         this.allotShow = true
         this.showIcon = 'ellipsis'
         this.formFileds.forEach((itemA) => {
@@ -1234,10 +1248,10 @@ export default {
       return getSelectTime(new Date(val), isFull)
     },
     getExecutors (arr) {
-      if (arr.length < 0) {
-        return ' '
-      }
-      return arr.join(',')
+      return arr != null && arr.length >= 0 ? arr.join(',') : ' '
+    },
+    getExecutionGroups (arr) {
+      return arr != null && arr.length >= 0 ? arr.join(',') : ' '
     },
     onChange (page, pageSize) {
       this.data.pageNum = page
@@ -1261,7 +1275,6 @@ export default {
       console.log(`selected ${value}`)
     },
     filterOption (input, option) {
-      console.log(input)
       return (
         option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
       )
@@ -1269,7 +1282,6 @@ export default {
     searchQuery () {
       this.getQueryTerms()
       for (let key in this.formData) {
-        //console.log(key + '--->' + this.formData[key].length)
         if (typeof (this.formData[key]) === 'string') {
           if (this.formData[key] !== '') {
             if (key === 'title' || key === 'flowNo') {
@@ -1278,14 +1290,14 @@ export default {
                 value: this.formData[key],
                 operator: 'like'
               }
-              this.data.param.push(obj)
+              this.data.conditions.push(obj)
             } else {
               let obj = {
                 field: 'formData.' + key + '',
                 value: this.formData[key],
                 operator: 'like'
               }
-              this.data.param.push(obj)
+              this.data.conditions.push(obj)
             }
           }
         } else if (Array.isArray(this.formData[key])) {
@@ -1297,26 +1309,25 @@ export default {
                 value: this.formData[key],
                 operator: 'in'
               }
-              this.data.param.push(obj)
+              this.data.conditions.push(obj)
             } else if (key === 'createTime') {
               obj = {
                 field: key + '',
                 value: this.formData[key],
                 operator: 'BETWEEN'
               }
-              this.data.param.push(obj)
+              this.data.conditions.push(obj)
             } else {
               obj = {
                 field: 'formData.' + key + '',
                 value: this.formData[key],
                 operator: 'in'
               }
-              this.data.param.push(obj)
+              this.data.conditions.push(obj)
             }
           }
         }
       }
-      console.log(this.data.param)
       this.getTicketsList()
     },
     searchReset () {
@@ -1328,31 +1339,102 @@ export default {
       this.toggleSearchStatus = !this.toggleSearchStatus
     },
     getQueryTerms () {
+      let rolesB = this.rolesA()
+      let serviceGroups = ['3468e3f179ec47a993aa71cebf611465']
+      let outfields = ['5b5933ff232f481a8a075671fd45ee5d', '5e11e156b8ce4a69a5d77d565fbaedf2', 'e41ec02e58e2448c910e72094ba2f34e', '7f1a367b62ed41bcabe83574a745115a', '880ccd34d1cf43228ba0f4cc15587f30', 'd276a5d0cacc479d887db9a10dc6b9f0', 'dc975edf71f943e9bcd3a8c482121edc']
+      let infields = ['748caa36dbb44da2940e83dc24d651d7', '7c750dfd5f0641fcb3dbcfd92c5877f7']
+      let normalUser = []
+      let departId = this.userInfo().departIds ? this.userInfo().departIds : []
+      let departIds = this.departs()
+      let departObj = departIds.filter((item) => departId.indexOf(item.id) > -1)
+      let departName = ''
+      if ((Array.isArray(departObj) && departObj.length > 0) && departObj) {
+        departName = departObj[0].departName
+      }
+      let dataArr2 = []
+      dataArr2 = [
+        {
+          cjt: 'or',
+          conditions: [
+            {
+              field: 'executor',
+              value: [this.userInfo().uyunid],
+              operator: 'in'
+            },
+            {
+              field: 'executionGroup',
+              value: this.rolesA(),
+              operator: 'in'
+            }
+          ]
+        }
+      ]
       if (this.activeKey === '1') {
         let dataArr = []
         dataArr = [
-          {
-            field: 'executor',
-            value: [this.userInfo().uyunid],
-            operator: 'in'
-          },
           {
             field: 'status',
             value: [1, 2],
             operator: 'in'
           }
         ]
-        this.data.param = dataArr
+        this.data.conditions = dataArr
+        this.data.ass = dataArr2
       } else {
-        let dataArr = []
-        dataArr = [
-          {
-            field: 'participation',
-            value: [this.userInfo().uyunid],
-            operator: 'in'
-          }
-        ]
-        this.data.param = dataArr
+        this.data.conditions = []
+
+        if (serviceGroups.indexOf(rolesB[0]) > -1) {
+          dataArr2 = []
+        } else if (outfields.indexOf(rolesB[0]) > -1) {
+          let cond = [
+            {
+              field: 'participation',
+              value: [this.userInfo().uyunid],
+              operator: 'in'
+            },{
+              field: 'sgdw',
+              value: departName,
+              operator: 'eq'
+            }
+          ]
+          dataArr2.forEach((item) => {
+            item.conditions = [...item.conditions, ...cond]
+          })
+        } else if (infields.indexOf(rolesB[0]) > -1) {
+
+          let cond = [
+            {
+              field: 'participation',
+              value: [this.userInfo().uyunid],
+              operator: 'in'
+            },
+            {
+              field: 'cjdw',
+              value: departName,
+              operator: 'eq'
+            }
+          ]
+          dataArr2.forEach((item) => {
+            item.conditions = [...item.conditions, ...cond]
+          })
+        } else if (normalUser.indexOf(rolesB[0]) > -1) {
+          let cond = [
+            {
+              field: 'participation',
+              value: [this.userInfo().uyunid],
+              operator: 'in'
+            },
+            {
+              field: 'bxbm',
+              value: departName,
+              operator: 'eq'
+            }
+          ]
+          dataArr2.forEach((item) => {
+            item.conditions = [...item.conditions, ...cond]
+          })
+        }
+        this.data.ass = dataArr2
       }
     },
     onChangeDate (dates, dateStrings) {
@@ -1366,8 +1448,11 @@ export default {
       this.$refs.groupIdList.blur()
     }
   },
+  created () {
+    this.getUserGroup()
+  },
   mounted () {
-    this.getMyToDoList()
+    // this.getMyToDoList()
     this.getQueryTerms()
     this.getTicketsList()
     this.getModelList()
