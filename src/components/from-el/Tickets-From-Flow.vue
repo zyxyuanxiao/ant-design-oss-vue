@@ -91,7 +91,7 @@
           <a-button type="primary" block @click="updateFeedback('formConfig')">保存</a-button>
         </div>
         <!--v-if="operation === 'details'"-->
-        <div style="padding: 15px 10px;" v-show="false">
+        <div style="padding: 15px 10px;" v-show="allotShow">
           <a-select style="width: 80px;height: 35px;" placeholder="更多" @change="handleChange">
             <a-select-option value="reassign">
               改派
@@ -103,6 +103,17 @@
         </div>
       </div>
     </a-spin>
+    <a-modal v-model="visible" title="工单改派" ok-text="确认" cancel-text="取消" @ok="hideModal">
+      <a-form-model ref="ruleForm">
+        <a-row :gutter="24">    
+          <a-col :xl="24" :lg="24" :md="24" :sm="24">
+            <a-form-model-item label="指定改派" prop="description">            
+              <a-input placeholder="请输入处理人" v-model="userName" />
+            </a-form-model-item>
+          </a-col>
+        </a-row>
+      </a-form-model>
+    </a-modal>
   </div>
 </template>
 
@@ -146,7 +157,9 @@ export default {
       typeList: ['multiRowText', 'table', 'attachfile'],
       isShow: true,
       isShowFlow: true,
-      loading: false
+      loading: false,
+      visible: false,
+      userName: ''
     }
   },
   mounted () {
@@ -165,6 +178,7 @@ export default {
       })
     },
     handleChange (value) {
+      this.visible = true
       console.log(value)
     },
     updateFeedback (formName) {
@@ -179,6 +193,12 @@ export default {
     },
     onUpLoad (fileList) {
       this.$emit('uploadFile', fileList)
+    },
+    hideModal () {
+      this.$message.success('改派成功！')
+      setTimeout(() => {
+        location.reload()
+      }, 600)
     },
     isShowData () {
       this.isShow = !this.isShow

@@ -1,10 +1,9 @@
 <template>
   <div>
-    {{item.readOnly}}
     <a-select
       style="width: 100%"
       showSearch
-      :disabled="item.disabled || item.readOnly"
+      :disabled="item.disabled || item.is_readOnly"
       :options="item.conf.params"
       :filterOption="filterOption"
       :size="item.size ? item.size : 'default'"

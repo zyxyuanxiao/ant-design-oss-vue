@@ -1093,7 +1093,6 @@ export default {
         this.formConfig.formFiles = this.formFileds
         this.ModalText = '创建工单'
         let type = 'attachfile'
-        alert(2)
         let fileType = this.formFileds.find((item) => type === item.type)
         if (fileType !== undefined) {
           this.isFile = 1

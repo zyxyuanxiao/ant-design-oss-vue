@@ -287,6 +287,7 @@ export default {
       let apiKey = this.userInfo().apikey
       updateFeedback(data, apiKey).then(response => {
         this.$message.success('提交成功')
+        this.description = ''
         this.visible = false
       }).catch(error => {
         console.log(error)
