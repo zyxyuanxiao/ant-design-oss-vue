@@ -1065,6 +1065,8 @@ export default {
             if (itemA.conf.default_value === '') {
               itemA.conf.default_value = []
             }
+          } else if (itemA.code === 'sgdw') {
+            localStorage.setItem('sgdw', itemA.conf.default_value)
           }
         })
         this.operation = 'details'
@@ -1091,8 +1093,9 @@ export default {
         this.formConfig.formFiles = this.formFileds
         this.ModalText = '创建工单'
         let type = 'attachfile'
-        let executor = this.formFileds.find((item) => type === item.type)
-        if (executor !== undefined) {
+        alert(2)
+        let fileType = this.formFileds.find((item) => type === item.type)
+        if (fileType !== undefined) {
           this.isFile = 1
           this.formFileds.forEach((itemA) => {
             if (itemA.type === 'attachfile') {
@@ -1405,6 +1408,7 @@ export default {
         departName = departObj[0].departName
       }
       this.departName = departName // 保存部门名称在统计时使用
+      localStorage.setItem('departName', this.departName)
       let dataArr2 = []
       dataArr2 = [
         {

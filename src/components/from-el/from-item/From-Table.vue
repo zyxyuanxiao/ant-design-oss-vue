@@ -43,15 +43,15 @@
     <div style="padding-top: 15px;">
       <a-timeline>
         <template v-for="(itemC, index) in data">
-          <a-timeline-item v-if="index===0" color="green" style="color: #42bf42">
+          <a-timeline-item v-if="index===data.length-1" color="green" style="color: #42bf42">
             <span>时间：<span style="color: #42bf42">【{{itemC['a3a99824161a487e815a0b2055bd6da9']}}】</span></span>
-            <span style="margin-left: 15px;">名称：{{itemC['a41257505b4b4d63b7f5164157e88fe0']}}</span>
-            <span style="margin-left: 15px;">内容：{{itemC['fc6661cf74474f708734558cb6530598']}}</span>
+            <span style="margin-left: 15px;">提交人：{{itemC['a41257505b4b4d63b7f5164157e88fe0']}}</span>
+            <p>内容： {{itemC['fc6661cf74474f708734558cb6530598']}}</p>
           </a-timeline-item>
           <a-timeline-item v-else>
             <span>时间：<span style="color: #218af4">【{{itemC['a3a99824161a487e815a0b2055bd6da9']}}】</span></span>
-            <span style="margin-left: 15px;">名称：{{itemC['a41257505b4b4d63b7f5164157e88fe0']}}</span>
-            <span style="margin-left: 15px;">内容：{{itemC['fc6661cf74474f708734558cb6530598']}}</span>
+            <span style="margin-left: 15px;">提交人：{{itemC['a41257505b4b4d63b7f5164157e88fe0']}}</span>
+            <p>内容：{{itemC['fc6661cf74474f708734558cb6530598']}}</p>
           </a-timeline-item>
         </template>
       </a-timeline>
@@ -147,16 +147,14 @@
           <div><h3>4</h3></div>&ndash;&gt;
        </a-carousel>
      </div>-->
-    <a-modal v-model="visible" title="增加反馈记录" ok-text="确认" cancel-text="取消" @ok="hideModal">
+    <a-modal v-model="visible" title="" ok-text="确认" cancel-text="取消" @ok="hideModal">
       <a-form-model ref="ruleForm" :label-col="labelCol" :wrapper-col="wrapperCol">
         <a-row :gutter="24" style="margin-bottom: 0">    
-          <template v-for="itemA in list">
-            <a-col :xl="24" :lg="24" :md="24" :sm="24" v-if="itemA.label !== '时间'">
-              <a-form-model-item :label="itemA.label"  :prop="itemA.description">            
-                <a-input :placeholder="'请输入' + itemA.label" v-model="itemA.description"></a-input>
-              </a-form-model-item>
-            </a-col>
-          </template>
+          <a-col :xl="24" :lg="24" :md="24" :sm="24">
+            <a-form-model-item label="内容" prop="description">            
+              <a-textarea placeholder="请输入内容" v-model="description" :rows="4"/>
+            </a-form-model-item>
+          </a-col>
         </a-row>
       </a-form-model>
     </a-modal>
@@ -190,6 +188,7 @@ export default {
       dataList: [],
       list: [],
       searchText: '',
+      description: '',
       searchInput: null,
       visible: false,
       searchedColumn: '',
@@ -257,16 +256,31 @@ export default {
       this.data = newData
     },
     hideModal () {
-      //console.log(this.data)
+      // console.log(this.userInfo())
+      let departName = localStorage.getItem('departName') ? localStorage.getItem('departName') : ''
+      let sgdw = localStorage.getItem('sgdw')
+      if (!sgdw.includes(departName)) {
+        sgdw = sgdw + '，' + departName
+      }
       let lcObj = {}
       this.list.forEach((item) => {
-        lcObj[item.value] = item.description !== '' ? item.description : getSelectTime(new Date(), true)
-        // console.log(lcObj)
+        if (item.value === 'a3a99824161a487e815a0b2055bd6da9') {
+          item.description = getSelectTime(new Date(), true)
+        } else if (item.value === 'a41257505b4b4d63b7f5164157e88fe0') {
+          let username = this.userInfo().username ? this.userInfo().username : ''
+          let telephone = this.userInfo().phone ? '(' + this.userInfo().phone + ')，' : ''
+          item.description = username + telephone + departName
+        } else {
+          item.description = this.description
+        }
+        lcObj[item.value] = item.description
+        console.log(lcObj)
       })
       this.data.push(lcObj)
       let data = {
         form: {
-          fkjl: this.data
+          fkjl: this.data,
+          sgdw: sgdw
         },
         ticket_id: sessionStorage.getItem('tickedId')
       }
@@ -281,12 +295,16 @@ export default {
     onChangeDate (dates, dateStrings) {
       console.log('From: ', dates[0], ', to: ', dates[1])
       console.log('From: ', dateStrings[0], ', to: ', dateStrings[1])
-    },
+    }
   }
 }
 </script>
 <style>
   .from-table .ant-timeline-item-last > .ant-timeline-item-content {
     min-height: 0;
+  }
+
+  .from-table .ant-timeline-item {
+    padding: 0 0 10px;
   }
 </style>

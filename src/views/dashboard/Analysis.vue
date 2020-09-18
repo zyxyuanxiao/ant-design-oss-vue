@@ -1065,7 +1065,9 @@ export default {
             if (itemA.conf.default_value === '') {
               itemA.conf.default_value = []
             }
-          }
+          }else if (itemA.code === 'sgdw') {
+          localStorage.setItem('sgdw', itemA.conf.default_value)
+        }
         })
         this.operation = 'details'
         this.showRollback = false
@@ -1405,6 +1407,7 @@ export default {
         departName = departObj[0].departName
       }
       this.departName = departName // 保存部门名称在统计时使用
+      localStorage.setItem('departName', this.departName)
       let dataArr2 = []
       dataArr2 = [
         {
