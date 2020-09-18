@@ -57,7 +57,7 @@
       </a-timeline>
     </div>
     <div v-if="!item.disabled">
-      <a-button @click="() => edit()" type="primary" :disabled="item.disabled">增加</a-button>
+      <a-button @click="() => edit()" type="primary" :disabled="item.disabled">提交反馈</a-button>
       <a-button @click="() => save()" type="primary" :disabled="item.disabled" style="margin-left: 10px;"> 提交</a-button>
     </div>
     <!-- <div style="margin-top: 15px;">
@@ -257,10 +257,10 @@ export default {
     },
     hideModal () {
       // console.log(this.userInfo())
-      let departName = localStorage.getItem('departName') ? localStorage.getItem('departName') : ''
+      let departName = localStorage.getItem('departName') ? '，' +localStorage.getItem('departName') : ''
       let sgdw = localStorage.getItem('sgdw')
       if (!sgdw.includes(departName)) {
-        sgdw = sgdw + '，' + departName
+        sgdw = sgdw + departName
       }
       let lcObj = {}
       this.list.forEach((item) => {
@@ -268,7 +268,7 @@ export default {
           item.description = getSelectTime(new Date(), true)
         } else if (item.value === 'a41257505b4b4d63b7f5164157e88fe0') {
           let username = this.userInfo().username ? this.userInfo().username : ''
-          let telephone = this.userInfo().phone ? '(' + this.userInfo().phone + ')，' : ''
+          let telephone = this.userInfo().phone ? '(' + this.userInfo().phone + ')' : ''
           item.description = username + telephone + departName
         } else {
           item.description = this.description

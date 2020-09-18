@@ -352,7 +352,7 @@
         </tickets-form>
       </a-modal>
       <a-modal
-        title="请选择下一节点处理人"
+        title="请选择下一节点处理对象"
         :width="600"
         :centered="true"
         :visible="showRollback"
