@@ -44,14 +44,14 @@
       <a-timeline>
         <template v-for="(itemC, index) in data">
           <a-timeline-item v-if="index===data.length-1" color="green" style="color: #42bf42">
-            <span>时间：<span style="color: #42bf42">【{{itemC['a3a99824161a487e815a0b2055bd6da9']}}】</span></span>
-            <span style="margin-left: 15px;">提交人：{{itemC['a41257505b4b4d63b7f5164157e88fe0']}}</span>
-            <p>内容： {{itemC['fc6661cf74474f708734558cb6530598']}}</p>
+            <span>时间：<span style="color: #42bf42">【{{itemC['83352308fcf04e56b2de2b9c6fcea6f7']}}】</span></span>
+            <span style="margin-left: 15px;">提交人：{{itemC['73cc1776253d48dbb3df631d98bd70f1']}}</span>
+            <p>内容： {{itemC['0965ea63281e428d9d8910d79e7ec92a']}}</p>
           </a-timeline-item>
           <a-timeline-item v-else>
-            <span>时间：<span style="color: #218af4">【{{itemC['a3a99824161a487e815a0b2055bd6da9']}}】</span></span>
-            <span style="margin-left: 15px;">提交人：{{itemC['a41257505b4b4d63b7f5164157e88fe0']}}</span>
-            <p>内容：{{itemC['fc6661cf74474f708734558cb6530598']}}</p>
+            <span>时间：<span style="color: #218af4">【{{itemC['83352308fcf04e56b2de2b9c6fcea6f7']}}】</span></span>
+            <span style="margin-left: 15px;">提交人：{{itemC['73cc1776253d48dbb3df631d98bd70f1']}}</span>
+            <p>内容：{{itemC['0965ea63281e428d9d8910d79e7ec92a']}}</p>
           </a-timeline-item>
         </template>
       </a-timeline>
@@ -264,9 +264,9 @@ export default {
       }
       let lcObj = {}
       this.list.forEach((item) => {
-        if (item.value === 'a3a99824161a487e815a0b2055bd6da9') {
+        if (item.value === '83352308fcf04e56b2de2b9c6fcea6f7') {
           item.description = getSelectTime(new Date(), true)
-        } else if (item.value === 'a41257505b4b4d63b7f5164157e88fe0') {
+        } else if (item.value === '73cc1776253d48dbb3df631d98bd70f1') {
           let username = this.userInfo().username ? this.userInfo().username : ''
           let telephone = this.userInfo().phone ? '(' + this.userInfo().phone + ')' : ''
           item.description = username + telephone + departName
