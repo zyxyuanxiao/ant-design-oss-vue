@@ -257,10 +257,10 @@ export default {
     },
     hideModal () {
       // console.log(this.userInfo())
-      let departName = localStorage.getItem('departName') ? '，' +localStorage.getItem('departName') : ''
+      let departName = localStorage.getItem('departName') ? localStorage.getItem('departName') : ''
       let sgdw = localStorage.getItem('sgdw')
       if (!sgdw.includes(departName)) {
-        sgdw = sgdw + departName
+        sgdw = sgdw + '，' + departName
       }
       let lcObj = {}
       this.list.forEach((item) => {
@@ -269,7 +269,11 @@ export default {
         } else if (item.value === '73cc1776253d48dbb3df631d98bd70f1') {
           let username = this.userInfo().username ? this.userInfo().username : ''
           let telephone = this.userInfo().phone ? '(' + this.userInfo().phone + ')' : ''
-          item.description = username + telephone + departName
+          if (departName) {
+            item.description = username + telephone + '，' + departName
+          } else {
+            item.description = username + telephone
+          }
         } else {
           item.description = this.description
         }
