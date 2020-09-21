@@ -43,15 +43,25 @@
     <div style="padding-top: 15px;">
       <a-timeline>
         <template v-for="(itemC, index) in data">
+
           <a-timeline-item v-if="index===data.length-1" color="green" style="color: #42bf42">
-            <span>时间：<span style="color: #42bf42">【{{itemC['83352308fcf04e56b2de2b9c6fcea6f7']}}】</span></span>
-            <span style="margin-left: 15px;">提交人：{{itemC['73cc1776253d48dbb3df631d98bd70f1']}}</span>
-            <p>内容： {{itemC['0965ea63281e428d9d8910d79e7ec92a']}}</p>
+           <!-- <template v-for="(val, key, index) in itemC">
+              <span v-if="list[index].value === key">{{list[index].label}}：<span style="color: #42bf42">【{{val}}】</span></span>
+              &lt;!&ndash;<span style="margin-left: 15px;">提交人：{{itemC['73cc1776253d48dbb3df631d98bd70f1']}}</span>
+              <p>内容： {{itemC['0965ea63281e428d9d8910d79e7ec92a']}}</p>&ndash;&gt;
+            </template>-->
+            <template v-for="(val, key, index) in itemC">
+              <span v-if="list[index].label ==='时间'">{{list[index].label}}：<span style="color: #42bf42">【{{val}}】</span></span>
+              <span style="margin-left: 15px;" v-else-if="list[index].label ==='提交人'">{{list[index].label}}：{{val}}</span>
+              <p v-else>{{list[index].label}}： {{val}}</p>
+            </template>
           </a-timeline-item>
           <a-timeline-item v-else>
-            <span>时间：<span style="color: #218af4">【{{itemC['83352308fcf04e56b2de2b9c6fcea6f7']}}】</span></span>
-            <span style="margin-left: 15px;">提交人：{{itemC['73cc1776253d48dbb3df631d98bd70f1']}}</span>
-            <p>内容：{{itemC['0965ea63281e428d9d8910d79e7ec92a']}}</p>
+            <template v-for="(val, key, index) in itemC">
+              <span v-if="list[index].label ==='时间'">{{list[index].label}}：<span style="color: #218af4">【{{val}}】</span></span>
+              <span style="margin-left: 15px;" v-else-if="list[index].label ==='提交人'">{{list[index].label}}：{{val}}</span>
+              <p v-else>{{list[index].label}}： {{val}}</p>
+            </template>
           </a-timeline-item>
         </template>
       </a-timeline>
@@ -264,9 +274,9 @@ export default {
       }
       let lcObj = {}
       this.list.forEach((item) => {
-        if (item.value === '83352308fcf04e56b2de2b9c6fcea6f7') {
+        if (item.label === '时间') {
           item.description = getSelectTime(new Date(), true)
-        } else if (item.value === '73cc1776253d48dbb3df631d98bd70f1') {
+        } else if (item.label === '提交人') {
           let username = this.userInfo().username ? this.userInfo().username : ''
           let telephone = this.userInfo().phone ? '(' + this.userInfo().phone + ')' : ''
           if (departName) {
@@ -288,6 +298,7 @@ export default {
         },
         ticket_id: sessionStorage.getItem('tickedId')
       }
+      localStorage.setItem('sgdw', sgdw)
       let apiKey = this.userInfo().apikey
       updateFeedback(data, apiKey).then(response => {
         this.$message.success('提交成功')

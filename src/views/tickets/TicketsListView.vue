@@ -509,6 +509,12 @@ export default {
           dataIndex: 'formData.dd'
         },
         {
+          title: '设备编码',
+          align: 'center',
+          width: 180,
+          dataIndex: 'formData.deviceid'
+        },
+        {
           title: '设备IP',
           align: 'center',
           width: 220,
@@ -870,6 +876,10 @@ export default {
             this.images = itemA.conf.default_value
           }
         }
+        if (itemA.code === 'sgdw') {
+          this.workForm.sgdw = localStorage.getItem('sgdw')
+          console.log('itemA.conf.default_value ---',itemA.conf.default_value)
+        }
       })
       let handleRules = {
         route_id: item.route_id
@@ -892,6 +902,7 @@ export default {
         urgent_level: '2',
         handle_rules: handleRules
       }
+      console.log(data)
       let apiKey = this.userInfo().apikey
       handleOrder(data, apiKey).then(response => {
         this.disabled = true
@@ -918,6 +929,9 @@ export default {
           if (itemA.conf.default_value.length > 0) {
             this.images = itemA.conf.default_value
           }
+        }
+        if (itemA.code === 'sgdw') {
+          this.workForm.sgdw = localStorage.getItem('sgdw')
         }
       })
       let handleRules = {
@@ -989,6 +1003,9 @@ export default {
           if (itemA.conf.default_value.length > 0) {
             this.images = itemA.conf.default_value
           }
+        }
+        if (itemA.code === 'sgdw') {
+          this.workForm.sgdw = localStorage.getItem('sgdw')
         }
       })
       delete this.workForm.file
