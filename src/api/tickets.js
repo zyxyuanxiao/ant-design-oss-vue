@@ -211,10 +211,10 @@ export function getTicketsProcess (ticketId) {
  * 同步工单字典值
  * @param query 根据登录用户名获取
  */
-export function getInsertBatch (data) {
+export function getInsertBatch () {
   return axios({
     url: '/sys/dictItem/insertBatch',
     method: 'post',
-    data
+    data: '{}'
   })
 }

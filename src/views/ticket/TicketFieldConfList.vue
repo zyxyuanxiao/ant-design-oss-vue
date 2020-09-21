@@ -283,10 +283,7 @@ export default {
       })
     },
     insertBatch() {
-      let data = {
-        username: this.userInfo().username
-      }
-      getInsertBatch(data).then(response => {
+      getInsertBatch().then(response => {
         // this.workTypeList = response.result
       }).catch(error => {
         console.log(error)
