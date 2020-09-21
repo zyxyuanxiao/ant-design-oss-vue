@@ -1410,9 +1410,14 @@ export default {
     ,
     getQueryTerms () {
       let rolesB = this.rolesA()
-      let serviceGroups = ['3468e3f179ec47a993aa71cebf611465']
-      let outfields = ['5b5933ff232f481a8a075671fd45ee5d', '5e11e156b8ce4a69a5d77d565fbaedf2', 'e41ec02e58e2448c910e72094ba2f34e', '7f1a367b62ed41bcabe83574a745115a', '880ccd34d1cf43228ba0f4cc15587f30', 'd276a5d0cacc479d887db9a10dc6b9f0', 'dc975edf71f943e9bcd3a8c482121edc']
-      let infields = ['748caa36dbb44da2940e83dc24d651d7', '7c750dfd5f0641fcb3dbcfd92c5877f7']
+      // 测试环境sungcor
+      // let serviceGroups = ['3468e3f179ec47a993aa71cebf611465']
+      // let outfields = ['5b5933ff232f481a8a075671fd45ee5d', '5e11e156b8ce4a69a5d77d565fbaedf2', 'e41ec02e58e2448c910e72094ba2f34e', '7f1a367b62ed41bcabe83574a745115a', '880ccd34d1cf43228ba0f4cc15587f30', 'd276a5d0cacc479d887db9a10dc6b9f0', 'dc975edf71f943e9bcd3a8c482121edc']
+      // let infields = ['748caa36dbb44da2940e83dc24d651d7', '7c750dfd5f0641fcb3dbcfd92c5877f7']
+      // 线上环境闵行
+      let serviceGroups = ['fd24c7055e944f0782b38de052e0dfd7']
+      let outfields = ['beec1f6e57224be68c03b3b369cdfe23', '3a8b1896c2f146e99b4a75d6236b935e', 'c7e14e68f230422f86315fb43ebce962', '66e2105d899247bfa62f9ad8ee9479bb', '2619762664a349378ccb110bd789652f', 'cb56995665754864a0d96beaaa5fca1c', 'cdd0a93880cb4c58b18b9284fef0e933']
+      let infields = ['0c917d00166e47558f56603c1dc6d2cc', '7c750dfd5f0641fcb3dbcfd92c5877f7']
       let normalUser = []
       let departId = this.userInfo().departIds ? this.userInfo().departIds : []
       let departIds = this.departs()
