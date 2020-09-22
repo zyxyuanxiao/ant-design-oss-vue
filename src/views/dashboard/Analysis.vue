@@ -473,7 +473,7 @@ export default {
           title: '状态',
           align: 'center',
           width: 110,
-          dataIndex: 'formData.hiddenOrderSate',
+          dataIndex: 'formData.orderSate',
           scopedSlots: { customRender: 'status' }
         },
         /* {
@@ -499,7 +499,7 @@ export default {
           title: '工单类型',
           align: 'center',
           width: 180,
-          dataIndex: 'formData.gdlx',
+          dataIndex: 'formData.gdfl',
           scopedSlots: { customRender: 'type' }
         },
         {
@@ -641,68 +641,32 @@ export default {
       orderTypeList: [
         {
           'select': 0,
-          'label': '监控类',
-          'value': '监控类',
+          'label': '摄像机类',
+          'value': 'sxjl',
           'descEnable': 0
         },
         {
           'select': 0,
-          'label': '其他监控类',
-          'value': '其他监控类',
-          'descEnable': 0
-        },
-        {
-          'select': 0,
-          'label': '计算机类',
-          'value': '计算机类',
-          'descEnable': 0
-        },
-        {
-          'select': 0,
-          'label': '任务类',
-          'value': '任务类',
-          'descEnable': 0
-        },
-        {
-          'select': 0,
-          'label': '求助类',
-          'value': '求助类',
-          'descEnable': 0
-        },
-        {
-          'select': 0,
-          'label': '会议保障类',
-          'value': '会议保障类',
-          'descEnable': 0
-        },
-        {
-          'select': 0,
-          'label': '会议系统类',
-          'value': '会议系统类',
+          'label': '服务器类',
+          'value': 'fwql',
           'descEnable': 0
         },
         {
           'select': 0,
           'label': '网络类',
-          'value': '网络类',
+          'value': 'wll',
           'descEnable': 0
         },
         {
           'select': 0,
-          'label': '有线通信类',
-          'value': '有线通信类',
+          'label': '动环类',
+          'value': 'dhl',
           'descEnable': 0
         },
         {
           'select': 0,
-          'label': '无线网络类',
-          'value': '无线网络类',
-          'descEnable': 0
-        },
-        {
-          'select': 0,
-          'label': '其他',
-          'value': '其他',
+          'label': '其他类',
+          'value': 'qtl',
           'descEnable': 0
         }
       ],

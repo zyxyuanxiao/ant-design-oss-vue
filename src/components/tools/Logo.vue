@@ -21,7 +21,7 @@
     props: {
       title: {
         type: String,
-        default: '闵 行 公 安',
+        default: '宝 山 公 安',
         required: false
       },
       showTitle: {
