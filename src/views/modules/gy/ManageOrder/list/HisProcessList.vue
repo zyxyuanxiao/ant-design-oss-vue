@@ -25,20 +25,6 @@
             </a-form-item>
           </a-col>
 
-          <!-- <a-col :md="8" :sm="10" v-show="flag">
-            <a-form-item label="开始时间范围">
-              <a-range-picker
-                :show-time="{ format: 'HH:mm:ss' }"
-                format="YYYY-MM-DD HH:mm:ss"
-                style="width:auto;"
-                @change="onChange"
-                v-model="datas"
-              >
-                <template slot="renderExtraFooter">extra footer</template>
-              </a-range-picker>
-            </a-form-item>
-          </a-col>-->
-
           <a-col :md="8" :sm="12" v-show="flag">
             <a-form-item label="更多查询" :labelCol="labelCol" :wrapperCol="wrapperCol">
               <a-select
@@ -53,19 +39,37 @@
             </a-form-item>
           </a-col>
 
-          <a-col :md="3" :sm="4"></a-col>
-
-          <a-col :md="4" :sm="6">
-            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
-              <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
-              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
-              <a-button v-show="btn" style="margin-left: 8px" type="primary" @click="delects" icon="close-circle">批量删除</a-button>
+          <a-col :md="6" :sm="8">
+            <span
+              style="float: right;position:relative;top:4px"
+              class="table-page-search-submitButtons"
+            >
+              <a-button
+                type="primary"
+                @click="searchQuery"
+                icon="search"
+                style="margin-left: 4px;"
+              >查询</a-button>
+              <a-button
+                type="primary"
+                @click="searchReset"
+                icon="reload"
+                style="margin-left: 4px;"
+              >重置</a-button>
+              <!-- <a-button
+                v-show="btn"
+                style="margin-left: 4px"
+                type="primary"
+                @click="delects"
+                icon="close-circle"
+              >删除</a-button> -->
             </span>
           </a-col>
         </a-row>
         <!-- 更多查询 -->
-        <a-row>
-          <a-col :md="8" :sm="12" v-for="item in items" :key="item.value" v-show="flag">
+        <a-row v-show="flag">
+          <a-col :md="8" :sm="12" v-for="item in items" :key="item.text">
+            <!-- 下拉框 -->
             <a-form-item
               :label="item.text"
               v-if="item.type === 'select'"
@@ -74,9 +78,22 @@
             >
               <a-select v-model="item.defaultValue" :options="item.options" placeholder="请选择"></a-select>
             </a-form-item>
+
+            <!-- 时间选择框 -->
             <a-form-item
               :label="item.text"
-              v-if="item.type === 'input'"
+              v-if="item.type === 'datetime'"
+              :labelCol="labelCol"
+              :wrapperCol="wrapperCol"
+            >
+            <!-- @change="onChange" -->
+              <a-range-picker :show-time="{format: 'YYYY-MM-DD HH:mm:ss'}"   style="width:100%;" v-model="item.defaultValue"></a-range-picker>
+            </a-form-item>
+
+            <!-- 文本框 -->
+            <a-form-item
+              :label="item.text"
+              v-if="item.type === 'varchar'"
               :labelCol="labelCol"
               :wrapperCol="wrapperCol"
             >
@@ -88,18 +105,17 @@
     </div>
     <!-- table区域-begin -->
     <div>
-      <!-- :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"  选择框-->
+      <!-- :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"  选择框 -->
       <a-table
-        
         :expandedRowKeys="expandedKeys"
         @expand="onExpand"
-        :expandRowByClick = "true"
+        :expandRowByClick="true"
         :expandIconAsCell="false"
-        :expandIconColumnIndex=-1
+        :expandIconColumnIndex="-1"
         ref="table"
         bordered
         size="middle"
-        rowKey = "processInstanceId"
+        rowKey="processInstanceId"
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
@@ -117,10 +133,16 @@
               </a>
               <a-menu slot="overlay">
                 <a-menu-item @click="showHistory(record)">历史</a-menu-item>
-                <a-menu-item @click="delectOne(record)">删除流程</a-menu-item>
+                <a-menu-item>
+                  <a-popconfirm
+                    title="确定要删除流程吗?"
+                    @confirm="() => delectOne(record.processInstanceId)"
+                  >
+                    <a>删除流程</a>
+                  </a-popconfirm>
+                </a-menu-item>
               </a-menu>
             </a-dropdown> -->
-           
           </template>
           <template v-else>
             <a-dropdown>
@@ -142,7 +164,14 @@
                       </a-popconfirm>
                 </a-menu-item>-->
                 <a-menu-item @click="showHistory(record)">历史</a-menu-item>
-                <!-- <a-menu-item @click="delectOne(record)">删除流程</a-menu-item> -->
+                <!-- <a-menu-item>
+                  <a-popconfirm
+                    title="确定要删除流程吗?"
+                    @confirm="() => delectOne(record.processInstanceId)"
+                  >
+                    <a>删除流程</a>
+                  </a-popconfirm>
+                </a-menu-item> -->
               </a-menu>
             </a-dropdown>
           </template>
@@ -159,19 +188,10 @@
           :columns="innerColumns"
           :data-source="innerData"
           :pagination="false"
-        ></a-table> -->
-        <div slot="expandedRowRender"
-        class="expansionWrapper"
-        >
-          <div
-          class="expansionWrapper-item"
-          :key='item.dataIndex'
-          v-for="item in selectedData">
-          <div
-          v-if="item.value"
-          >
-          {{item.title}} : {{item.value}}
-          </div>
+        ></a-table>-->
+        <div slot="expandedRowRender" class="expansionWrapper">
+          <div class="expansionWrapper-item" :key="item.dataIndex" v-for="item in selectedData">
+            <div v-if="item.value">{{item.title}} : {{item.value}}</div>
           </div>
         </div>
       </a-table>
@@ -193,7 +213,6 @@ import { BpmNodeInfoMixin } from '@/views/modules/bpm/mixins/BpmNodeInfoMixin'
 import JDate from '@/components/jeecg/JDate'
 import { postAction } from '../../../../../api/manage'
 
-
 export default {
   name: 'HisProcessList',
   mixins: [JeecgListMixin, BpmNodeInfoMixin],
@@ -204,9 +223,10 @@ export default {
   },
   data() {
     return {
-      btn : false,
-      selectedRowKeys:[],
-      expandedKeys:[],
+      dateString:[],
+      btn: false,
+      selectedRowKeys: [],
+      expandedKeys: [],
       // innerData:[],
       // innerColumns: [],
       selectedData: [],
@@ -220,10 +240,10 @@ export default {
       },
 
       values: [],
-     
+
       flag: false,
       description: '历史流程',
-     
+
       queryParam: {},
       dataSource: [],
       typeList: [],
@@ -323,7 +343,6 @@ export default {
           width: 100,
           scopedSlots: { customRender: 'action' },
           align: 'center',
-          
         },
       ],
       url: {
@@ -334,10 +353,11 @@ export default {
         roleDegisnList: '/designform/designFormCommuse/roleDegisnList',
         codeChange: '/act/task/codeChange',
         detail: '/moreFilter/detail',
+        delete: '/moreFilter/delete',
       },
       path: 'modules/bpm/task/form/FormLoading',
       formData: {},
-      fieldList: [{ type: 'input', value: 'name', text: '姓名' }],
+      fieldList: [],
       items: [],
     }
   },
@@ -345,47 +365,88 @@ export default {
     this.initList()
   },
   methods: {
-    delectOne(row){
-      console.log(row)
+    
+    onChange(value,dateString) {
+      
+      console.log(value+"---"+dateString)
+      // let startTime = dateString[0]
+      // let endTime = dateString[1]
+      // let dates = []
+      // dates.push(startTime)
+      // dates.push(endTime)
+      // let arr = {"value":text,"defaultValue":dates}
+      // this.items.push(arr)
     },
-    delects(){
-      console.log(this.selectedRowKeys)
+    delectOne(id) {
+      let ids = [id]
+      postAction(this.url.delete, ids).then((res) => {
+        if (res.success) {
+          this.$message.success('删除成功')
+          this.searchQuery()
+        } else {
+          this.$message.error('删除失败')
+        }
+      })
     },
-    onSelectChange(selectedRowKeys){
-      console.log('selectedRowKeys changed: ', selectedRowKeys);
-      if(selectedRowKeys.length>0){
+    delects() {
+      let ids = this.selectedRowKeys
+      let url = this.url.delete
+      var that = this
+      this.$confirm({
+        title: '确认要删除这些流程吗?',
+        onOk() {
+          console.log(ids)
+          postAction(url, ids).then((res) => {
+            if (res.success) {
+              that.$message.success('已成功删除' + res.result + '条流程')
+              that.searchQuery()
+              that.btn = false
+            } else {
+              that.$message.error('系统异常')
+            }
+          })
+
+          // that.$message.success('已成功删除'+count+'条流程')
+        },
+        onCancel() {},
+      })
+    },
+    onSelectChange(selectedRowKeys) {
+      console.log('selectedRowKeys changed: ', selectedRowKeys)
+      this.selectedRowKeys = selectedRowKeys
+      if (selectedRowKeys.length > 0) {
         this.btn = true
-      }else{
+      } else {
         this.btn = false
       }
-      this.selectedRowKeys = selectedRowKeys;
+
+      console.log(this.selectedRowKeys)
     },
-    onExpand(expanded, record){
-      if(expanded){
-         this.expandedKeys = []
-         this.detail(record.processInstanceId)
-         this.onExpandedRowsChange(record);
-      }else{
-         this.expandedKeys = []
+    onExpand(expanded, record) {
+      if (expanded) {
+        this.expandedKeys = []
+        this.detail(record.processInstanceId)
+        this.onExpandedRowsChange(record)
+      } else {
+        this.expandedKeys = []
       }
     },
     onExpandedRowsChange(rows) {
-      
-      this.expandedKeys.push(rows.processInstanceId);
+      this.expandedKeys.push(rows.processInstanceId)
     },
-    detail(id){
+    detail(id) {
       console.log('请求发送了')
-      console.log("id="+id)
-      getAction(this.url.detail,{id:id}).then((res)=>{
-        const { data,columns } = res.result
-        console.log(data,columns)
-        const result = columns.map((item) =>{
+      console.log('id=' + id)
+      getAction(this.url.detail, { id: id }).then((res) => {
+        const { data, columns } = res.result
+        console.log(data, columns)
+        const result = columns.map((item) => {
           return {
             ...item,
-            value: data[0][item.dataIndex]
+            value: data[0][item.dataIndex],
           }
         })
-        const filteredResult = result.filter(item => item.value)
+        const filteredResult = result.filter((item) => item.value)
         this.selectedData = [...filteredResult]
         this.innerData = data
         this.innerColumns = columns
@@ -439,6 +500,9 @@ export default {
       this.flag = false
       this.datas = []
       this.fieldList = []
+      this.expandedKeys = []
+      this.selectedRowKeys = []
+      this.btn = false
     },
 
     searchQuery() {
@@ -459,8 +523,7 @@ export default {
           tag: 'all',
           pageNo: this.ipagination.current,
           pageSize: this.ipagination.pageSize,
-          startDate: this.queryParam.startTime,
-          endDate: this.queryParam.endTime,
+          
         }).then((res) => {
           this.dataSource = res.result.records
           this.ipagination.total = res.result.total
@@ -470,6 +533,7 @@ export default {
         console.log('query为空')
         this.search()
       }
+      this.expandedKeys = []
     },
     codeChange(code) {
       this.flag = true
@@ -493,6 +557,7 @@ export default {
       this.datas = []
       this.items = []
       this.values = []
+      this.expandedKeys = []
     },
 
     nameChange(bpmStatus) {

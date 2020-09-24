@@ -39,22 +39,54 @@
             </a-form-item>
           </a-col>
 
-         <a-col :md="3" :sm="4"> </a-col>
+       
 
-           <a-col :md="4" :sm="6" >
-            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
+           <a-col :md="6" :sm="8" >
+            <span style="position:relative;top:4px;float: right" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
             </span>
           </a-col>
         </a-row>
           <!-- 更多查询 -->
-        <a-row :gutter="24">
-          <a-col :md="8" :sm="12" v-for="item in items" :key="item.value" v-show="flag">
-            <a-form-item :label="item.text" v-if="item.type === 'select'" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <a-row v-show="flag">
+          <a-col :md="8" :sm="12" v-for="item in items" :key="item.value">
+            <!-- 下拉框 -->
+            <a-form-item
+              :label="item.text"
+              v-if="item.type === 'select'"
+              :labelCol="labelCol"
+              :wrapperCol="wrapperCol"
+            >
               <a-select v-model="item.defaultValue" :options="item.options" placeholder="请选择"></a-select>
             </a-form-item>
-            <a-form-item :label="item.text" v-if="item.type === 'input'" :labelCol="labelCol" :wrapperCol="wrapperCol">
+
+            <!-- 时间选择框 -->
+            <a-form-item
+              :label="item.text"
+              v-if="item.type === 'datetime'"
+              :labelCol="labelCol"
+              :wrapperCol="wrapperCol"
+            >
+            <!-- @change="onChange" -->
+              <a-range-picker
+                :show-time="{ format: 'HH:mm:ss' }"
+                format="YYYY-MM-DD HH:mm:ss"
+                style="width:100%;"
+                
+                v-model="item.defaultValue"
+              >
+                <template slot="renderExtraFooter">extra footer</template>
+              </a-range-picker>
+            </a-form-item>
+
+            <!-- 文本框 -->
+            <a-form-item
+              :label="item.text"
+              v-if="item.type === 'varchar'"
+              :labelCol="labelCol"
+              :wrapperCol="wrapperCol"
+            >
               <a-input v-model="item.defaultValue" placeholder="请输入"></a-input>
             </a-form-item>
           </a-col>
@@ -363,24 +395,18 @@ export default {
       this.searchQuery();
       
     },
-     onChange(value, dateString) {
-      this.queryParam.startTime = dateString[0]
-      this.queryParam.endTime = dateString[1]
-      console.log('Formatted Selected Time: ', dateString)
+    // onChange(value, dateString) {
+    //   this.queryParam.startTime = dateString[0]
+    //   this.queryParam.endTime = dateString[1]
+    //   console.log('Formatted Selected Time: ', dateString)
 
-      console.log(this.queryParam.startTime)
-      console.log(this.queryParam.endTime)
-    },
+    //   console.log(this.queryParam.startTime)
+    //   console.log(this.queryParam.endTime)
+    // },
     handleSuperQuery() {
       console.log(param)
     },
-    onChange(value, dateString) {
-      this.queryParam.startTime = dateString[0]
-      this.queryParam.endTime = dateString[1]
-
-      console.log(this.queryParam.startTime)
-      console.log(this.queryParam.endTime)
-    },
+   
 
     search() {
       this.loading = true
@@ -402,6 +428,7 @@ export default {
       this.search()
       this.flag = false
       this.datas=[]
+      this.expandedKeys = []
     },
 
     searchQuery() {
@@ -436,6 +463,7 @@ export default {
         console.log('query为空')
         this.search()
       }
+      this.expandedKeys = []
 
     },
     codeChange(code) {
@@ -459,10 +487,12 @@ export default {
       this.datas=[]
       this.items = []
       this.values = []
+      this.expandedKeys = []
     },
 
 
     nameChange(bpmStatus) {
+      
       this.queryParam.bpmStatus = bpmStatus
       console.log(this.queryParam)
     },
