@@ -6,7 +6,8 @@
       :disabled="item.disabled || item.is_readOnly"
       :showSearch="{ cascaderFilter }"
       placeholder=""
-      v-model="item.conf.default_value"
+      v-model="valueCascader"
+      @change="onChange"
     />
   </div>
 </template>
@@ -14,17 +15,17 @@
 <script>
 export default {
   name: 'From-Cascader',
-  props: ['item'],
+  props: {
+    item: {
+      type: Object
+    },
+    value: {
+      type: String
+    }
+  },
   data () {
     return {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 5 }
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 16 }
-      }
+      valueCascader: this.value
     }
   },
   mounted () {
@@ -32,7 +33,20 @@ export default {
       this.item.conf.default_value = []
     }
   },
+  watch: {
+    value(newVal, oldVal) {
+      if (newVal === '') {
+        this.valueCascader = []
+        return
+      }
+      this.valueCascader = newVal
+    }
+  },
   methods: {
+    onChange() {
+      this.$emit('input', this.valueCascader)
+      this.$emit('onChange', this.valueCascader)
+    },
     cascaderFilter (inputValue, path) {
       // 级联过滤函数
       return path.some(option => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1)

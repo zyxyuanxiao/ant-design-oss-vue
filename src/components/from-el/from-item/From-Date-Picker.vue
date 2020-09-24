@@ -3,10 +3,10 @@
     <a-date-picker
       :disabled="item.disabled || item.is_readOnly"
       :placeholder="item.placeholder"
-      @change="handleDateChange"
-      :defaultValue="moment(item.conf.default_value, 'YYYY-MM-DD HH:mm:ss')"
+      :defaultValue="moment(valueTime, 'YYYY-MM-DD HH:mm:ss')"
       :showTime="showTime"
       :format="dateFormat"
+      @change="onChange"
     />
   </div>
 </template>
@@ -16,7 +16,14 @@ import moment from 'moment'
 
 export default {
   name: 'From-Date-Picker',
-  props: ['item'],
+  props: {
+    item: {
+      type: Object
+    },
+    value: {
+      type: String
+    }
+  },
   data () {
     return {
       dateFormat: 'YYYY-MM-DD HH:mm:ss',
@@ -28,13 +35,24 @@ export default {
       wrapperCol: {
         xs: { span: 24 },
         sm: { span: 16 }
-      }
+      },
+      valueTime: this.value
+    }
+  },
+  watch: {
+    value (newVal, oldVal) {
+      this.valueTime = newVal
     }
   },
   methods: {
     moment,
     handleDateChange (mom, dateStr) {
       this.$emit('change', dateStr)
+    },
+    onChange(mom, dateStr) {
+      this.$emit('change', dateStr)
+      this.$emit('input', this.valueTime)
+      this.$emit('onChange', this.valueTime)
     }
   }
 }

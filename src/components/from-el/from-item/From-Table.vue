@@ -42,24 +42,20 @@
     </a-table>-->
     <div style="padding-top: 15px;">
       <a-timeline>
-        <template v-for="(itemC, index) in data">
-
-          <a-timeline-item v-if="index===data.length-1" color="green" style="color: #42bf42">
-           <!-- <template v-for="(val, key, index) in itemC">
-              <span v-if="list[index].value === key">{{list[index].label}}：<span style="color: #42bf42">【{{val}}】</span></span>
-              &lt;!&ndash;<span style="margin-left: 15px;">提交人：{{itemC['73cc1776253d48dbb3df631d98bd70f1']}}</span>
-              <p>内容： {{itemC['0965ea63281e428d9d8910d79e7ec92a']}}</p>&ndash;&gt;
-            </template>-->
+        <template v-for="(itemC, index) in dataList">
+          <a-timeline-item v-if="index=== dataList.length-1" color="green" style="color: #42bf42">
             <template v-for="(val, key, index) in itemC">
               <span v-if="list[index].label ==='时间'">{{list[index].label}}：<span style="color: #42bf42">【{{val}}】</span></span>
-              <span style="margin-left: 15px;" v-else-if="list[index].label ==='提交人'">{{list[index].label}}：{{val}}</span>
+              <span style="margin-left: 15px;"
+                    v-else-if="list[index].label ==='提交人'">{{list[index].label}}：{{val}}</span>
               <p v-else>{{list[index].label}}： {{val}}</p>
             </template>
           </a-timeline-item>
           <a-timeline-item v-else>
             <template v-for="(val, key, index) in itemC">
               <span v-if="list[index].label ==='时间'">{{list[index].label}}：<span style="color: #218af4">【{{val}}】</span></span>
-              <span style="margin-left: 15px;" v-else-if="list[index].label ==='提交人'">{{list[index].label}}：{{val}}</span>
+              <span style="margin-left: 15px;"
+                    v-else-if="list[index].label ==='提交人'">{{list[index].label}}：{{val}}</span>
               <p v-else>{{list[index].label}}： {{val}}</p>
             </template>
           </a-timeline-item>
@@ -68,7 +64,6 @@
     </div>
     <div v-if="!item.disabled">
       <a-button @click="() => edit()" type="primary" :disabled="item.disabled">提交反馈</a-button>
-      <a-button @click="() => save()" type="primary" :disabled="item.disabled" style="margin-left: 10px;"> 提交</a-button>
     </div>
     <!-- <div style="margin-top: 15px;">
        <a-carousel :dot-position="dotPosition" :dots="false" autoplay>
@@ -178,7 +173,14 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'From-Table',
-  props: ['item'],
+  props: {
+    item: {
+      type: Object
+    },
+    value: {
+      type: Array
+    }
+  },
   data () {
     return {
       labelCol: {
@@ -193,6 +195,7 @@ export default {
         xl: { span: 24 },
         lg: { span: 17 }
       },
+      valueTable: this.value,
       data: [],
       columns: [],
       dataList: [],
@@ -207,59 +210,25 @@ export default {
   },
   watch: {
     // 页面不刷新，监听值的变化，重新绑定数据
-    'item.conf.default_value': function(newValue) {
-      if (newValue === '') { this.item.conf.default_value = []}
-      let data = this.item.conf.default_value
-      this.data = data
+    value(newVal, oldVal) {
+      if (newVal === '') { this.valueTable = []}
+      this.dataList = this.valueTable
     },
     'item.conf.params': function(newValue) {
       this.list = newValue
-      this.columns = []
-      newValue.forEach((item) => {
-        this.columns.push(
-          {
-            title: item.label,
-            dataIndex: item.value,
-            width: '25%',
-            scopedSlots: { customRender: item.value }
-          }
-        )
-        this.dataList.push(item.value)
-      })
     }
   },
   mounted () {
     this.list = this.item.conf.params
-    /*if (this.list) {
-      this.list.forEach((item) => {
-        this.columns.push(
-          {
-            title: item.label,
-            dataIndex: item.value,
-            width: '25%',
-            scopedSlots: { customRender: item.value }
-          }
-        )
-        this.dataList.push(item.value)
-      })
-    }*/
     if (this.item.conf.default_value === '') { this.item.conf.default_value = []}
     let data = this.item.conf.default_value
-    this.data = data
+    this.dataList = data
   },
   methods: {
-    handleChange (value, index, column) {
-      const newData = [...this.data]
-      newData[index][column] = value
-      this.data = newData
-    },
     edit () {
       this.visible = true
     },
     ...mapGetters(['userInfo']),
-    save () {
-
-    },
     cancel (index) {
       const newData = [...this.data]
       newData.splice(index, 1)
@@ -290,10 +259,12 @@ export default {
         lcObj[item.value] = item.description
         console.log(lcObj)
       })
-      this.data.push(lcObj)
+      this.$emit('input', this.dataList)
+      this.$emit('onChange', this.dataList)
+      this.dataList.push(lcObj)
       let data = {
         form: {
-          fkjl: this.data,
+          fkjl: this.dataList,
           sgdw: sgdw
         },
         ticket_id: sessionStorage.getItem('tickedId')
@@ -308,10 +279,6 @@ export default {
         console.log(error)
       })
     },
-    onChangeDate (dates, dateStrings) {
-      console.log('From: ', dates[0], ', to: ', dates[1])
-      console.log('From: ', dateStrings[0], ', to: ', dateStrings[1])
-    }
   }
 }
 </script>

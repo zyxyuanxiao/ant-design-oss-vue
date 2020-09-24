@@ -11,36 +11,33 @@
             </div>
           </div>
           <div style="padding-right: 25px;padding-top: 15px;height:655px;overflow-x: hidden" v-show="isShow">
-            <a-form-model :model="formConfig" ref="formConfig" style="display: flex;flex-wrap:wrap">
+            <a-form-model :model="formVal" ref="formVal" style="display: flex;flex-wrap:wrap">
               <a-form-model-item
                 v-bind:class="[item.type === 'multiRowText' || item.type === 'table' || item.type === 'timeAxis' ||  item.type === 'attachfile' ? 'form-width-row': 'form-width']"
                 :hidden="item.is_hidden"
-                v-for="(item, index) in formConfig.formFiles"
+                v-for="(item, index) in formFiles"
                 :label="item.name"
                 :label-col="item.type === 'multiRowText' || item.type === 'table'|| item.type === 'timeAxis' || item.type === 'attachfile' ?  labelCol : labelCol2"
-                :prop="'formFiles.'+ index +'.conf.default_value'"
+                :prop="item.code"
                 :key="item.code"
-                :rules="{
-            required: item.is_required === 1,
-            message: item.name + '不能为空',
-            trigger: 'blur',
-            }"
+                :rules="{ required: item.is_required === 1,message: item.name + '不能为空',trigger: 'blur',}"
                 :wrapper-col="item.type === 'multiRowText' || item.type === 'table' || item.type === 'timeAxis' ||  item.type === 'attachfile' ?  wrapperCol : wrapperCol2"
               >
-                <text-test :item="item" v-if="item.type === 'singleRowText'"></text-test>
-                <radio-test :item="item" v-else-if="item.type === 'singleSel'"></radio-test>
-                <checkbox-test :item="item" v-else-if="item.type === 'multiSel'"></checkbox-test>
-                <select-test :item="item" v-else-if="item.type === 'listSel'"></select-test>
-                <time-test :item="item" v-else-if="item.type === 'dateTime'"></time-test>
-                <cascade-test :item="item" v-else-if="item.type === 'cascader'"></cascade-test>
-                <tree-sel-test :item="item" v-else-if="item.type === 'treeSel'"></tree-sel-test>
-                <integer-test :item="item" v-else-if="item.type === 'int'"></integer-test>
-                <multi-row-test :item="item" v-else-if="item.type === 'multiRowText'"></multi-row-test>
+                <text-test v-model="formVal[item.code]" :item="item" v-if="item.type === 'singleRowText'"  @onChange="onChangeText($event, item.code)"></text-test>
+                <radio-test v-model="formVal[item.code]" :item="item" v-else-if="item.type === 'singleSel'"></radio-test>
+                <checkbox-test v-model="formVal[item.code]" :item="item" v-else-if="item.type === 'multiSel'"></checkbox-test>
+                <select-test v-model="formVal[item.code]" :item="item"
+                             v-else-if="item.type === 'listSel'"></select-test>
+                <time-test v-model="formVal[item.code]" :item="item" v-else-if="item.type === 'dateTime'"></time-test>
+                <cascade-test v-model="formVal[item.code]" :item="item" v-else-if="item.type === 'cascader'"></cascade-test>
+                <tree-sel-test v-model="formVal[item.code]" :item="item" v-else-if="item.type === 'treeSel'"></tree-sel-test>
+                <integer-test v-model="formVal[item.code]" :item="item" v-else-if="item.type === 'int'"></integer-test>
+                <multi-row-test v-model="formVal[item.code]" :item="item" v-else-if="item.type === 'multiRowText'"></multi-row-test>
                 <attachfile-test :item="item" v-else-if="item.type === 'attachfile'"
                                  @onUpLoad="onUpLoad"></attachfile-test>
-                <decimals-test :item="item" v-else-if="item.type === 'double'"></decimals-test>
-                <table-test :item="item" v-else-if="item.type=== 'table'"></table-test>
-                <table-test :item="item" v-else-if="item.type=== 'timeAxis'"></table-test>
+                <decimals-test v-model="formVal[item.code]" :item="item" v-else-if="item.type === 'double'"></decimals-test>
+                <table-test v-model="formVal[item.code]" :item="item" v-else-if="item.type=== 'table'"></table-test>
+                <table-test v-model="formVal[item.code]" :item="item" v-else-if="item.type=== 'timeAxis'"></table-test>
                 <!--<dynamic-form-part-item
                   :items="item instanceof Array?item[1]:item">
                 </dynamic-form-part-item>-->
@@ -78,17 +75,36 @@
           </div>
         </div>
       </div>
-      <div style="display: flex;justify-content:center" v-show="allotShow">
+      <div style="display: flex;justify-content:center" v-show="allotShow && !signFlag">
         <div v-for="(item, index) in submitBtn" :key="index" style="padding: 15px 10px;">
           <a-button style="padding: 0 15px;height: 35px;"
                     type="primary"
-                    @click="submitForm('formConfig', item)"
+                    @click="submitForm('formVal', item)"
           >
             {{item.btnName}}
           </a-button>
         </div>
         <div style="padding: 15px 10px;" v-if="operation === 'details'">
-          <a-button type="primary" block @click="updateFeedback('formConfig')">保存</a-button>
+          <a-button type="primary" block @click="updateFeedback('formVal')">保存</a-button>
+        </div>
+        <!--v-if="operation === 'details'"-->
+        <div style="padding: 15px 10px;" v-show="allotShow">
+          <a-select style="width: 80px;height: 35px;" placeholder="更多" @change="handleChange">
+            <a-select-option value="reassign">
+              改派
+            </a-select-option>
+            <a-select-option value="putUp">
+              挂起
+            </a-select-option>
+          </a-select>
+        </div>
+      </div>
+      <div style="display: flex;justify-content:center" v-show="allotShow && signFlag">
+        <div style="padding: 15px 10px;" v-if="operation === 'details'">
+          <a-button type="primary" block @click="signTickets()">签收</a-button>
+        </div>
+        <div style="padding: 15px 10px;" v-if="operation === 'details'">
+          <a-button type="primary" block @click="updateFeedback('formVal')">保存</a-button>
         </div>
         <!--v-if="operation === 'details'"-->
         <div style="padding: 15px 10px;" v-show="allotShow">
@@ -108,7 +124,7 @@
         <a-row :gutter="24">    
           <a-col :xl="24" :lg="24" :md="24" :sm="24">
             <a-form-model-item label="指定改派" prop="description">            
-              <a-input placeholder="请输入处理人" v-model="userName" />
+              <a-input placeholder="请输入处理人" v-model="userName"/>
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -132,10 +148,12 @@ import multiRowTest from './from-item/From-Textarea'
 import attachfileTest from './from-item/From-Upload'
 import decimalsTest from './from-item/From-Decimals'
 import tableTest from './from-item/From-Table'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Tickets-From',
-  props: ['formConfig', 'submitBtn', 'allotShow', 'operation', 'spinnings', 'flowList'],
+  props: ['formFiles', 'formVal', 'formIndex', 'submitBtn',
+    'allotShow', 'operation', 'spinnings', 'flowList', 'signFlag'],
   data () {
     return {
       labelCol: {
@@ -163,13 +181,16 @@ export default {
     }
   },
   mounted () {
-    console.log(this.formConfig)
   },
   methods: {
+    ...mapGetters(['userInfo']),
     submitForm (formName, item) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.spinning = true
+          if(this.formVal['fkjl']) {
+            this.$message.error('反馈记录请填写完整！')
+            return
+          }
           this.$emit('click', item)
         } else {
           console.log('error submit!!')
@@ -191,6 +212,13 @@ export default {
         }
       })
     },
+    signTickets () {
+      this.formVal.qsr = this.userInfo().username
+      this.formVal.qsrlxdh = this.userInfo().phone
+      this.formVal.orderSate = 'wfk'
+      console.log(this.formVal)
+      this.$emit('signTickets')
+    },
     onUpLoad (fileList) {
       this.$emit('uploadFile', fileList)
     },
@@ -205,7 +233,14 @@ export default {
     },
     ShowFlow () {
       this.isShowFlow = !this.isShowFlow
+    },
+    onChangeText (value, code) {
+      if (code === 'title') {
+        this.formVal.repairman = value
+      }
     }
+  },
+  watch: {
   },
   components: {
     [FormModel.name]:

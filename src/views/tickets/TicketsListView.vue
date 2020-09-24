@@ -327,7 +327,10 @@
         :footer="null"
       >
         <tickets-from-flow
-          :form-config="formConfig"
+          :form-files="formFileds"
+          :form-val="formVal"
+          :form-index="formIndex"
+          :sign-flag="signFlag"
           :submit-btn="submitBtn"
           :allot-show="allotShow"
           :operation="operation"
@@ -336,10 +339,13 @@
           v-if="operation === 'details'"
           @updateFeedback="updateOrder"
           @uploadFile="uploadFile"
+          @signTickets="signTickets"
           @click="onSubmit">
         </tickets-from-flow>
         <tickets-form
-          :form-config="formConfig"
+          :form-files="formFileds"
+          :form-val="formVal"
+          :form-index="formIndex"
           :submit-btn="submitBtn"
           :allot-show="allotShow"
           :spinnings="spinning"
@@ -352,7 +358,7 @@
         </tickets-form>
       </a-modal>
       <a-modal
-        title="请选择下一节点处理对象"
+        title="请选择下一节点处理人"
         :width="600"
         :centered="true"
         :visible="showRollback"
@@ -405,8 +411,8 @@ import JEllipsis from '@/components/jeecg/JEllipsis'
 import JDate from '@/components/jeecg/JDate.vue'
 import TicketsFromFlow from '../../components/from-el/Tickets-From-Flow'
 import TicketsForm from '../../components/from-el/Tickets-Form'
-import TicketsModelType from './modules/TicketsModelType'
-import { getSelectTime, filterObj } from '../../utils/util'
+import TicketsModelType from './../tickets/modules/TicketsModelType'
+import { getSelectTime } from '../../utils/util'
 import { mapGetters } from 'vuex'
 import moment from 'moment/moment'
 
@@ -508,12 +514,12 @@ export default {
           width: 250,
           dataIndex: 'formData.dd'
         },
-       /* {
-          title: '设备编码',
-          align: 'center',
-          width: 180,
-          dataIndex: 'formData.deviceid'
-        },*/
+        /* {
+           title: '设备编码',
+           align: 'center',
+           width: 220,
+           dataIndex: 'formData.deviceid'
+         },*/
         {
           title: '设备IP',
           align: 'center',
@@ -589,12 +595,8 @@ export default {
       dataSource: [],
       orderInfo: {},
       submitBtn: [],
-      /**
-       * 模型数据
-       */
-      formConfig: {
-        formFiles: [] //
-      },
+      formVal: {},
+      formIndex: {},
       flowList: [],  // 流程数据
       formData: {
         title: '',
@@ -618,19 +620,24 @@ export default {
           color: 'rgb(73,171,222)'
         },
         {
-          value: 'qsz',
-          label: '签收中',
-          color: 'rgb(76,197,171)'
+          label: '未签收',
+          value: 'wjs',
+          color: 'rgb(98,112,193)'
         },
         {
-          value: 'fkz',
-          label: '反馈中',
-          color: 'rgb(250,220,35)'
+          value: 'wfk',
+          label: '未反馈',
+          color: 'rgb(239,139,32)'
         },
         {
-          value: 'dqr',
-          label: '待确认',
-          color: 'rgb(255,174,47)'
+          value: 'yfk',
+          label: '已反馈',
+          color: 'rgb(5,209,227)'
+        },
+        {
+          value: 'js',
+          label: '结束',
+          color: 'rgb(163,162,162)'
         },
         {
           value: 'ywc',
@@ -640,34 +647,24 @@ export default {
       ],
       orderTypeList: [
         {
-          'select': 0,
           'label': '摄像机类',
-          'value': 'sxjl',
-          'descEnable': 0
+          'value': 'sxjl'
         },
         {
-          'select': 0,
           'label': '服务器类',
-          'value': 'fwql',
-          'descEnable': 0
+          'value': 'fwql'
         },
         {
-          'select': 0,
           'label': '网络类',
-          'value': 'wll',
-          'descEnable': 0
+          'value': 'wll'
         },
         {
-          'select': 0,
           'label': '动环类',
-          'value': 'dhl',
-          'descEnable': 0
+          'value': 'dhl'
         },
         {
-          'select': 0,
           'label': '其他类',
-          'value': 'qtl',
-          'descEnable': 0
+          'value': 'qtl'
         }
       ],
       repairsTypeList: [
@@ -706,6 +703,7 @@ export default {
       operation: '',
       allotShow: false,
       spinning: false,
+      signFlag: false,
       spinningShow: false,
       activeKey: '1',
       imgUrl: window._CONFIG['domianURL'] + '/api/itsm/getFileById?isOnLine=true&fileId=',
@@ -842,7 +840,6 @@ export default {
         }
         if (itemA.code === 'sgdw') {
           this.workForm.sgdw = localStorage.getItem('sgdw')
-          console.log('itemA.conf.default_value ---', itemA.conf.default_value)
         }
       })
       let handleRules = {
@@ -866,7 +863,6 @@ export default {
         urgent_level: '2',
         handle_rules: handleRules
       }
-      console.log(data)
       let apiKey = this.userInfo().apikey
       handleOrder(data, apiKey).then(response => {
         this.disabled = true
@@ -997,6 +993,7 @@ export default {
       this.spinningShow = true
       this.formFileds = []
       this.workForm = {}
+      this.orderInfo = {}
       this.submitBtn = []
       let params = {
         id: record.ticketId,
@@ -1006,8 +1003,8 @@ export default {
         this.orderInfo = response.result
         this.formFileds = response.result.formFileds
         this.submitBtn = response.result.submitBtn
-        this.formConfig.formFiles = this.formFileds
         this.imgs = []
+        this.signFlag = this.orderInfo.activity_id === '4ee67d3f2b2a4f65a73775e5525e3867'
         this.getUserInfo(record.executionGroup, record.executor)
         sessionStorage.setItem('tickedId', response.result.ticketId)
         this.ModalText = '工单详情'
@@ -1049,6 +1046,8 @@ export default {
           } else if (itemA.code === 'sgdw') {
             localStorage.setItem('sgdw', itemA.conf.default_value)
           }
+          this.$set(this.formVal, itemA.code, itemA.conf.default_value)
+          this.$set(this.formIndex, itemA.code, index)
         })
         this.operation = 'details'
         this.showRollback = false
@@ -1059,7 +1058,6 @@ export default {
         console.log(error)
       })
       this.getTicketsProcess(record.ticketId)
-
     },
     getModelDetails (id) {
       this.spinning = true
@@ -1071,11 +1069,10 @@ export default {
         this.modeId = id
         this.formFileds = response.result.formFileds
         this.submitBtn = response.result.submitBtn
-        this.formConfig.formFiles = this.formFileds
         this.ModalText = '创建工单'
         let type = 'attachfile'
-        let fileType = this.formFileds.find((item) => type === item.type)
-        if (fileType !== undefined) {
+        let executor = this.formFileds.find((item) => type === item.type)
+        if (executor !== undefined) {
           this.isFile = 1
           this.formFileds.forEach((itemA) => {
             if (itemA.type === 'attachfile') {
@@ -1130,6 +1127,9 @@ export default {
     },
     handleEdit (record) {
       // this.visible = true
+    },
+    signTickets() {
+      this.signFlag = false
     },
     handleOk (e) {
       this.confirmLoading = true
@@ -1263,29 +1263,24 @@ export default {
       }).catch(error => {
         console.log(error)
       })
-    }
-    ,
+    },
     getLongTime (val, isFull) {
       if (val === '' || val === 0) {
         return '- -'
       }
       return getSelectTime(new Date(val), isFull)
-    }
-    ,
+    },
     getExecutors (arr) {
       return arr != null && arr.length >= 0 ? arr.join(',') : ' '
-    }
-    ,
+    },
     getExecutionGroups (arr) {
       return arr != null && arr.length >= 0 ? arr.join(',') : ' '
-    }
-    ,
+    },
     onChange (page, pageSize) {
       this.data.pageNum = page
       this.data.pageSize = pageSize
       this.getTicketsList()
-    }
-    ,
+    },
     onChangeTabs (key) {
       this.getQueryTerms()
       this.getTicketsList()
@@ -1294,24 +1289,20 @@ export default {
       } else {
         this.getTicketAllCountByUser()
       }
-    }
-    ,
+    },
     onShowSizeChange (current, size) {
       this.data.pageNum = current
       this.data.pageSize = size
       this.getTicketsList()
-    }
-    ,
+    },
     handleChange (value) {
       console.log(`selected ${value}`)
-    }
-    ,
+    },
     filterOption (input, option) {
       return (
         option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
       )
-    }
-    ,
+    },
     searchQuery () {
       this.getQueryTerms()
       for (let key in this.formData) {
@@ -1362,18 +1353,15 @@ export default {
         }
       }
       this.getTicketsList()
-    }
-    ,
+    },
     searchReset () {
       this.$refs.ruleForm.resetFields()
       this.getQueryTerms()
       this.getTicketsList()
-    }
-    ,
+    },
     handleToggleSearch () {
       this.toggleSearchStatus = !this.toggleSearchStatus
-    }
-    ,
+    },
     getQueryTerms () {
       let rolesB = this.rolesA()
       // 测试环境sungcor
@@ -1475,6 +1463,7 @@ export default {
               value: departName,
               operator: 'like'
             }
+
           ]
           dataArr2.forEach((item) => {
             item.conditions = [...item.conditions, ...cond]
@@ -1482,17 +1471,14 @@ export default {
         }
         this.data.ass = dataArr2
       }
-    }
-    ,
+    },
     onChangeDate (dates, dateStrings) {
       console.log('From: ', dates[0], ', to: ', dates[1])
       console.log('From: ', dateStrings[0], ', to: ', dateStrings[1])
-    }
-    ,
+    },
     selectChangeUser () {
       this.$refs.userIdList.blur()
-    }
-    ,
+    },
     selectChangeGroup () {
       this.$refs.groupIdList.blur()
     }

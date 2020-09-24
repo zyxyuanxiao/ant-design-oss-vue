@@ -6,8 +6,9 @@
       :min="item.conf.int_min"
       :disabled="item.disabled || item.is_readOnly"
       style="width: 100%"
-      v-model="item.conf.default_value"
+      v-model="valueNumber"
       :placeholder="item.placeholder"
+      @change="onChange"
     />
   </div>
 </template>
@@ -15,17 +16,28 @@
 <script>
 export default {
   name: 'From-Number',
-  props: ['item'],
+  props: {
+    item: {
+      type: Object
+    },
+    value: {
+      type: String
+    }
+  },
   data () {
     return {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 5 }
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 16 }
-      }
+      valueNumber: this.value
+    }
+  },
+  watch: {
+    value(newVal, oldVal) {
+      this.valueNumber = newVal
+    }
+  },
+  methods: {
+    onChange() {
+      this.$emit('input', this.valueNumber)
+      this.$emit('onChange', this.valueNumber)
     }
   }
 }

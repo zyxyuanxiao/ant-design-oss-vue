@@ -5,6 +5,7 @@
       :disabled="item.disabled || item.is_readOnly"
       name="checkboxGroup"
       :options="item.conf.params"
+      @change="onChange"
     />
   </div>
 </template>
@@ -12,17 +13,28 @@
 <script>
 export default {
   name: 'From-Checkbox',
-  props: ['item'],
+  props: {
+    item: {
+      type: Object
+    },
+    value: {
+      type: String
+    }
+  },
   data () {
     return {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 5 }
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 16 }
-      }
+      valueCheckbox: this.value
+    }
+  },
+  watch: {
+    value(newVal, oldVal) {
+      this.valueCheckbox = newVal
+    }
+  },
+  methods: {
+    onChange() {
+      this.$emit('input', this.valueCheckbox)
+      this.$emit('onChange', this.valueCheckbox)
     }
   }
 }

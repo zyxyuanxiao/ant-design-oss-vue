@@ -7,8 +7,9 @@
       :disabled="item.disabled || item.is_readOnly"
       :step="0.1"
       style="width: 100%"
-      v-model="item.conf.default_value"
+      v-model="valueDecimals"
       :placeholder="item.placeholder"
+      @change="onChange"
     />
   </div>
 </template>
@@ -16,17 +17,28 @@
 <script>
 export default {
   name: 'From-Decimals',
-  props: ['item'],
+  props: {
+    item: {
+      type: Object
+    },
+    value: {
+      type: String
+    }
+  },
   data () {
     return {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 5 }
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 16 }
-      }
+      valueDecimals: this.value
+    }
+  },
+  watch: {
+    value(newVal, oldVal) {
+      this.valueDecimals = newVal
+    }
+  },
+  methods: {
+    onChange() {
+      this.$emit('input', this.valueDecimals)
+      this.$emit('onChange', this.valueDecimals)
     }
   }
 }

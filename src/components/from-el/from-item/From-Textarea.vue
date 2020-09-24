@@ -3,8 +3,9 @@
     <a-textarea
       :placeholder="item.placeholder"
       :disabled="item.disabled || item.is_readOnly"
-      v-model="item.conf.default_value"
+      v-model="valueTextarea"
       :autoSize="{ minRows: 6, maxRows: 24 }"
+      @change="onChange"
     />
   </div>
 </template>
@@ -12,17 +13,28 @@
 <script>
 export default {
   name: 'From-Textarea',
-  props: ['item'],
+  props: {
+    item: {
+      type: Object
+    },
+    value: {
+      type: String
+    }
+  },
   data () {
     return {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 5 }
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 16 }
-      }
+      valueTextarea: this.value
+    }
+  },
+  watch: {
+    value(newVal, oldVal) {
+      this.valueTextarea = newVal
+    }
+  },
+  methods: {
+    onChange() {
+      this.$emit('input', this.valueTextarea)
+      this.$emit('onChange', this.valueTextarea)
     }
   }
 }
