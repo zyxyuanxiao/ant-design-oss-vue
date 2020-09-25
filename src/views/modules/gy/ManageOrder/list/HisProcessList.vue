@@ -56,23 +56,37 @@
                 icon="reload"
                 style="margin-left: 4px;"
               >重置</a-button>
-              <!-- <a-button
+              <a-button
                 v-show="btn"
                 style="margin-left: 4px"
                 type="primary"
                 @click="delects"
                 icon="close-circle"
-              >删除</a-button> -->
+              >批量删除</a-button>
             </span>
           </a-col>
         </a-row>
         <!-- 更多查询 -->
         <a-row v-show="flag">
+          <!-- <a-col :md="8" :sm="12" >
+            <a-form-item label="开始时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-range-picker :show-time="{format: 'YYYY-MM-DD HH:mm:ss'}" @change="onChange"  style="width:100%;" v-model="dates"></a-range-picker>
+            </a-form-item>
+          </a-col> -->
           <a-col :md="8" :sm="12" v-for="item in items" :key="item.text">
+            <!-- 级联选择框 -->
+            <a-form-item
+              :label="item.text"
+              v-if="item.value === 'repair_from'||item.value === 'patrol_type'"
+              :labelCol="labelCol"
+              :wrapperCol="wrapperCol"
+            >
+              <a-cascader :options="optionsType" placeholder="请选择" v-model="item.defaultValue"/>
+            </a-form-item>
             <!-- 下拉框 -->
             <a-form-item
               :label="item.text"
-              v-if="item.type === 'select'"
+              v-else-if="item.type === 'select'"
               :labelCol="labelCol"
               :wrapperCol="wrapperCol"
             >
@@ -82,18 +96,18 @@
             <!-- 时间选择框 -->
             <a-form-item
               :label="item.text"
-              v-if="item.type === 'datetime'"
+              v-else-if="item.type === 'datetime'"
               :labelCol="labelCol"
               :wrapperCol="wrapperCol"
             >
             <!-- @change="onChange" -->
-              <a-range-picker :show-time="{format: 'YYYY-MM-DD HH:mm:ss'}"   style="width:100%;" v-model="item.defaultValue"></a-range-picker>
+              <a-range-picker :show-time="{format: 'YYYY-MM-DD HH:mm:ss'}" @change="onChange" style="width:100%;" v-model="item.defaultValue"></a-range-picker>
             </a-form-item>
 
             <!-- 文本框 -->
             <a-form-item
               :label="item.text"
-              v-if="item.type === 'varchar'"
+              v-else-if="item.type === 'varchar'"
               :labelCol="labelCol"
               :wrapperCol="wrapperCol"
             >
@@ -107,6 +121,7 @@
     <div>
       <!-- :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"  选择框 -->
       <a-table
+        
         :expandedRowKeys="expandedKeys"
         @expand="onExpand"
         :expandRowByClick="true"
@@ -125,8 +140,8 @@
       >
         <span slot="action" slot-scope="text, record">
           <template v-if="record.endTime&&record.endTime!=''">
-            <a @click="showHistory(record)">历史</a>
-            <!-- <a-dropdown>
+            <!-- <a @click="showHistory(record)">历史</a> -->
+            <a-dropdown>
               <a class="ant-dropdown-link">
                 更多
                 <a-icon type="down" />
@@ -142,7 +157,7 @@
                   </a-popconfirm>
                 </a-menu-item>
               </a-menu>
-            </a-dropdown> -->
+            </a-dropdown>
           </template>
           <template v-else>
             <a-dropdown>
@@ -164,14 +179,14 @@
                       </a-popconfirm>
                 </a-menu-item>-->
                 <a-menu-item @click="showHistory(record)">历史</a-menu-item>
-                <!-- <a-menu-item>
+                <a-menu-item>
                   <a-popconfirm
                     title="确定要删除流程吗?"
                     @confirm="() => delectOne(record.processInstanceId)"
                   >
                     <a>删除流程</a>
                   </a-popconfirm>
-                </a-menu-item> -->
+                </a-menu-item>
               </a-menu>
             </a-dropdown>
           </template>
@@ -223,6 +238,7 @@ export default {
   },
   data() {
     return {
+      optionsType:[],
       dateString:[],
       btn: false,
       selectedRowKeys: [],
@@ -248,7 +264,7 @@ export default {
       dataSource: [],
       typeList: [],
 
-      datas: [],
+      dates: [],
       loading: false,
       columns: [
         {
@@ -293,7 +309,7 @@ export default {
           dataIndex: 'startUserName',
         },
         {
-          title: '开始时间',
+          title: '创建时间',
           align: 'center',
           dataIndex: 'startTime',
         },
@@ -363,19 +379,20 @@ export default {
   },
   created() {
     this.initList()
-  },
+    let options1 = [{label: '优盘',value: '优盘'} ,{label: '移动硬盘',value: '移动硬盘'},{label: '显示器',value: '显示器'} ,{label: '投影仪',value: '投影仪'} ,{label: '台式机',value: '台式机'} ,{label: '扫描仪',value: '扫描仪'} ,{label: '光盘刻录机',value: '光盘刻录机'} ,{label: '电话机',value: '电话机'} ,{label: '打印机',value: '打印机'} ,{label: '传真机',value: '传真机'} ,{label: '操作系统及通用软件',value: '操作系统及通用软件'}]
+    let options2= [ {label: '桌面安全 ',value: '桌面安全'},{label: '网络安全 ',value: '网络安全'},{label: '身份认证 ',value: '身份认证'},{label: '鉴章卡 ',value: '鉴章卡'},{label: '加密机 ',value: '加密机'},{label: '防病毒系统 ',value: '防病毒系统'}]
+    let options3= [ {label: '中间件系统 ',value: '中间件系统'},{label: '数据库系统 ',value: '数据库系统'},{label: '操作系统 ',value: '操作系统'},{label: '其他系统软件',value: '其他系统软件'}]
+    let options4 = [{label: '综合布线',value: '综合布线'} ,{label: '智能化机房系统',value: '智能化机房系统'},{label: '有线电视',value: '有线电视'} ,{label: '一卡通',value: '一卡通'} ,{label: '网络设备',value: '网络设备'} ,{label: '庭审系统',value: '庭审系统'} ,{label: '视频会议系统',value: '视频会议系统'} ,{label: '叫号系统',value: '叫号系统'} ,{label: '会议系统',value: '会议系统'} ,{label: '公告显示',value: '公告显示'} ,{label: '服务器',value: '服务器'},{label: '存储设备',value: '存储设备'},{label: '程控交换机',value: '程控交换机'},{label: '安保监控',value: '安保监控'},{label: 'BA系统',value: 'BA系统'}]
+    let options5= [ {label: '在线技术支持 ',value: '在线技术支持'},{label: '现场运维保障 ',value: '现场运维保障'},{label: '系统运维 ',value: '系统运维'},{label: '推文发布',value: '推文发布'},{label: '视频转换上网',value: '视频转换上网'},{label: '文书撤回',value: '文书撤回'},{label: '系统赋权',value: '系统赋权'},{label: '文件扫描',value: '文件扫描'},{label: '网站信息修改	',value: '网站信息修改'},{label: '网站信息上网',value: '网站信息上网'}]
+    let options6= [ {label: '院史馆 ',value: '院史馆'},{label: '院史馆高院诉讼服务大厅',value: '院史馆高院诉讼服务大厅'},{label: '诉讼服务平台移动端',value: '诉讼服务平台移动端'}]
+    let opts = [{label: '桌面终端',value: '桌面终端',children:options1} ,{label: '信息安全',value: '信息安全',children:options2},{label: '系统软件',value: '系统软件',children:options3},{label: '基础设备',value: '基础设备',children:options4},{label: '数据服务',value: '数据服务',children:options5},{label: '应用软件',value: '应用软件',children:options6}]
+    this.optionsType = opts;
+ },
   methods: {
-    
-    onChange(value,dateString) {
-      
-      console.log(value+"---"+dateString)
-      // let startTime = dateString[0]
-      // let endTime = dateString[1]
-      // let dates = []
-      // dates.push(startTime)
-      // dates.push(endTime)
-      // let arr = {"value":text,"defaultValue":dates}
-      // this.items.push(arr)
+    onChange(value, dateString) {
+      let startTime = dateString[0]
+      let endTime = dateString[1]
+      value = [startTime,endTime]
     },
     delectOne(id) {
       let ids = [id]
@@ -498,7 +515,7 @@ export default {
 
       this.search()
       this.flag = false
-      this.datas = []
+      this.dates = []
       this.fieldList = []
       this.expandedKeys = []
       this.selectedRowKeys = []
@@ -523,7 +540,8 @@ export default {
           tag: 'all',
           pageNo: this.ipagination.current,
           pageSize: this.ipagination.pageSize,
-          
+          startDate: this.queryParam.startTime,
+          endDate: this.queryParam.endTime,     
         }).then((res) => {
           this.dataSource = res.result.records
           this.ipagination.total = res.result.total
@@ -547,14 +565,14 @@ export default {
           console.log('--->>', this.fieldList)
         }
       })
-      this.datas = []
+      this.dates = []
       this.values = []
       this.items = []
     },
     close() {
       this.queryParam = {}
       this.flag = false
-      this.datas = []
+      this.dates = []
       this.items = []
       this.values = []
       this.expandedKeys = []
