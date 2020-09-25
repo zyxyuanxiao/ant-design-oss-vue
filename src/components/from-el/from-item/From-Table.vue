@@ -54,8 +54,7 @@
           <a-timeline-item v-else>
             <template v-for="(val, key, index) in itemC">
               <span v-if="list[index].label ==='时间'">{{list[index].label}}：<span style="color: #218af4">【{{val}}】</span></span>
-              <span style="margin-left: 15px;"
-                    v-else-if="list[index].label ==='提交人'">{{list[index].label}}：{{val}}</span>
+              <span style="margin-left: 15px;" v-else-if="list[index].label ==='提交人'">{{list[index].label}}：{{val}}</span>
               <p v-else>{{list[index].label}}： {{val}}</p>
             </template>
           </a-timeline-item>
@@ -168,19 +167,12 @@
 
 <script>
 import { getSelectTime } from '../../../utils/util'
-import { updateFeedback } from '../../../api/tickets'
+import { updateTickets } from '../../../api/tickets'
 import { mapGetters } from 'vuex'
 
 export default {
   name: 'From-Table',
-  props: {
-    item: {
-      type: Object
-    },
-    value: {
-      type: Array
-    }
-  },
+  props: ['item', 'value'],
   data () {
     return {
       labelCol: {
@@ -211,8 +203,11 @@ export default {
   watch: {
     // 页面不刷新，监听值的变化，重新绑定数据
     value(newVal, oldVal) {
-      if (newVal === '') { this.valueTable = []}
-      this.dataList = this.valueTable
+      if (newVal === '') {
+        this.valueTable = []
+      }
+      this.dataList = newVal
+      console.log(this.dataList)
     },
     'item.conf.params': function(newValue) {
       this.list = newValue
@@ -220,9 +215,11 @@ export default {
   },
   mounted () {
     this.list = this.item.conf.params
-    if (this.item.conf.default_value === '') { this.item.conf.default_value = []}
-    let data = this.item.conf.default_value
-    this.dataList = data
+    if (this.value === '') {
+      this.dataList  = []
+      return
+    }
+    this.dataList = this.value
   },
   methods: {
     edit () {
@@ -237,10 +234,10 @@ export default {
     hideModal () {
       // console.log(this.userInfo())
       let departName = localStorage.getItem('departName') ? localStorage.getItem('departName') : ''
-      let sgdw = localStorage.getItem('sgdw')
+     /* let sgdw = localStorage.getItem('sgdw')
       if (!sgdw.includes(departName)) {
         sgdw = sgdw + '，' + departName
-      }
+      }*/
       let lcObj = {}
       this.list.forEach((item) => {
         if (item.label === '时间') {
@@ -257,24 +254,22 @@ export default {
           item.description = this.description
         }
         lcObj[item.value] = item.description
-        console.log(lcObj)
       })
-      this.$emit('input', this.dataList)
-      this.$emit('onChange', this.dataList)
       this.dataList.push(lcObj)
       let data = {
         form: {
           fkjl: this.dataList,
-          sgdw: sgdw
+          orderSate: 'yfk'
         },
         ticket_id: sessionStorage.getItem('tickedId')
       }
-      localStorage.setItem('sgdw', sgdw)
       let apiKey = this.userInfo().apikey
-      updateFeedback(data, apiKey).then(response => {
+      updateTickets(data, apiKey).then(response => {
         this.$message.success('提交成功')
         this.description = ''
         this.visible = false
+        this.$emit('input', this.dataList)
+        this.$emit('onChange', this.dataList)
       }).catch(error => {
         console.log(error)
       })

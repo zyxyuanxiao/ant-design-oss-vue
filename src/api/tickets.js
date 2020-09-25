@@ -182,20 +182,6 @@ export function uploadFileByTicketId (data, apiKey) {
 }
 
 /**
- * 修改工单数据
- * @param data 反馈内容
- * @param apiKey 参数
- */
-export function updateFeedback (data, apiKey) {
-  return axios({
-    url: '/api/itsm/update',
-    method: 'POST',
-    params: { apikey: apiKey },
-    data
-  })
-}
-
-/**
  * 获取工单流程
  * @param query 根据ticketId获取流程
  */

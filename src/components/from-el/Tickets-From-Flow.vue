@@ -23,21 +23,30 @@
                 :rules="{ required: item.is_required === 1,message: item.name + '不能为空',trigger: 'blur',}"
                 :wrapper-col="item.type === 'multiRowText' || item.type === 'table' || item.type === 'timeAxis' ||  item.type === 'attachfile' ?  wrapperCol : wrapperCol2"
               >
-                <text-test v-model="formVal[item.code]" :item="item" v-if="item.type === 'singleRowText'"  @onChange="onChangeText($event, item.code)"></text-test>
-                <radio-test v-model="formVal[item.code]" :item="item" v-else-if="item.type === 'singleSel'"></radio-test>
-                <checkbox-test v-model="formVal[item.code]" :item="item" v-else-if="item.type === 'multiSel'"></checkbox-test>
+                <text-test v-model="formVal[item.code]" :item="item" v-if="item.type === 'singleRowText'"
+                           @onChange="onChangeText($event, item.code)"></text-test>
+                <radio-test v-model="formVal[item.code]" :item="item"
+                            v-else-if="item.type === 'singleSel'"></radio-test>
+                <checkbox-test v-model="formVal[item.code]" :item="item"
+                               v-else-if="item.type === 'multiSel'"></checkbox-test>
                 <select-test v-model="formVal[item.code]" :item="item"
                              v-else-if="item.type === 'listSel'"></select-test>
                 <time-test v-model="formVal[item.code]" :item="item" v-else-if="item.type === 'dateTime'"></time-test>
-                <cascade-test v-model="formVal[item.code]" :item="item" v-else-if="item.type === 'cascader'"></cascade-test>
-                <tree-sel-test v-model="formVal[item.code]" :item="item" v-else-if="item.type === 'treeSel'"></tree-sel-test>
+                <cascade-test v-model="formVal[item.code]" :item="item"
+                              v-else-if="item.type === 'cascader'"></cascade-test>
+                <tree-sel-test v-model="formVal[item.code]" :item="item"
+                               v-else-if="item.type === 'treeSel'"></tree-sel-test>
                 <integer-test v-model="formVal[item.code]" :item="item" v-else-if="item.type === 'int'"></integer-test>
-                <multi-row-test v-model="formVal[item.code]" :item="item" v-else-if="item.type === 'multiRowText'"></multi-row-test>
+                <multi-row-test v-model="formVal[item.code]" :item="item"
+                                v-else-if="item.type === 'multiRowText'"></multi-row-test>
                 <attachfile-test :item="item" v-else-if="item.type === 'attachfile'"
                                  @onUpLoad="onUpLoad"></attachfile-test>
-                <decimals-test v-model="formVal[item.code]" :item="item" v-else-if="item.type === 'double'"></decimals-test>
-                <table-test v-model="formVal[item.code]" :item="item" v-else-if="item.type=== 'table'"></table-test>
-                <table-test v-model="formVal[item.code]" :item="item" v-else-if="item.type=== 'timeAxis'"></table-test>
+                <decimals-test v-model="formVal[item.code]" :item="item"
+                               v-else-if="item.type === 'double'"></decimals-test>
+                <table-test v-model="formVal[item.code]" :item="item" v-else-if="item.type=== 'table'"
+                           ></table-test>
+                <table-test @onChange="changeTable($event, item.code)" v-model="formVal[item.code]" :item="item" v-else-if="item.type=== 'timeAxis'"
+                          ></table-test>
                 <!--<dynamic-form-part-item
                   :items="item instanceof Array?item[1]:item">
                 </dynamic-form-part-item>-->
@@ -187,7 +196,7 @@ export default {
     submitForm (formName, item) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          if(this.formVal['fkjl']) {
+          if (Array.isArray(this.formVal.fkjl) && this.formVal.fkjl.length === 0) {
             this.$message.error('反馈记录请填写完整！')
             return
           }
@@ -213,10 +222,6 @@ export default {
       })
     },
     signTickets () {
-      this.formVal.qsr = this.userInfo().username
-      this.formVal.qsrlxdh = this.userInfo().phone
-      this.formVal.orderSate = 'wfk'
-      console.log(this.formVal)
       this.$emit('signTickets')
     },
     onUpLoad (fileList) {
@@ -235,13 +240,15 @@ export default {
       this.isShowFlow = !this.isShowFlow
     },
     onChangeText (value, code) {
-      if (code === 'title') {
-        this.formVal.repairman = value
+    },
+    changeTable(value, code) {
+      alert(code)
+      if(code === 'fkjl') {
+        this.formVal.orderSate = 'yfk'
       }
     }
   },
-  watch: {
-  },
+  watch: {},
   components: {
     [FormModel.name]:
     FormModel,

@@ -405,7 +405,7 @@ import {
   getTicketsList, getTicketsDetails, getModelList,
   getModelDetails, saveWorkOrder, handleOrder, updateTickets,
   uploadFileByTicketId, getTicketTodoCountByUser, getTicketsProcess,
-  getMytodoList, getUserGroup, getTicketAllCountByUser
+  getMytodoList, getUserGroup, getTicketAllCountByUser, updateFeedback
 } from '../../api/tickets'
 import JEllipsis from '@/components/jeecg/JEllipsis'
 import JDate from '@/components/jeecg/JDate.vue'
@@ -784,10 +784,7 @@ export default {
     saveTickets (item) {
       this.spinning = true
       this.formFileds.forEach((itemA) => {
-        if (itemA.type !== 'attachfile') {
-          this.$set(this.workForm, itemA.code, itemA.conf.default_value)
-        } else {
-          this.$set(this.workForm, itemA.code, '')
+        if (itemA.type === 'attachfile') {
           if (itemA.conf.default_value.length > 0) {
             this.images = itemA.conf.default_value
           }
@@ -801,6 +798,7 @@ export default {
           [item.nextActivityId]: {}
         }
       }
+      this.workForm = this.formVal
       delete this.workForm.file
       let data = {
         description: this.workForm.ticketDesc,
@@ -830,16 +828,10 @@ export default {
     handleTickets (item) {
       this.spinning = true
       this.formFileds.forEach((itemA) => {
-        if (itemA.type !== 'attachfile') {
-          this.$set(this.workForm, itemA.code, itemA.conf.default_value)
-        } else {
-          this.$set(this.workForm, itemA.code, '')
+        if (itemA.type === 'attachfile') {
           if (itemA.conf.default_value.length > 0) {
             this.images = itemA.conf.default_value
           }
-        }
-        if (itemA.code === 'sgdw') {
-          this.workForm.sgdw = localStorage.getItem('sgdw')
         }
       })
       let handleRules = {
@@ -850,6 +842,7 @@ export default {
           [item.nextActivityId]: {}
         }
       }
+      this.workForm = this.formVal
       delete this.workForm.file
       let data = {
         activity_id: this.orderInfo.activity_id,
@@ -865,7 +858,6 @@ export default {
       }
       let apiKey = this.userInfo().apikey
       handleOrder(data, apiKey).then(response => {
-        this.disabled = true
         this.spinning = false
         if (this.isFile === 1 && this.images.length > 0) {
           this.uploadFile(this.orderInfo.ticketId, this.images)
@@ -882,16 +874,10 @@ export default {
     },
     handleShow () {
       this.formFileds.forEach((itemA) => {
-        if (itemA.type !== 'attachfile') {
-          this.$set(this.workForm, itemA.code, itemA.conf.default_value)
-        } else {
-          this.$set(this.workForm, itemA.code, '')
+        if (itemA.type === 'attachfile') {
           if (itemA.conf.default_value.length > 0) {
             this.images = itemA.conf.default_value
           }
-        }
-        if (itemA.code === 'sgdw') {
-          this.workForm.sgdw = localStorage.getItem('sgdw')
         }
       })
       let handleRules = {
@@ -922,6 +908,7 @@ export default {
         return
       }
       this.spinningShow = true
+      this.workForm = this.formVal
       delete this.workForm.file
       let data = {
         activity_id: this.orderInfo.activity_id,
@@ -937,7 +924,6 @@ export default {
       }
       let apiKey = this.userInfo().apikey
       handleOrder(data, apiKey).then(response => {
-        this.disabled = true
         if (this.isFile === 1 && this.images.length > 0) {
           this.uploadFile(this.orderInfo.ticketId, this.images)
         } else {
@@ -953,21 +939,36 @@ export default {
         console.log(error)
       })
     },
+    updateTicketsInfo () {
+      let data = {
+        form: {
+          orderSate: 'wfk',
+          qsr: this.userInfo().username,
+          qsrlxdh: this.userInfo().phone,
+          qsgs: this.departName
+        },
+        ticket_id: this.orderInfo.ticketId
+      }
+      let apiKey = this.userInfo().apikey
+      updateTickets(data, apiKey).then(response => {
+        this.$message.success('操作成功')
+        this.getQueryTerms()
+        this.getTicketsList()
+        this.visible = false
+      }).catch(error => {
+        console.log(error)
+      })
+    },
     updateOrder () {
       this.loading = true
       this.formFileds.forEach((itemA) => {
-        if (itemA.type !== 'attachfile') {
-          this.$set(this.workForm, itemA.code, itemA.conf.default_value)
-        } else {
-          this.$set(this.workForm, itemA.code, '')
+        if (itemA.type === 'attachfile') {
           if (itemA.conf.default_value.length > 0) {
             this.images = itemA.conf.default_value
           }
         }
-        if (itemA.code === 'sgdw') {
-          this.workForm.sgdw = localStorage.getItem('sgdw')
-        }
       })
+      this.workForm = this.formVal
       delete this.workForm.file
       let data = {
         ticket_id: this.orderInfo.ticketId,
@@ -992,6 +993,8 @@ export default {
     handleDetail (record) {
       this.spinningShow = true
       this.formFileds = []
+      this.formIndex = {}
+      this.formVal = {}
       this.workForm = {}
       this.orderInfo = {}
       this.submitBtn = []
@@ -1003,8 +1006,8 @@ export default {
         this.orderInfo = response.result
         this.formFileds = response.result.formFileds
         this.submitBtn = response.result.submitBtn
+
         this.imgs = []
-        this.signFlag = this.orderInfo.activity_id === '4ee67d3f2b2a4f65a73775e5525e3867'
         this.getUserInfo(record.executionGroup, record.executor)
         sessionStorage.setItem('tickedId', response.result.ticketId)
         this.ModalText = '工单详情'
@@ -1064,6 +1067,8 @@ export default {
       this.formFileds = [] //清空数据
       this.submitBtn = []
       this.workForm = {}
+      this.formVal = {}
+      this.formIndex = {}
       let apiKey = this.userInfo().apikey
       getModelDetails(apiKey, id).then(response => {
         this.modeId = id
@@ -1071,31 +1076,45 @@ export default {
         this.submitBtn = response.result.submitBtn
         this.ModalText = '创建工单'
         let type = 'attachfile'
-        let executor = this.formFileds.find((item) => type === item.type)
-        if (executor !== undefined) {
+        let fileType = this.formFileds.find((item) => type === item.type)
+        if (fileType !== undefined) {
           this.isFile = 1
-          this.formFileds.forEach((itemA) => {
+          this.formFileds.forEach((itemA, index) => {
             if (itemA.type === 'attachfile') {
-              this.$set(itemA, 'fileList', [])
-              itemA.conf.default_value = []
-            }
-            if (itemA.type === 'dateTime') {
-              itemA.conf.default_value = getSelectTime(new Date(), true)
+              if (this.orderInfo.files) {
+                this.orderInfo.files.forEach((item) => {
+                  url = this.imgUrl + item
+                  this.imgs.push({
+                    url: url,
+                    uid: index + 20,
+                    name: 'image' + index + '.png',
+                    status: 'done'
+                  })
+                })
+                this.$set(itemA, 'fileList', this.imgs)
+              } else {
+                this.$set(itemA, 'fileList', [])
+              }
             }
           })
         } else {
           this.isFile = 0
-          this.formFileds.forEach((itemA) => {
-            if (itemA.type === 'attachfile') {
-              this.isFile = 1
-              this.$set(itemA, 'fileList', [])
-              itemA.conf.default_value = []
-            }
-            if (itemA.type === 'dateTime') {
+        }
+        this.formFileds.forEach((itemA, index) => {
+          if (itemA.type === 'dateTime') {
+            if (itemA.conf.default_value === '') {
               itemA.conf.default_value = getSelectTime(new Date(), true)
             }
-          })
-        }
+          } else if (itemA.type === 'cascader') {
+            if (itemA.conf.default_value === '') {
+              itemA.conf.default_value = []
+            }
+          } else if (itemA.code === 'sgdw') {
+            localStorage.setItem('sgdw', itemA.conf.default_value)
+          }
+          this.$set(this.formVal, itemA.code, itemA.conf.default_value)
+          this.$set(this.formIndex, itemA.code, index)
+        })
         this.operation = 'add'
         this.visibleModel = false
         this.allotShow = true
@@ -1128,8 +1147,20 @@ export default {
     handleEdit (record) {
       // this.visible = true
     },
-    signTickets() {
-      this.signFlag = false
+    signTickets () {
+      // this.signFlag = false
+      this.spinning = true
+      let data = {
+        ticket_id: this.orderInfo.ticketId,
+        activity_id: this.orderInfo.activity_id,
+        handle_type: 0
+      }
+      let apiKey = this.userInfo().apikey
+      handleOrder(data, apiKey).then(response => {
+        this.updateTicketsInfo()
+      }).catch(error => {
+        console.log(error)
+      })
     },
     handleOk (e) {
       this.confirmLoading = true
@@ -1204,21 +1235,32 @@ export default {
     },
     ...mapGetters(['userInfo', 'rolesA', 'departs']),
     getUserInfo (executionGroups, executors) {
+      this.signFlag = false
       let uyunId = this.userInfo().uyunid
       let rolesB = this.rolesA()
+      // 判断是内场和外场实施办理环节 显示 签收按钮
+      if (this.orderInfo.activity_id === '4ee67d3f2b2a4f65a73775e5525e3867' || this.orderInfo.activity_id === 'df6c26bedae34a7dae2396ec1dac14f5') {
+        this.signFlag = ((Array.isArray(executionGroups) && executionGroups.length > 1) || (Array.isArray(executors) && executors.length > 1))
+      }
       let executor = executors.find((item) => uyunId === item && this.orderInfo.activity_name !== '结束')
       let executionGroup = executionGroups != null && executionGroups.length >= 0 ? executionGroups.filter((item) => rolesB.indexOf(item) > -1 && this.orderInfo.activity_name !== '结束') : undefined
       if (Array.isArray(executionGroup) && executionGroup.length === 0) {  // 判断executionGroup为[]的情况
         executionGroup = undefined
       }
-      if (executor || executionGroup) {
-        this.allotShow = true
-        this.showIcon = 'ellipsis'
-        this.formFileds.forEach((itemA) => {
-          this.$set(itemA, 'disabled', false)
-        })
+      if (!this.signFlag) {
+        if (executor || executionGroup) {
+          this.allotShow = true
+          this.formFileds.forEach((itemA) => {
+            this.$set(itemA, 'disabled', false)
+          })
+        } else {
+          this.allotShow = false
+          this.formFileds.forEach((itemA) => {
+            this.$set(itemA, 'disabled', true)
+          })
+        }
       } else {
-        this.allotShow = false
+        this.allotShow = true
         this.formFileds.forEach((itemA) => {
           this.$set(itemA, 'disabled', true)
         })

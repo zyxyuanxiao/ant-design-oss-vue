@@ -39,8 +39,8 @@ export default {
   },
   methods: {
     onChange() {
-      this.$emit('input', this.valueText);
-      this.$emit('onChange', this.valueText);
+      this.$emit('input', this.valueText)
+      this.$emit('onChange', this.valueText)
     }
   }
 }

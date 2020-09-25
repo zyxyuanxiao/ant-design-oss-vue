@@ -50,8 +50,8 @@ export default {
       )
     },
     onChange() {
-      this.$emit('input', this.valueSelect);
-      this.$emit('onChange', this.valueSelect);
+      this.$emit('input', this.valueSelect)
+      this.$emit('onChange', this.valueSelect)
     }
   }
 }
