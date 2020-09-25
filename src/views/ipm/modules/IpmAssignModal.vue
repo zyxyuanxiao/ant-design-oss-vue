@@ -25,19 +25,6 @@
 
         <a-row class="form-row" :gutter="0">
           <a-col :lg="12">
-            <a-form-item label="网段描述" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <j-search-select-tag v-decorator="['networkDesc', validatorRules.networkDesc]" dict="networkDesc" />
-            </a-form-item>
-          </a-col>
-          <a-col :lg="12">
-            <a-form-item label="申请类型" :labelCol="labelCol" :wrapperCol="wrapperCol">
-              <j-dict-select-tag v-decorator="['assignType', validatorRules.assignType]" :trigger-change="true" dictCode="assignType" placeholder="请选择申请类型"/>
-            </a-form-item>
-          </a-col>
-        </a-row>
-
-        <a-row class="form-row" :gutter="0">
-          <a-col :lg="12">
             <a-form-item label="项目信息" :labelCol="labelCol" :wrapperCol="wrapperCol">
               <j-search-select-tag v-decorator="['project', validatorRules.project]" dict="project" />
             </a-form-item>
@@ -65,6 +52,14 @@
           <a-col :lg="12">
             <a-form-item label="标签" :labelCol="labelCol" :wrapperCol="wrapperCol">
               <j-multi-select-tag type="list_multi" v-decorator="['tags']" :trigger-change="true" dictCode="tags" placeholder="请选择标签"/>
+            </a-form-item>
+          </a-col>
+        </a-row>
+
+        <a-row class="form-row" :gutter="0">
+          <a-col :lg="12">
+            <a-form-item label="网段描述" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <j-search-select-tag v-decorator="['networkDesc', validatorRules.networkDesc]" dict="networkDesc" />
             </a-form-item>
           </a-col>
           <a-col :lg="12">
