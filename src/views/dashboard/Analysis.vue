@@ -1242,7 +1242,7 @@ export default {
       if (this.orderInfo.activity_id === '4ee67d3f2b2a4f65a73775e5525e3867' || this.orderInfo.activity_id === 'df6c26bedae34a7dae2396ec1dac14f5') {
         this.signFlag = ((Array.isArray(executionGroups) && executionGroups.length > 1) || (Array.isArray(executors) && executors.length > 1))
       }
-      let executor = executors.find((item) => uyunId === item && this.orderInfo.activity_name !== '结束')
+      let executor = executors !== '' && executors != null && executors.length >= 0 ? executors.find((item) => uyunId === item && this.orderInfo.activity_name !== '结束') : undefined
       let executionGroup = executionGroups != null && executionGroups.length >= 0 ? executionGroups.filter((item) => rolesB.indexOf(item) > -1 && this.orderInfo.activity_name !== '结束') : undefined
       if (Array.isArray(executionGroup) && executionGroup.length === 0) {  // 判断executionGroup为[]的情况
         executionGroup = undefined
@@ -1455,8 +1455,17 @@ export default {
         this.data.ass = dataArr2
       } else {
         this.data.conditions = []
-
-        if (serviceGroups.indexOf(rolesB[0]) > -1) {
+        let cond = [
+          {
+            field: 'participation',
+            value: [this.userInfo().uyunid],
+            operator: 'in'
+          }
+        ]
+        dataArr2.forEach((item) => {
+          item.conditions = [...item.conditions, ...cond]
+        })
+        /*if (serviceGroups.indexOf(rolesB[0]) > -1) {
           this.identity = ''
           dataArr2 = []
         } else if (outfields.indexOf(rolesB[0]) > -1) {
@@ -1510,7 +1519,7 @@ export default {
           dataArr2.forEach((item) => {
             item.conditions = [...item.conditions, ...cond]
           })
-        }
+        }*/
         this.data.ass = dataArr2
       }
     },
