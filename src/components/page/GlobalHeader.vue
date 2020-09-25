@@ -17,8 +17,8 @@
         :type="collapsed ? 'menu-unfold' : 'menu-fold'"
         @click="toggle"/>
 
-      <span v-if="device === 'desktop'">欢迎进入 闵行公安智能运维分析平台</span>
-      <span v-else>闵行公安智能运维分析平台</span>
+      <span v-if="device === 'desktop'">欢迎进入 尚禾智能运维分析平台</span>
+      <span v-else>尚禾信息智能运维分析平台</span>
 
       <user-menu :theme="theme"/>
     </div>

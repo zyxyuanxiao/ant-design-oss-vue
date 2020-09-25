@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="main">
-      <div class="login-projectName">闵行公安智能运维分析平台</div>
+      <div class="login-projectName">尚禾信息智能运维分析平台</div>
       <div class="login-main">
         <h4 class="login-title">用户登录</h4>
         <a-form :form="form" class="user-layout-login" ref="formLogin" id="formLogin">

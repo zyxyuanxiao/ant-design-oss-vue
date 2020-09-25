@@ -101,7 +101,7 @@
       </a-form>
     </div>
     <!-- 查询区域-END -->
-    
+
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
@@ -115,6 +115,7 @@
         </a-menu>
         <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
       </a-dropdown>
+      <a-button  @click="ipAddressAssign" type="primary" icon="plus">IP地址分配</a-button>
     </div>
 
     <!-- table区域-begin -->
@@ -177,6 +178,7 @@
     </div>
 
     <ipmIpInfo-modal ref="modalForm" @ok="modalFormOk"></ipmIpInfo-modal>
+    <IpmAssignModal ref="ipmAssignModal" @ok="modalFormOk"></IpmAssignModal>
   </a-card>
 </template>
 
@@ -186,6 +188,7 @@
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import IpmIpInfoModal from './modules/IpmIpInfoModal'
+  import IpmAssignModal from './modules/IpmAssignModal'
   import JDictSelectTag from '@/components/dict/JDictSelectTag.vue'
   import JDate from '@/components/jeecg/JDate.vue'
   import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
@@ -200,7 +203,8 @@
       JDate,
       JMultiSelectTag,
       JSearchSelectTag,
-      IpmIpInfoModal
+      IpmIpInfoModal,
+      IpmAssignModal
     },
     data () {
       return {
@@ -298,6 +302,11 @@
     },
     methods: {
       initDictConfig(){
+      },
+      ipAddressAssign() {
+        this.$refs.ipmAssignModal.add();
+        this.$refs.ipmAssignModal.title = "IP地址分配";
+        this.$refs.ipmAssignModal.disableSubmit = false;
       }
     }
   }
