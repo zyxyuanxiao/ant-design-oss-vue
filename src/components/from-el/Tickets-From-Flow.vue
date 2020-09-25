@@ -84,7 +84,7 @@
           </div>
         </div>
       </div>
-      <div style="display: flex;justify-content:center" v-show="allotShow && !signFlag">
+      <div style="display: flex;justify-content:center" v-show="allotShow">
         <div v-for="(item, index) in submitBtn" :key="index" style="padding: 15px 10px;">
           <a-button style="padding: 0 15px;height: 35px;"
                     type="primary"
@@ -108,7 +108,7 @@
           </a-select>
         </div>
       </div>
-      <div style="display: flex;justify-content:center" v-show="allotShow && signFlag">
+      <div style="display: flex;justify-content:center" v-show="!allotShow">
         <div style="padding: 15px 10px;" v-if="operation === 'details'">
           <a-button type="primary" block @click="signTickets()">签收</a-button>
         </div>
@@ -242,7 +242,6 @@ export default {
     onChangeText (value, code) {
     },
     changeTable(value, code) {
-      alert(code)
       if(code === 'fkjl') {
         this.formVal.orderSate = 'yfk'
       }

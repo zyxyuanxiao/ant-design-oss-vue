@@ -697,6 +697,8 @@ export default {
       isShow: false,
       showRollback: false,
       workForm: {},
+      conductor: [],
+      conductorGroup: [],
       modeId: '',
       imgs: [],
       images: [],
@@ -704,6 +706,7 @@ export default {
       allotShow: false,
       spinning: false,
       signFlag: false,
+      upFlag: false,
       spinningShow: false,
       activeKey: '1',
       imgUrl: window._CONFIG['domianURL'] + '/api/itsm/getFileById?isOnLine=true&fileId=',
@@ -944,15 +947,23 @@ export default {
         form: {
           orderSate: 'wfk',
           qsr: this.userInfo().username,
-          qsrlxdh: this.userInfo().phone
+          qsrlxdh: this.userInfo().phone,
+          qsgs: this.departName
         },
-        ticket_id: sessionStorage.getItem('tickedId')
+        ticket_id: this.orderInfo.ticketId
+      }
+      if (this.formVal.bxfl === 'zdbx' && this.formVal.gzpd === 'lx') {
+        data.form.shr = this.formVal.repairman
       }
       let apiKey = this.userInfo().apikey
       updateTickets(data, apiKey).then(response => {
         this.$message.success('操作成功')
         this.getQueryTerms()
         this.getTicketsList()
+        this.allotShow = true
+        this.formFileds.forEach((itemA) => {
+          this.$set(itemA, 'disabled', false)
+        })
         this.visible = false
       }).catch(error => {
         console.log(error)
@@ -1005,9 +1016,7 @@ export default {
         this.orderInfo = response.result
         this.formFileds = response.result.formFileds
         this.submitBtn = response.result.submitBtn
-
         this.imgs = []
-        this.getUserInfo(record.executionGroup, record.executor)
         sessionStorage.setItem('tickedId', response.result.ticketId)
         this.ModalText = '工单详情'
         let url = ''
@@ -1051,6 +1060,7 @@ export default {
           this.$set(this.formVal, itemA.code, itemA.conf.default_value)
           this.$set(this.formIndex, itemA.code, index)
         })
+        this.getUserInfo(record.executionGroup, record.executor)
         this.operation = 'details'
         this.showRollback = false
         this.spinningShow = false
@@ -1148,6 +1158,10 @@ export default {
     },
     signTickets () {
       // this.signFlag = false
+      if (((Array.isArray(this.conductorGroup) && this.conductorGroup.length === 1) || (Array.isArray(this.conductor) && this.conductor.length === 1))) {
+        this.updateTicketsInfo()
+        return
+      }
       this.spinning = true
       let data = {
         ticket_id: this.orderInfo.ticketId,
@@ -1235,31 +1249,43 @@ export default {
     ...mapGetters(['userInfo', 'rolesA', 'departs']),
     getUserInfo (executionGroups, executors) {
       this.signFlag = false
+      this.conductor = []
+      this.conductorGroup = []
       let uyunId = this.userInfo().uyunid
       let rolesB = this.rolesA()
       // 判断是内场和外场实施办理环节 显示 签收按钮
       if (this.orderInfo.activity_id === '4ee67d3f2b2a4f65a73775e5525e3867' || this.orderInfo.activity_id === 'df6c26bedae34a7dae2396ec1dac14f5') {
-        this.signFlag = ((Array.isArray(executionGroups) && executionGroups.length > 1) || (Array.isArray(executors) && executors.length > 1))
+        this.signFlag = true
       }
       let executor = executors !== '' && executors != null && executors.length >= 0 ? executors.find((item) => uyunId === item && this.orderInfo.activity_name !== '结束') : undefined
       let executionGroup = executionGroups != null && executionGroups.length >= 0 ? executionGroups.filter((item) => rolesB.indexOf(item) > -1 && this.orderInfo.activity_name !== '结束') : undefined
       if (Array.isArray(executionGroup) && executionGroup.length === 0) {  // 判断executionGroup为[]的情况
         executionGroup = undefined
       }
-      if (!this.signFlag) {
-        if (executor || executionGroup) {
-          this.allotShow = true
-          this.formFileds.forEach((itemA) => {
-            this.$set(itemA, 'disabled', false)
-          })
-        } else {
+      if (executor || executionGroup) {
+        // 判断如果处理人或者处理组只有一个并且当前登录人 调用接口修改数据
+        if (this.signFlag) {
+          this.conductor = executors
+          this.conductorGroup = executionGroups
           this.allotShow = false
           this.formFileds.forEach((itemA) => {
             this.$set(itemA, 'disabled', true)
           })
+        } else {
+          this.allotShow = true
+          this.formFileds.forEach((itemA) => {
+            this.$set(itemA, 'disabled', false)
+          })
+        }
+        if (this.formVal.orderSate !== 'wjs') {
+          this.allotShow = true
+          this.formFileds.forEach((itemA) => {
+            this.$set(itemA, 'disabled', false)
+          })
         }
       } else {
-        this.allotShow = true
+        this.signFlag = false
+        this.allotShow = false
         this.formFileds.forEach((itemA) => {
           this.$set(itemA, 'disabled', true)
         })
@@ -1454,8 +1480,17 @@ export default {
         this.data.ass = dataArr2
       } else {
         this.data.conditions = []
-
-        if (serviceGroups.indexOf(rolesB[0]) > -1) {
+        let cond = [
+          {
+            field: 'participation',
+            value: [this.userInfo().uyunid],
+            operator: 'in'
+          }
+        ]
+        dataArr2.forEach((item) => {
+          item.conditions = [...item.conditions, ...cond]
+        })
+        /*if (serviceGroups.indexOf(rolesB[0]) > -1) {
           this.identity = ''
           dataArr2 = []
         } else if (outfields.indexOf(rolesB[0]) > -1) {
@@ -1509,7 +1544,7 @@ export default {
           dataArr2.forEach((item) => {
             item.conditions = [...item.conditions, ...cond]
           })
-        }
+        }*/
         this.data.ass = dataArr2
       }
     },
@@ -1523,10 +1558,12 @@ export default {
     selectChangeGroup () {
       this.$refs.groupIdList.blur()
     }
-  },
+  }
+  ,
   created () {
     // this.getUserGroup()
-  },
+  }
+  ,
   mounted () {
     // this.getMyToDoList()
     this.getQueryTerms()
