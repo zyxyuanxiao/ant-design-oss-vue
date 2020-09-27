@@ -17,7 +17,7 @@
             }"
           :wrapper-col="item.type === 'multiRowText' || item.type === 'table' || item.type === 'timeAxis' ||  item.type === 'attachfile' ?  wrapperCol : wrapperCol2"
         >
-          <text-test v-model="formVal[item.code]" :item="item" v-if="item.type === 'singleRowText'" ></text-test>
+          <text-test v-model="formVal[item.code]" :item="item" v-if="item.type === 'singleRowText'"></text-test>
           <radio-test v-model="formVal[item.code]" :item="item" v-else-if="item.type === 'singleSel'"></radio-test>
           <checkbox-test v-model="formVal[item.code]" :item="item" v-else-if="item.type === 'multiSel'"></checkbox-test>
           <select-test v-model="formVal[item.code]" :item="item" v-else-if="item.type === 'listSel'"></select-test>
@@ -25,18 +25,19 @@
           <cascade-test v-model="formVal[item.code]" :item="item" v-else-if="item.type === 'cascader'"></cascade-test>
           <tree-sel-test v-model="formVal[item.code]" :item="item" v-else-if="item.type === 'treeSel'"></tree-sel-test>
           <integer-test v-model="formVal[item.code]" :item="item" v-else-if="item.type === 'int'"></integer-test>
-          <multi-row-test v-model="formVal[item.code]" :item="item" v-else-if="item.type === 'multiRowText'"></multi-row-test>
+          <multi-row-test v-model="formVal[item.code]" :item="item"
+                          v-else-if="item.type === 'multiRowText'"></multi-row-test>
           <attachfile-test :item="item" v-else-if="item.type === 'attachfile'"
                            @onUpLoad="onUpLoad"></attachfile-test>
           <decimals-test v-model="formVal[item.code]" :item="item" v-else-if="item.type === 'double'"></decimals-test>
           <table-test v-model="formVal[item.code]" :item="item" v-else-if="item.type=== 'table'"></table-test>
-          <table-test  v-model="formVal[item.code]" :item="item" v-else-if="item.type=== 'timeAxis'"></table-test>
+          <table-test v-model="formVal[item.code]" :item="item" v-else-if="item.type=== 'timeAxis'"></table-test>
           <!--<dynamic-form-part-item
             :items="item instanceof Array?item[1]:item">
           </dynamic-form-part-item>-->
         </a-form-model-item>
       </a-form-model>
-      <div style="display: flex;justify-content:center" v-show="allotShow">
+      <div style="display: flex;justify-content:center">
         <div v-for="(item, index) in submitBtn" :key="index" style="padding: 15px 10px;">
           <a-button style="padding: 0 15px;height: 35px;"
                     type="primary"
@@ -82,7 +83,7 @@ import tableTest from './from-item/From-Table'
 
 export default {
   name: 'Tickets-From',
-  props: ['formFiles','formVal', 'formIndex', 'submitBtn', 'allotShow', 'operation', 'spinnings'],
+  props: ['formFiles', 'formVal', 'formIndex', 'submitBtn', 'operation', 'spinnings'],
   data () {
     return {
       labelCol: {

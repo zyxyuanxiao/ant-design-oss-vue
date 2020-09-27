@@ -405,7 +405,7 @@ import {
   getTicketsList, getTicketsDetails, getModelList,
   getModelDetails, saveWorkOrder, handleOrder, updateTickets,
   uploadFileByTicketId, getTicketTodoCountByUser, getTicketsProcess,
-  getMytodoList, getUserGroup, getTicketAllCountByUser, updateFeedback
+  getMytodoList, getUserGroup, getTicketAllCountByUser
 } from '../../api/tickets'
 import JEllipsis from '@/components/jeecg/JEllipsis'
 import JDate from '@/components/jeecg/JDate.vue'
