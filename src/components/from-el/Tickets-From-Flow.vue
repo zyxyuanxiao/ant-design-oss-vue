@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-spin :spinning="spinnings">
+    <a-spin :spinning="spinnings" :tip="spinningText">
       <div style="display: flex">
         <div class="form-container" style="">
           <div style="" class="form-head" @click="isShowData()">
@@ -36,7 +36,8 @@
                               v-else-if="item.type === 'cascader'"></cascade-test>
                 <tree-sel-test v-model="formVal[item.code]" :item="item"
                                v-else-if="item.type === 'treeSel'"></tree-sel-test>
-                <integer-test v-model="formVal[item.code]" :item="item" v-else-if="item.type === 'int'"></integer-test>
+                <integer-test v-model="formVal[item.code]" :item="item"
+                              v-else-if="item.type === 'int'"></integer-test>
                 <multi-row-test v-model="formVal[item.code]" :item="item"
                                 v-else-if="item.type === 'multiRowText'"></multi-row-test>
                 <attachfile-test :item="item" v-else-if="item.type === 'attachfile'"
@@ -44,9 +45,10 @@
                 <decimals-test v-model="formVal[item.code]" :item="item"
                                v-else-if="item.type === 'double'"></decimals-test>
                 <table-test v-model="formVal[item.code]" :item="item" v-else-if="item.type=== 'table'"
-                           ></table-test>
-                <table-test @onChange="changeTable($event, item.code)" v-model="formVal[item.code]" :item="item" v-else-if="item.type=== 'timeAxis'"
-                          ></table-test>
+                ></table-test>
+                <table-test @onChange="changeTable($event, item.code)" v-model="formVal[item.code]" :item="item"
+                            v-else-if="item.type=== 'timeAxis'"
+                ></table-test>
                 <!--<dynamic-form-part-item
                   :items="item instanceof Array?item[1]:item">
                 </dynamic-form-part-item>-->
@@ -163,7 +165,7 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'Tickets-From',
-  props: ['formFiles', 'formVal', 'formIndex', 'submitBtn',
+  props: ['formFiles', 'formVal', 'formIndex', 'submitBtn','spinningText',
     'allotShow', 'operation', 'spinnings', 'flowList', 'isPermission'],
   data () {
     return {
@@ -188,7 +190,7 @@ export default {
       isShowFlow: true,
       loading: false,
       visible: false,
-      userName: ''
+      userName: ' 我的描述文案是自定义的。。。'
     }
   },
   mounted () {
@@ -243,8 +245,8 @@ export default {
     },
     onChangeText (value, code) {
     },
-    changeTable(value, code) {
-      if(code === 'fkjl') {
+    changeTable (value, code) {
+      if (code === 'fkjl') {
         this.formVal.orderSate = 'yfk'
       }
     }

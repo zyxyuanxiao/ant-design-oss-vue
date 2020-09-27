@@ -335,6 +335,7 @@
           :allot-show="allotShow"
           :operation="operation"
           :spinnings="spinning"
+          :spinningText="spinningText"
           :flow-list="flowList"
           v-if="operation === 'details'"
           @updateFeedback="updateOrder"
@@ -405,7 +406,7 @@ import {
   getTicketsList, getTicketsDetails, getModelList,
   getModelDetails, saveWorkOrder, handleOrder, updateTickets,
   uploadFileByTicketId, getTicketTodoCountByUser, getTicketsProcess,
-  getMytodoList, getUserGroup, getTicketAllCountByUser
+  getMytodoList, getUserGroup, getTicketAllCountByUser, judgmentTickets
 } from '../../api/tickets'
 import JEllipsis from '@/components/jeecg/JEllipsis'
 import JDate from '@/components/jeecg/JDate.vue'
@@ -706,6 +707,7 @@ export default {
       allotShow: false,
       isPermission: false,
       spinning: false,
+      spinningText: '',
       signFlag: false,
       upFlag: false,
       spinningShow: false,
@@ -749,6 +751,7 @@ export default {
       userGroup: [],
       groupIdList: [],
       subItem: {},
+      ip: '',
       // 保存当前登录人角色信息
       identity: '',
       //保存当前登录人所在部门
@@ -783,10 +786,17 @@ export default {
         this.saveTickets(item)
         return
       }
+      // sungcor 判断在离线/图像 router_id   1e91970928454a0aaf70dfab60821e14
+      // 宝山现场 判断在离线/图像 router_id  1bdaabd3e65e44e1b756fbc5bfcb708e
+      if (item.route_id === '1bdaabd3e65e44e1b756fbc5bfcb708e' && this.formVal.gzpd === 'lx') {
+        this.judgmentTickets(item)
+        return
+      }
       this.handleTickets(item)
     },
     saveTickets (item) {
       this.spinning = true
+      this.spinningText = '正在创建中。。。'
       this.formFileds.forEach((itemA) => {
         if (itemA.type === 'attachfile') {
           if (itemA.conf.default_value.length > 0) {
@@ -872,6 +882,22 @@ export default {
           this.spinningShow = false
           this.getTicketsList()
         }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    judgmentTickets (item) {
+      this.spinning = true
+      this.spinningText = '正在检测中。。。'
+      judgmentTickets(this.ip).then(response => {
+        if (response.success) {
+          this.formVal.gzwcpd = 'zx'
+          this.handleTickets(item)
+          return
+        }
+        this.spinning = false
+        this.$message.error('检测失败，请重新填写数据！')
+
       }).catch(error => {
         console.log(error)
       })
@@ -1004,6 +1030,7 @@ export default {
     },
     handleDetail (record) {
       this.spinningShow = true
+      this.spinningText = ''
       this.formFileds = []
       this.formIndex = {}
       this.formVal = {}
@@ -1063,6 +1090,7 @@ export default {
           this.$set(this.formIndex, itemA.code, index)
         })
         this.getUserInfo(record.executionGroup, record.executor)
+        this.ip = record.formData.IP
         this.operation = 'details'
         this.showRollback = false
         this.spinningShow = false
@@ -1075,6 +1103,7 @@ export default {
     },
     getModelDetails (id) {
       this.spinning = true
+      this.spinningText = ''
       this.formFileds = [] //清空数据
       this.submitBtn = []
       this.workForm = {}
@@ -1259,7 +1288,7 @@ export default {
         executor = executors.find((item) => uyunId === item && this.orderInfo.activity_name !== '结束')
       }
       let executionGroup = undefined
-      if(executionGroups != null && executionGroups.length > 0) {
+      if (executionGroups != null && executionGroups.length > 0) {
         executionGroup = executionGroups.filter((item) => rolesB.indexOf(item) > -1 && this.orderInfo.activity_name !== '结束')
       }
       // 判断executionGroup为[]的情况
@@ -1267,12 +1296,22 @@ export default {
         executionGroup = undefined
       }
       // 判断工单状态为未签收并且是内场或者外场实施办理环节，如都满足则显示签收按钮
-      this.allotShow = !(this.formVal.orderSate === 'wjs' && (this.orderInfo.activity_id === '4ee67d3f2b2a4f65a73775e5525e3867' || this.orderInfo.activity_id === 'df6c26bedae34a7dae2396ec1dac14f5'))
+      // sungcor 内场 df6c26bedae34a7dae2396ec1dac14f5  外场 4ee67d3f2b2a4f65a73775e5525e3867
+      // 宝山现场  内场 8cba08cbb2514352ae75f5f324c91cb0
+      this.allotShow = !(this.formVal.orderSate === 'wjs' && (this.orderInfo.activity_id === 'aecd9044de5448a3bccbc0cdaad36041' || this.orderInfo.activity_id === '8cba08cbb2514352ae75f5f324c91cb0'))
       this.isPermission = executor || executionGroup
       let isEdit = this.isPermission ? !this.allotShow : true
       this.formFileds.forEach((itemA) => {
         this.$set(itemA, 'disabled', isEdit)
       })
+      // 判断故障完成判断 存在 并且 故障判断值为 质量  则故障完成判断 显示图像
+      if (this.formVal.hasOwnProperty('gzwcpd')) {
+        this.formVal.gzwcpd = this.formVal.gzpd === 'zl' ? 'tx' : this.formVal.gzwcpd
+      }
+      // 分派公司默认赋值 第一阶梯填写值
+      if (this.formVal.hasOwnProperty('fpgs')) {
+        this.formVal.fpgs = this.formVal.dytd
+      }
       this.conductor = executors
       this.conductorGroup = executionGroups
     },

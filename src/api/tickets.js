@@ -167,6 +167,17 @@ export function updateTickets (data, apiKey) {
     data
   })
 }
+/**
+ * 判断工单数据在线/离线
+ * @param ip 地址
+ */
+export function judgmentTickets (ip) {
+  return axios({
+    url: '/api/itsm/ping',
+    method: 'GET',
+    params: { ip: ip }
+  })
+}
 
 /**
  * 根据ticketId 上传附件图片
