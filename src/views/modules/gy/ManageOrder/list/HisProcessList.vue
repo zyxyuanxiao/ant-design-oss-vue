@@ -56,11 +56,13 @@
                 icon="reload"
                 style="margin-left: 4px;"
               >重置</a-button>
+              <!-- v-has = "'his:delete'" -->
               <a-button
                 v-show="btn"
+                v-has = "'his:delete'" 
                 style="margin-left: 4px"
                 type="primary"
-                @click="delects"
+                @click="deleteAll"
                 icon="close-circle"
               >批量删除</a-button>
             </span>
@@ -121,7 +123,7 @@
     <div>
       <!-- :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"  选择框 -->
       <a-table
-        
+        :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange  }"
         :expandedRowKeys="expandedKeys"
         @expand="onExpand"
         :expandRowByClick="true"
@@ -153,7 +155,7 @@
                     title="确定要删除流程吗?"
                     @confirm="() => delectOne(record.processInstanceId)"
                   >
-                    <a>删除流程</a>
+                    <a v-has = "'his:delete'">删除流程</a>
                   </a-popconfirm>
                 </a-menu-item>
               </a-menu>
@@ -184,7 +186,7 @@
                     title="确定要删除流程吗?"
                     @confirm="() => delectOne(record.processInstanceId)"
                   >
-                    <a>删除流程</a>
+                    <a v-has = "'his:delete'" >删除流程</a>
                   </a-popconfirm>
                 </a-menu-item>
               </a-menu>
@@ -238,6 +240,7 @@ export default {
   },
   data() {
     return {
+      
       optionsType:[],
       dateString:[],
       btn: false,
@@ -370,11 +373,15 @@ export default {
         codeChange: '/act/task/codeChange',
         detail: '/moreFilter/detail',
         delete: '/moreFilter/delete',
+        // hide:'/sys/order/getHisDeletePermission'
       },
       path: 'modules/bpm/task/form/FormLoading',
       formData: {},
       fieldList: [],
       items: [],
+      paginationOld:{current:0,pageSize:10}
+      // hide:false
+      
     }
   },
   created() {
@@ -384,16 +391,23 @@ export default {
     let options3= [ {label: '中间件系统 ',value: '中间件系统'},{label: '数据库系统 ',value: '数据库系统'},{label: '操作系统 ',value: '操作系统'},{label: '其他系统软件',value: '其他系统软件'}]
     let options4 = [{label: '综合布线',value: '综合布线'} ,{label: '智能化机房系统',value: '智能化机房系统'},{label: '有线电视',value: '有线电视'} ,{label: '一卡通',value: '一卡通'} ,{label: '网络设备',value: '网络设备'} ,{label: '庭审系统',value: '庭审系统'} ,{label: '视频会议系统',value: '视频会议系统'} ,{label: '叫号系统',value: '叫号系统'} ,{label: '会议系统',value: '会议系统'} ,{label: '公告显示',value: '公告显示'} ,{label: '服务器',value: '服务器'},{label: '存储设备',value: '存储设备'},{label: '程控交换机',value: '程控交换机'},{label: '安保监控',value: '安保监控'},{label: 'BA系统',value: 'BA系统'}]
     let options5= [ {label: '在线技术支持 ',value: '在线技术支持'},{label: '现场运维保障 ',value: '现场运维保障'},{label: '系统运维 ',value: '系统运维'},{label: '推文发布',value: '推文发布'},{label: '视频转换上网',value: '视频转换上网'},{label: '文书撤回',value: '文书撤回'},{label: '系统赋权',value: '系统赋权'},{label: '文件扫描',value: '文件扫描'},{label: '网站信息修改	',value: '网站信息修改'},{label: '网站信息上网',value: '网站信息上网'}]
-    let options6= [ {label: '院史馆 ',value: '院史馆'},{label: '院史馆高院诉讼服务大厅',value: '院史馆高院诉讼服务大厅'},{label: '诉讼服务平台移动端',value: '诉讼服务平台移动端'}]
+    let options6= [ {label: '院史馆 ',value: '院史馆'},{label: '院史馆高院诉讼服务大厅',value: '院史馆高院诉讼服务大厅'},{label: '诉讼服务平台移动端',value: '诉讼服务平台移动端'},{label: '其他',value: '其他'}]
     let opts = [{label: '桌面终端',value: '桌面终端',children:options1} ,{label: '信息安全',value: '信息安全',children:options2},{label: '系统软件',value: '系统软件',children:options3},{label: '基础设备',value: '基础设备',children:options4},{label: '数据服务',value: '数据服务',children:options5},{label: '应用软件',value: '应用软件',children:options6}]
     this.optionsType = opts;
  },
   methods: {
-    onChange(value, dateString) {
-      let startTime = dateString[0]
-      let endTime = dateString[1]
-      value = [startTime,endTime]
-    },
+    // hide(){
+    //   getAction(this.url.hide,{}).then((res)=>{
+    //     if(res.success){
+    //       this.hide = res.result;
+    //     }
+    //   })
+    // },
+    // onChange(value, dateString) {
+    //   let startTime = dateString[0]
+    //   let endTime = dateString[1]
+    //   value = [startTime,endTime]
+    // },
     delectOne(id) {
       let ids = [id]
       postAction(this.url.delete, ids).then((res) => {
@@ -405,7 +419,7 @@ export default {
         }
       })
     },
-    delects() {
+    deleteAll() {
       let ids = this.selectedRowKeys
       let url = this.url.delete
       var that = this
@@ -430,6 +444,7 @@ export default {
     },
     onSelectChange(selectedRowKeys) {
       console.log('selectedRowKeys changed: ', selectedRowKeys)
+     
       this.selectedRowKeys = selectedRowKeys
       if (selectedRowKeys.length > 0) {
         this.btn = true
@@ -493,8 +508,10 @@ export default {
       this.ipagination = pagination
       this.queryParam.pageNo = pagination.current
       this.queryParam.pageSize = pagination.pageSize
-      console.log(this.queryParam)
+      
       this.searchQuery()
+      
+      
     },
     search() {
       this.loading = true
@@ -512,7 +529,7 @@ export default {
 
     searchReset() {
       this.queryParam = {}
-
+      
       this.search()
       this.flag = false
       this.dates = []
@@ -524,6 +541,10 @@ export default {
 
     searchQuery() {
       this.loading = true
+      if(this.paginationOld.current == this.ipagination.current && this.paginationOld.pageSize == this.ipagination.pageSize){
+        this.ipagination.current = 0
+        this.queryParam.pageNo = 0
+      }
       console.log(this.loading)
       let code = this.queryParam.code
       let param = {}
@@ -552,6 +573,7 @@ export default {
         this.search()
       }
       this.expandedKeys = []
+      this.paginationOld = this.ipagination
     },
     codeChange(code) {
       this.flag = true
@@ -565,6 +587,7 @@ export default {
           console.log('--->>', this.fieldList)
         }
       })
+      
       this.dates = []
       this.values = []
       this.items = []
