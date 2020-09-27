@@ -330,7 +330,7 @@
           :form-files="formFileds"
           :form-val="formVal"
           :form-index="formIndex"
-          :sign-flag="signFlag"
+          :is-permission="isPermission"
           :submit-btn="submitBtn"
           :allot-show="allotShow"
           :operation="operation"
@@ -411,7 +411,7 @@ import JEllipsis from '@/components/jeecg/JEllipsis'
 import JDate from '@/components/jeecg/JDate.vue'
 import TicketsFromFlow from '../../components/from-el/Tickets-From-Flow'
 import TicketsForm from '../../components/from-el/Tickets-Form'
-import TicketsModelType from './../tickets/modules/TicketsModelType'
+import TicketsModelType from './modules/TicketsModelType'
 import { getSelectTime } from '../../utils/util'
 import { mapGetters } from 'vuex'
 import moment from 'moment/moment'
@@ -704,6 +704,7 @@ export default {
       images: [],
       operation: '',
       allotShow: false,
+      isPermission: false,
       spinning: false,
       signFlag: false,
       upFlag: false,
@@ -948,7 +949,8 @@ export default {
           orderSate: 'wfk',
           qsr: this.userInfo().username,
           qsrlxdh: this.userInfo().phone,
-          qsgs: this.departName
+          qsgs: this.departName,
+          fxrz: this.departName
         },
         ticket_id: this.orderInfo.ticketId
       }
@@ -1126,7 +1128,6 @@ export default {
         })
         this.operation = 'add'
         this.visibleModel = false
-        this.allotShow = true
         this.visible = true
         this.spinning = false
       }).catch(error => {
@@ -1145,7 +1146,6 @@ export default {
         this.loading = false
         this.visibleModel = false
         this.spinningShow = false
-        this.allotShow = true
         this.visible = false
         this.loading = false
 
@@ -1253,43 +1253,28 @@ export default {
       this.conductorGroup = []
       let uyunId = this.userInfo().uyunid
       let rolesB = this.rolesA()
-      // 判断是内场和外场实施办理环节 显示 签收按钮
-      if (this.orderInfo.activity_id === '4ee67d3f2b2a4f65a73775e5525e3867' || this.orderInfo.activity_id === 'df6c26bedae34a7dae2396ec1dac14f5') {
-        this.signFlag = true
+
+      let executor = undefined
+      if (executors !== '' && executors != null && executors.length > 0) {
+        executor = executors.find((item) => uyunId === item && this.orderInfo.activity_name !== '结束')
       }
-      let executor = executors !== '' && executors != null && executors.length >= 0 ? executors.find((item) => uyunId === item && this.orderInfo.activity_name !== '结束') : undefined
-      let executionGroup = executionGroups != null && executionGroups.length >= 0 ? executionGroups.filter((item) => rolesB.indexOf(item) > -1 && this.orderInfo.activity_name !== '结束') : undefined
-      if (Array.isArray(executionGroup) && executionGroup.length === 0) {  // 判断executionGroup为[]的情况
+      let executionGroup = undefined
+      if(executionGroups != null && executionGroups.length > 0) {
+        executionGroup = executionGroups.filter((item) => rolesB.indexOf(item) > -1 && this.orderInfo.activity_name !== '结束')
+      }
+      // 判断executionGroup为[]的情况
+      if (Array.isArray(executionGroup) && executionGroup.length === 0) {
         executionGroup = undefined
       }
-      if (executor || executionGroup) {
-        // 判断如果处理人或者处理组只有一个并且当前登录人 调用接口修改数据
-        if (this.signFlag) {
-          this.conductor = executors
-          this.conductorGroup = executionGroups
-          this.allotShow = false
-          this.formFileds.forEach((itemA) => {
-            this.$set(itemA, 'disabled', true)
-          })
-        } else {
-          this.allotShow = true
-          this.formFileds.forEach((itemA) => {
-            this.$set(itemA, 'disabled', false)
-          })
-        }
-        if (this.formVal.orderSate !== 'wjs') {
-          this.allotShow = true
-          this.formFileds.forEach((itemA) => {
-            this.$set(itemA, 'disabled', false)
-          })
-        }
-      } else {
-        this.signFlag = false
-        this.allotShow = false
-        this.formFileds.forEach((itemA) => {
-          this.$set(itemA, 'disabled', true)
-        })
-      }
+      // 判断工单状态为未签收并且是内场或者外场实施办理环节，如都满足则显示签收按钮
+      this.allotShow = !(this.formVal.orderSate === 'wjs' && (this.orderInfo.activity_id === '4ee67d3f2b2a4f65a73775e5525e3867' || this.orderInfo.activity_id === 'df6c26bedae34a7dae2396ec1dac14f5'))
+      this.isPermission = executor || executionGroup
+      let isEdit = this.isPermission ? !this.allotShow : true
+      this.formFileds.forEach((itemA) => {
+        this.$set(itemA, 'disabled', isEdit)
+      })
+      this.conductor = executors
+      this.conductorGroup = executionGroups
     },
     getTicketTodoCountByUser () {
       let data = {

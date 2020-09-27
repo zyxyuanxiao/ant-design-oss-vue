@@ -84,47 +84,49 @@
           </div>
         </div>
       </div>
-      <div style="display: flex;justify-content:center" v-show="allotShow">
-        <div v-for="(item, index) in submitBtn" :key="index" style="padding: 15px 10px;">
-          <a-button style="padding: 0 15px;height: 35px;"
-                    type="primary"
-                    @click="submitForm('formVal', item)"
-          >
-            {{item.btnName}}
-          </a-button>
+      <div v-if="isPermission">
+        <div style="display: flex;justify-content:center" v-show="allotShow">
+          <div v-for="(item, index) in submitBtn" :key="index" style="padding: 15px 10px;">
+            <a-button style="padding: 0 15px;height: 35px;"
+                      type="primary"
+                      @click="submitForm('formVal', item)"
+            >
+              {{item.btnName}}
+            </a-button>
+          </div>
+          <div style="padding: 15px 10px;" v-if="operation === 'details'">
+            <a-button type="primary" block @click="updateFeedback('formVal')">保存</a-button>
+          </div>
+          <!--v-if="operation === 'details'"-->
+          <div style="padding: 15px 10px;" v-show="allotShow">
+            <a-select style="width: 80px;height: 35px;" placeholder="更多" @change="handleChange">
+              <a-select-option value="reassign">
+                改派
+              </a-select-option>
+              <a-select-option value="putUp">
+                挂起
+              </a-select-option>
+            </a-select>
+          </div>
         </div>
-        <div style="padding: 15px 10px;" v-if="operation === 'details'">
-          <a-button type="primary" block @click="updateFeedback('formVal')">保存</a-button>
-        </div>
-        <!--v-if="operation === 'details'"-->
-        <div style="padding: 15px 10px;" v-show="allotShow">
-          <a-select style="width: 80px;height: 35px;" placeholder="更多" @change="handleChange">
-            <a-select-option value="reassign">
-              改派
-            </a-select-option>
-            <a-select-option value="putUp">
-              挂起
-            </a-select-option>
-          </a-select>
-        </div>
-      </div>
-      <div style="display: flex;justify-content:center" v-show="!allotShow">
-        <div style="padding: 15px 10px;" v-if="operation === 'details'">
-          <a-button type="primary" block @click="signTickets()">签收</a-button>
-        </div>
-        <div style="padding: 15px 10px;" v-if="operation === 'details'">
-          <a-button type="primary" block @click="updateFeedback('formVal')">保存</a-button>
-        </div>
-        <!--v-if="operation === 'details'"-->
-        <div style="padding: 15px 10px;" v-show="allotShow">
-          <a-select style="width: 80px;height: 35px;" placeholder="更多" @change="handleChange">
-            <a-select-option value="reassign">
-              改派
-            </a-select-option>
-            <a-select-option value="putUp">
-              挂起
-            </a-select-option>
-          </a-select>
+        <div style="display: flex;justify-content:center" v-show="!allotShow">
+          <div style="padding: 15px 10px;" v-if="operation === 'details'">
+            <a-button type="primary" block @click="signTickets()">签收</a-button>
+          </div>
+          <div style="padding: 15px 10px;" v-if="operation === 'details'">
+            <a-button type="primary" block @click="updateFeedback('formVal')">保存</a-button>
+          </div>
+          <!--v-if="operation === 'details'"-->
+          <div style="padding: 15px 10px;" v-show="allotShow">
+            <a-select style="width: 80px;height: 35px;" placeholder="更多" @change="handleChange">
+              <a-select-option value="reassign">
+                改派
+              </a-select-option>
+              <a-select-option value="putUp">
+                挂起
+              </a-select-option>
+            </a-select>
+          </div>
         </div>
       </div>
     </a-spin>
@@ -162,7 +164,7 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'Tickets-From',
   props: ['formFiles', 'formVal', 'formIndex', 'submitBtn',
-    'allotShow', 'operation', 'spinnings', 'flowList', 'signFlag'],
+    'allotShow', 'operation', 'spinnings', 'flowList', 'isPermission'],
   data () {
     return {
       labelCol: {
