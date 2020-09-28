@@ -393,6 +393,7 @@ export default {
     delIpAdress (index) {
       this.dataSource.splice(index, 1)
       this.selectionRows.splice(index, 1)
+      this.ipagination.total = this.dataSource.length
     }
   }
 }
