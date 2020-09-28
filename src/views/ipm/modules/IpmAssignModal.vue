@@ -94,7 +94,7 @@
         <div>
           <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
             <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{
-            selectedRowKeys.length }}</a>项
+            selectionRows.length }}</a>项
             <a style="margin-left: 24px" @click="onClearSelected">移除</a>
           </div>
 
@@ -120,8 +120,8 @@
               @showSizeChange="onShowSizeChange"
             />
 
-            <span slot="action" slot-scope="text, record">
-          <a @click="delIpAdress(record)">移除</a>
+            <span slot="action" slot-scope="text, record,index">
+          <a @click="delIpAdress(index)">移除</a>
         </span>
 
           </a-table>
@@ -290,17 +290,21 @@ export default {
     },
     handleOk () {
       // 触发表单验证
-      if(this.selectionRows.length === 0) {
+      if (this.dataSource.length === 0) {
         this.$message.success('您未选择任何数据，请先选择数据！')
         return
       }
+      let ips = []
+      this.dataSource.forEach((item) => {
+        ips.push(item.ip)
+      })
       this.form.validateFields((err, values) => {
         let formData = Object.assign(this.model, values)
         console.log('表单提交数据', formData)
         if (!err) {
           this.confirmLoading = true
           let formData = Object.assign(this.model, values)
-          formData.ips = this.selectionRows
+          formData.ips = ips
           delete formData.assignCount
           httpAction(this.url.assign, formData, 'post').then((res) => {
             if (res.success) {
@@ -329,13 +333,26 @@ export default {
     },
     onSelectChange (selectedRowKeys, selectionRows) {
       this.selectedRowKeys = selectedRowKeys
+      if (selectionRows.length === 0) {
+        this.selectionRows = []
+        return
+      }
       selectionRows.forEach((item) => {
-        this.selectionRows.push(item.ip)
+        // 如selectionRows中不存在选中的ip则push
+        if (this.selectionRows.indexOf(item.ip) < 0) {
+          this.selectionRows.push(item.ip)
+        }
       })
-      // this.selectionRows = selectionRows
     },
     onClearSelected () {
-      this.selectedRowKeys = []
+      for (let i = 0; i < this.dataSource.length; i++) {
+        // 判断如有相同的IP则移除
+        if (this.selectionRows.indexOf(this.dataSource[i].ip) > -1) {
+          this.dataSource.splice(i, 1) // 将使后面的元素依次前移，数组长度减1
+          i-- // 如果不减，将漏掉一个元素
+        }
+      }
+      this.ipagination.total = this.dataSource.length
       this.selectionRows = []
     },
     getIpInfoList (domain, size) {
@@ -345,7 +362,6 @@ export default {
         usestatus: 0,
         pageSize: size
       }
-      console.log(data)
       getAction(this.url.list, data).then((res) => {
         this.dataSource = res.result.records
         this.ipagination.total = res.result.records.length
@@ -362,17 +378,22 @@ export default {
       this.ipagination.pageSize = pageSize
     },
     handleSelectChange (value) {
+      this.selectionRows = []
+      this.selectedRowKeys = []
       this.domain = value
       if (this.size === '') return
       this.getIpInfoList(this.domain, this.size)
     },
     handleInputChange (event) {
+      this.selectionRows = []
+      this.selectedRowKeys = []
       this.size = event.target.value
       if (this.domain === '') return
       this.getIpInfoList(this.domain, this.size)
     },
-    delIpAdress (row) {
-      console.log(row)
+    delIpAdress (index) {
+      this.dataSource.splice(index, 1)
+      this.selectionRows.splice(index, 1)
     }
   }
 }
