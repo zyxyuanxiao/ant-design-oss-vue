@@ -332,15 +332,9 @@ export default {
     },
     onSelectChange (selectedRowKeys, selectionRows) {
       this.selectedRowKeys = selectedRowKeys
-      if (selectionRows.length === 0) {
-        this.selectionRows = []
-        return
-      }
-      selectionRows.forEach((item) => {
-        // 如selectionRows中不存在选中的ip则push
-        if (this.selectionRows.indexOf(item.ip) < 0) {
-          this.selectionRows.push(item.ip)
-        }
+      this.selectionRows = [] //先清空之前选中的，避免数据冗余
+      selectionRows.forEach((item, index) => {
+        this.selectionRows.push(item.ip) //重新赋值
       })
     },
     onClearSelected () {
