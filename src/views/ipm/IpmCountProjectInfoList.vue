@@ -6,7 +6,7 @@
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="项目信息">
-              <j-search-select-tag placeholder="请选择项目信息" v-model="queryParam.project" dict=",,project"/>
+              <j-search-select-tag placeholder="请选择项目信息" v-model="queryParam.project" dict="project"/>
             </a-form-item>
           </a-col>
           <a-col :xl="10" :lg="11" :md="12" :sm="24">

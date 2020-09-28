@@ -17,7 +17,7 @@
           <template v-if="toggleSearchStatus">
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
               <a-form-item label="应用单位">
-                <j-search-select-tag placeholder="请选择应用单位" v-model="queryParam.affiliatedUnit" dict=",,affiliatedUnit"/>
+                <j-search-select-tag placeholder="请选择应用单位" v-model="queryParam.affiliatedUnit" dict="affiliatedUnit"/>
               </a-form-item>
             </a-col>
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
@@ -32,7 +32,7 @@
             </a-col>
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
               <a-form-item label="网段描述">
-                <j-search-select-tag placeholder="请选择网段描述" v-model="queryParam.networkDesc" dict=",,networkDesc"/>
+                <j-search-select-tag placeholder="请选择网段描述" v-model="queryParam.networkDesc" dict="networkDesc"/>
               </a-form-item>
             </a-col>
             <a-col :xl="10" :lg="11" :md="12" :sm="24">
@@ -57,7 +57,7 @@
       </a-form>
     </div>
     <!-- 查询区域-END -->
-    
+
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>

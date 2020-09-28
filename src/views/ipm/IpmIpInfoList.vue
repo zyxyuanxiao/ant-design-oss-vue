@@ -11,28 +11,28 @@
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="网络域">
-              <j-search-select-tag placeholder="请选择网络域" v-model="queryParam.domain" dict=",,domain"/>
+              <j-search-select-tag placeholder="请选择网络域" v-model="queryParam.domain" dict="domain"/>
             </a-form-item>
           </a-col>
           <template v-if="toggleSearchStatus">
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
               <a-form-item label="项目信息">
-                <j-search-select-tag placeholder="请选择项目信息" v-model="queryParam.project" dict=",,project"/>
+                <j-search-select-tag placeholder="请选择项目信息" v-model="queryParam.project" dict="project"/>
               </a-form-item>
             </a-col>
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
               <a-form-item label="网段描述">
-                <j-search-select-tag placeholder="请选择网段描述" v-model="queryParam.networkDesc" dict=",,networkDesc"/>
+                <j-search-select-tag placeholder="请选择网段描述" v-model="queryParam.networkDesc" dict="networkDesc"/>
               </a-form-item>
             </a-col>
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
               <a-form-item label="应用单位">
-                <j-search-select-tag placeholder="请选择应用单位" v-model="queryParam.affiliatedUnit" dict=",,affiliatedUnit"/>
+                <j-search-select-tag placeholder="请选择应用单位" v-model="queryParam.affiliatedUnit" dict="affiliatedUnit"/>
               </a-form-item>
             </a-col>
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
               <a-form-item label="厂商">
-                <j-search-select-tag placeholder="请选择厂商" v-model="queryParam.manufactor" dict=",,manufactor"/>
+                <j-search-select-tag placeholder="请选择厂商" v-model="queryParam.manufactor" dict="manufactor"/>
               </a-form-item>
             </a-col>
             <a-col :xl="6" :lg="7" :md="8" :sm="24">

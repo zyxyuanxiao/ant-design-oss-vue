@@ -17,12 +17,12 @@
           <template v-if="toggleSearchStatus">
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
               <a-form-item label="字段名称">
-                <j-search-select-tag placeholder="请选择字段名称" v-model="queryParam.fieldName" dict=",,ticketFieldCode"/>
+                <j-search-select-tag placeholder="请选择字段名称" v-model="queryParam.fieldName" dict="ticketFieldCode"/>
               </a-form-item>
             </a-col>
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
               <a-form-item label="字段编码">
-                <j-search-select-tag placeholder="请选择字段编码" v-model="queryParam.fieldCode" dict=",,ticketFieldCode"/>
+                <j-search-select-tag placeholder="请选择字段编码" v-model="queryParam.fieldCode" dict="ticketFieldCode"/>
               </a-form-item>
             </a-col>
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
