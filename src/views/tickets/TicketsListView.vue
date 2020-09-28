@@ -890,7 +890,7 @@ export default {
       this.spinning = true
       this.spinningText = '正在检测中。。。'
       judgmentTickets(this.ip).then(response => {
-        if (response.success) {
+        if (response.result) {
           this.formVal.gzwcpd = 'zx'
           this.handleTickets(item)
           return
