@@ -66,7 +66,6 @@
             </a-form-item>
           </a-col>
           <a-col :lg="12">
-            {{selectionRows}}
             <a-form-item label="申请数量" :labelCol="labelCol" :wrapperCol="wrapperCol">
               <a-input v-decorator="['assignCount',  validatorRules.assignCount]"
                        placeholder="请输入申请数量" @change="handleInputChange"
@@ -270,7 +269,6 @@ export default {
     }
   },
   created () {
-
   },
   methods: {
     add () {
@@ -308,7 +306,8 @@ export default {
           delete formData.assignCount
           httpAction(this.url.assign, formData, 'post').then((res) => {
             if (res.success) {
-              this.$message.success('本次申请' + res.message + '个IP')
+              this.$message.success('本次共申请了 ' + res.result + ' 个IP')
+              this.dataSource = []
               this.$emit('ok')
             } else {
               this.$message.warning(res.message)
