@@ -1310,7 +1310,7 @@ export default {
       }
       // 分派公司默认赋值 第一阶梯填写值
       if (this.formVal.hasOwnProperty('fpgs')) {
-        this.formVal.fpgs = this.formVal.dytd
+        tthis.formVal.fpgs = this.formVal.fpgs ? this.formVal.fpgs : this.formVal.dytd
       }
       this.conductor = executors
       this.conductorGroup = executionGroups
