@@ -59,12 +59,12 @@
       <a-spin :spinning="confirmLoading">
         <a-form :form="formUp">
           <a-form-item label="模型名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <j-multi-select-tag disabled type="list_multi" v-decorator="['modelId', validatorRules.modelId]"
+            <j-multi-select-tag type="list_multi" v-decorator="['modelId', validatorRules.modelId]"
                                 :trigger-change="true"
                                 dictCode="modelName" placeholder="请选择模型名称"/>
           </a-form-item>
           <a-form-item label="流程环节" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <j-multi-select-tag disabled type="list_multi" v-decorator="['actId']" :trigger-change="true" dictCode="actName"
+            <j-multi-select-tag type="list_multi" v-decorator="['actId']" :trigger-change="true" dictCode="actName"
                                 placeholder="请选择流程环节"/>
           </a-form-item>
           <a-form-item label="通知类型" :labelCol="labelCol" :wrapperCol="wrapperCol">
