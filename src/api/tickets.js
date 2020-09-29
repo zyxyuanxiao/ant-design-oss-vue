@@ -78,19 +78,6 @@ export function getUserGroup () {
 }
 
 /**
- * 获取模型列表
- * @param apiKey 参数
- */
-export function getFieldListByProcess (data, apiKey) {
-  return axios({
-    url: '/api/itsm/getFields',
-    method: 'post',
-    params: { apikey: apiKey },
-    data
-  })
-}
-
-/**
  * 获取模型详情
  * @param apiKey
  * @param id
@@ -216,5 +203,30 @@ export function getInsertBatch () {
     url: '/sys/dictItem/insertBatch',
     method: 'post',
     data: '{}'
+  })
+}
+
+/**
+ * 根据流程环节获取对应环节字段名称
+ * @param apiKey 参数
+ */
+export function getFieldListByProcess (data, apiKey) {
+  return axios({
+    url: '/api/itsm/getFields',
+    method: 'post',
+    params: { apikey: apiKey },
+    data
+  })
+}
+
+/**
+ * 根据流程环节获取对应环节流程按钮
+ * @param data 模型id 流程环节id
+ */
+export function getBtnListByProcess (data) {
+  return axios({
+    url: '/ticket/ticketModelConf/selectBtnName',
+    method: 'post',
+    data
   })
 }

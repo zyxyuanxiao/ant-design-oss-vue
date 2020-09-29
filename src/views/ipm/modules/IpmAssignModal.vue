@@ -284,6 +284,10 @@ export default {
     },
     close () {
       this.$emit('close')
+      this.dataSource = []
+      this.ipagination.total = 0
+      this.selectedRowKeys = []
+      this.selectionRows = []
       this.visible = false
     },
     handleOk () {

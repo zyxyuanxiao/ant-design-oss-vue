@@ -29,6 +29,7 @@
                                   :trigger-change="true" dictCode="actName"
                                   placeholder="请选择流程环节名称"/>-->
             <a-select mode="tags"
+                      @change="flowChange"
                       v-decorator="['actId', validatorRules.actId]"
                       placeholder="请选择流程环节">
               <a-select-option v-for="item in flowList" :key="item.id">
@@ -47,8 +48,15 @@
                                dictCode="isPolicy" placeholder="请选择下一节点处理人"/>
           </a-form-item>
           <a-form-item label="按钮名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <j-multi-select-tag type="list_multi" v-decorator="['btnId']" :trigger-change="true" dictCode="btnId"
-                                placeholder="请选择按钮名称"/>
+            <!--<j-multi-select-tag type="list_multi" v-decorator="['btnId']" :trigger-change="true" dictCode="btnId"
+                                placeholder="请选择按钮名称"/>-->
+            <a-select mode="tags"
+                      v-decorator="['btnId']"
+                      placeholder="请选择按钮名称">
+              <a-select-option v-for="item in btnList" :key="item.id">
+                {{item.name}}
+              </a-select-option>
+            </a-select>
           </a-form-item>
           <a-form-item label="处理人脚本" :labelCol="labelCol" :wrapperCol="wrapperCol">
             <a-textarea v-decorator="['policyScript']" rows="4" placeholder="请输入处理人脚本"/>
@@ -68,13 +76,12 @@
       <a-spin :spinning="confirmLoading">
         <a-form :form="formUp">
           <a-form-item label="模型名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <j-multi-select-tag disabled type="list_multi" v-decorator="['modelId', validatorRules.modelId]"
+            <j-multi-select-tag type="list_multi" v-decorator="['modelId', validatorRules.modelId]"
                                 :trigger-change="true"
                                 dictCode="modelName" placeholder="请选择模型名称"/>
           </a-form-item>
           <a-form-item label="流程环节名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-            <j-multi-select-tag disabled type="list_multi"
-            <j-multi-select-tag disabled type="list_multi"
+            <j-multi-select-tag type="list_multi"
                                 v-decorator="['actId', validatorRules.actId]"
                                 :trigger-change="true" dictCode="actName"
                                 placeholder="请选择流程环节名称"/>
@@ -104,7 +111,7 @@
 
 <script>
 import { httpAction } from '@/api/manage'
-import { getModelList, getFlowListByModeId } from '@/api/tickets'
+import { getModelList, getFlowListByModeId, getBtnListByProcess } from '@/api/tickets'
 import pick from 'lodash.pick'
 import { validateDuplicateValue } from '@/utils/util'
 import JDictSelectTag from '@/components/dict/JDictSelectTag'
@@ -130,6 +137,7 @@ export default {
       modelList: [],
       modelIds: [],
       flowList: [],
+      btnList: [],
       labelCol: {
         xs: { span: 24 },
         sm: { span: 5 }
@@ -259,12 +267,26 @@ export default {
         console.log(error)
       })
     },
+    getBtnListByProcess (data) {
+      getBtnListByProcess(data).then(response => {
+        this.btnList = response.result.data
+      }).catch(error => {
+        console.log(error)
+      })
+    },
     modelChange (values) {
       // console.log(values)
       this.modelIds = values
       this.getFlowListByModeId()
+    },
+    flowChange (values) {
+      console.log(values)
+      let data = {
+        modelId: this.modelIds,
+        actId: values
+      }
+      this.getBtnListByProcess(data)
     }
-
   }
 }
 </script>
