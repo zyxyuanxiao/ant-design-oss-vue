@@ -334,13 +334,13 @@ export default {
       fieldList: [],
       param: [],
       optionsType:[],
-      paginationOld:{current:0,pageSize:10}
+      paginationOld:{current:1,pageSize:10}
     }
   },
   created() {
     this.initList()
     // this.init()
-    let options1 = [{label: '优盘',value: '优盘'} ,{label: '移动硬盘',value: '移动硬盘'},{label: '显示器',value: '显示器'} ,{label: '投影仪',value: '投影仪'} ,{label: '台式机',value: '台式机'} ,{label: '扫描仪',value: '扫描仪'} ,{label: '光盘刻录机',value: '光盘刻录机'} ,{label: '电话机',value: '电话机'} ,{label: '打印机',value: '打印机'} ,{label: '传真机',value: '传真机'} ,{label: '操作系统及通用软件',value: '操作系统及通用软件'}]
+    let options1 = [{label: '优盘',value: '优盘'} ,{label: '移动硬盘',value: '移动硬盘'},{label: '显示器',value: '显示器'} ,{label: '投影仪',value: '投影仪'} ,{label: '台式机',value: '台式机'} ,{label: '扫描仪',value: '扫描仪'} ,{label: '光盘刻录机',value: '光盘刻录机'} ,{label: '电话机',value: '电话机'} ,{label: '打印机',value: '打印机'} ,{label: '传真机',value: '传真机'} ,{label: '操作系统及通用软件',value: '操作系统及通用软件'},{label: '其他',value: '其他'}]
     let options2= [ {label: '桌面安全 ',value: '桌面安全'},{label: '网络安全 ',value: '网络安全'},{label: '身份认证 ',value: '身份认证'},{label: '鉴章卡 ',value: '鉴章卡'},{label: '加密机 ',value: '加密机'},{label: '防病毒系统 ',value: '防病毒系统'}]
     let options3= [ {label: '中间件系统 ',value: '中间件系统'},{label: '数据库系统 ',value: '数据库系统'},{label: '操作系统 ',value: '操作系统'},{label: '其他系统软件',value: '其他系统软件'}]
     let options4 = [{label: '综合布线',value: '综合布线'} ,{label: '智能化机房系统',value: '智能化机房系统'},{label: '有线电视',value: '有线电视'} ,{label: '一卡通',value: '一卡通'} ,{label: '网络设备',value: '网络设备'} ,{label: '庭审系统',value: '庭审系统'} ,{label: '视频会议系统',value: '视频会议系统'} ,{label: '叫号系统',value: '叫号系统'} ,{label: '会议系统',value: '会议系统'} ,{label: '公告显示',value: '公告显示'} ,{label: '服务器',value: '服务器'},{label: '存储设备',value: '存储设备'},{label: '程控交换机',value: '程控交换机'},{label: '安保监控',value: '安保监控'},{label: 'BA系统',value: 'BA系统'}]
@@ -451,8 +451,8 @@ export default {
       this.loading = true;
 
       if(this.paginationOld.current == this.ipagination.current && this.paginationOld.pageSize == this.ipagination.pageSize){
-        this.ipagination.current = 0
-        this.queryParam.pageNo = 0
+        this.ipagination.current = 1
+        this.queryParam.pageNo = 1
       }
 
 
