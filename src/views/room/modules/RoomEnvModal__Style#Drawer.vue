@@ -10,20 +10,35 @@
     <a-spin :spinning="confirmLoading">
       <a-form :form="form">
 
-        <a-form-item label="模型名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-multi-select-tag type="list_multi" v-decorator="['modelId', validatorRules.modelId]" :trigger-change="true" dictCode="modelName" placeholder="请选择模型名称"/>
+        <a-form-item label="机构代码" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input v-decorator="['orgCode']" placeholder="请输入机构代码"></a-input>
         </a-form-item>
-        <a-form-item label="开始计算的流程环节" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-multi-select-tag type="list_multi" v-decorator="['beginActId', validatorRules.beginActId]" :trigger-change="true" dictCode="actName" placeholder="请选择开始计算的流程环节"/>
+        <a-form-item label="机房代码" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input v-decorator="['rmCode']" placeholder="请输入机房代码"></a-input>
         </a-form-item>
-        <a-form-item label="结束计算的流程环节" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-multi-select-tag type="list_multi" v-decorator="['endActId', validatorRules.endActId]" :trigger-change="true" dictCode="actName" placeholder="请选择结束计算的流程环节"/>
+        <a-form-item label="机房环境健康度" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input v-decorator="['envHealthValue']" placeholder="请输入机房环境健康度"></a-input>
         </a-form-item>
-        <a-form-item label="当前逾期设置数" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input-number v-decorator="['num', validatorRules.num]" placeholder="请输入当前逾期设置数" style="width: 100%"/>
+        <a-form-item label="机房动力系统健康度" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input v-decorator="['powerHealthValue']" placeholder="请输入机房动力系统健康度"></a-input>
         </a-form-item>
-        <a-form-item label="逾期设置单位" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-dict-select-tag type="radio" v-decorator="['unit', validatorRules.unit]" :trigger-change="true" dictCode="unit" placeholder="请选择逾期设置单位"/>
+        <a-form-item label="市电实时功率" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input v-decorator="['electrRealPower']" placeholder="请输入市电实时功率"></a-input>
+        </a-form-item>
+        <a-form-item label="UPS实时功率" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input v-decorator="['upsRealPower']" placeholder="请输入UPS实时功率"></a-input>
+        </a-form-item>
+        <a-form-item label="机房平均温度" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input v-decorator="['roomAverTemp']" placeholder="请输入机房平均温度"></a-input>
+        </a-form-item>
+        <a-form-item label="机房平均湿度" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input v-decorator="['roomAverHum']" placeholder="请输入机房平均湿度"></a-input>
+        </a-form-item>
+        <a-form-item label="漏水监测状态" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <j-dict-select-tag type="list" v-decorator="['waterLeakStatus']" :trigger-change="true" dictCode="leak_status" placeholder="请选择漏水监测状态"/>
+        </a-form-item>
+        <a-form-item label="消防监测状态" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <j-dict-select-tag type="list" v-decorator="['fireStatus']" :trigger-change="true" dictCode="fire_status" placeholder="请选择消防监测状态"/>
         </a-form-item>
         
       </a-form>
@@ -39,13 +54,11 @@
   import pick from 'lodash.pick'
   import { validateDuplicateValue } from '@/utils/util'
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
-  import JMultiSelectTag from "@/components/dict/JMultiSelectTag"
   
   export default {
-    name: "TicketSlaConfModal",
+    name: "RoomEnvModal",
     components: { 
       JDictSelectTag,
-      JMultiSelectTag,
     },
     data () {
       return {
@@ -64,35 +77,10 @@
         },
         confirmLoading: false,
         validatorRules: {
-          modelId: {
-            rules: [
-              { required: true, message: '请输入模型名称!'},
-            ]
-          },
-          beginActId: {
-            rules: [
-              { required: true, message: '请输入开始计算的流程环节!'},
-            ]
-          },
-          endActId: {
-            rules: [
-              { required: true, message: '请输入结束计算的流程环节!'},
-            ]
-          },
-          num: {
-            rules: [
-              { required: true, message: '请输入当前逾期设置数!'},
-            ]
-          },
-          unit: {
-            rules: [
-              { required: true, message: '请输入逾期设置单位!'},
-            ]
-          },
         },
         url: {
-          add: "/ticket/ticketSlaConf/add",
-          edit: "/ticket/ticketSlaConf/edit",
+          add: "/room/roomEnv/add",
+          edit: "/room/roomEnv/edit",
         }
       }
     },
@@ -107,7 +95,7 @@
         this.model = Object.assign({}, record);
         this.visible = true;
         this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model,'modelId','beginActId','endActId','num','unit','createTime'))
+          this.form.setFieldsValue(pick(this.model,'orgCode','rmCode','envHealthValue','powerHealthValue','electrRealPower','upsRealPower','roomAverTemp','roomAverHum','waterLeakStatus','fireStatus'))
         })
       },
       close () {
@@ -150,7 +138,7 @@
         this.close()
       },
       popupCallback(row){
-        this.form.setFieldsValue(pick(row,'modelId','beginActId','endActId','num','unit','createTime'))
+        this.form.setFieldsValue(pick(row,'orgCode','rmCode','envHealthValue','powerHealthValue','electrRealPower','upsRealPower','roomAverTemp','roomAverHum','waterLeakStatus','fireStatus'))
       }
       
     }

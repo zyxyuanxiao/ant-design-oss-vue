@@ -5,41 +5,15 @@
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="模型名称">
-              <j-multi-select-tag placeholder="请选择模型名称" dictCode="modelName" v-model="queryParam.modelId"/>
+            <a-form-item label="更新日期">
+              <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择更新日期" v-model="queryParam.updateTime"></j-date>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
-            <a-form-item label="开始计算的流程环节">
-              <j-multi-select-tag placeholder="请选择开始计算的流程环节" dictCode="actName" v-model="queryParam.beginActId"/>
+            <a-form-item label="机构代码">
+              <a-input placeholder="请输入机构代码" v-model="queryParam.orgCode"></a-input>
             </a-form-item>
           </a-col>
-          <template v-if="toggleSearchStatus">
-            <a-col :xl="6" :lg="7" :md="8" :sm="24">
-              <a-form-item label="结束计算的流程环节">
-                <j-multi-select-tag placeholder="请选择结束计算的流程环节" dictCode="actName" v-model="queryParam.endActId"/>
-              </a-form-item>
-            </a-col>
-            <a-col :xl="10" :lg="11" :md="12" :sm="24">
-              <a-form-item label="当前逾期设置数">
-                <a-input placeholder="请输入最小值" class="query-group-cust" v-model="queryParam.num_begin"></a-input>
-                <span class="query-group-split-cust"></span>
-                <a-input placeholder="请输入最大值" class="query-group-cust" v-model="queryParam.num_end"></a-input>
-              </a-form-item>
-            </a-col>
-            <a-col :xl="6" :lg="7" :md="8" :sm="24">
-              <a-form-item label="逾期设置单位">
-                <j-dict-select-tag placeholder="请选择逾期设置单位" v-model="queryParam.unit" dictCode="unit"/>
-              </a-form-item>
-            </a-col>
-            <a-col :xl="10" :lg="11" :md="12" :sm="24">
-              <a-form-item label="创建时间">
-                <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择开始时间" class="query-group-cust" v-model="queryParam.createTime_begin"></j-date>
-                <span class="query-group-split-cust"></span>
-                <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择结束时间" class="query-group-cust" v-model="queryParam.createTime_end"></j-date>
-              </a-form-item>
-            </a-col>
-          </template>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">查询</a-button>
@@ -58,7 +32,7 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('工单逾期配置表')">导出</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('服务器监测总体情况')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
@@ -129,7 +103,7 @@
       </a-table>
     </div>
 
-    <ticketSlaConf-modal ref="modalForm" @ok="modalFormOk"></ticketSlaConf-modal>
+    <serveEnv-modal ref="modalForm" @ok="modalFormOk"></serveEnv-modal>
   </a-card>
 </template>
 
@@ -138,24 +112,19 @@
   import '@/assets/less/TableExpand.less'
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import TicketSlaConfModal from './modules/TicketSlaConfModal'
-  import JDictSelectTag from '@/components/dict/JDictSelectTag.vue'
+  import ServeEnvModal from './modules/ServeEnvModal'
   import JDate from '@/components/jeecg/JDate.vue'
-  import {filterMultiDictText} from '@/components/dict/JDictSelectUtil'
-  import JMultiSelectTag from '@/components/dict/JMultiSelectTag'
 
   export default {
-    name: "TicketSlaConfList",
+    name: "ServeEnvList",
     mixins:[JeecgListMixin, mixinDevice],
     components: {
-      JDictSelectTag,
       JDate,
-      JMultiSelectTag,
-      TicketSlaConfModal
+      ServeEnvModal
     },
     data () {
       return {
-        description: '工单逾期配置表管理页面',
+        description: '服务器监测总体情况管理页面',
         // 表头
         columns: [
           {
@@ -169,34 +138,44 @@
             }
           },
           {
-            title:'模型名称',
-            align:"center",
-            dataIndex: 'modelId_dictText'
-          },
-          {
-            title:'开始计算的流程环节',
-            align:"center",
-            dataIndex: 'beginActId_dictText'
-          },
-          {
-            title:'结束计算的流程环节',
-            align:"center",
-            dataIndex: 'endActId_dictText'
-          },
-          {
-            title:'当前逾期设置数',
-            align:"center",
-            dataIndex: 'num'
-          },
-          {
-            title:'逾期设置单位',
-            align:"center",
-            dataIndex: 'unit_dictText'
-          },
-          {
-            title:'创建时间',
+            title:'创建日期',
             align:"center",
             dataIndex: 'createTime'
+          },
+          {
+            title:'更新日期',
+            align:"center",
+            dataIndex: 'updateTime'
+          },
+          {
+            title:'机构代码',
+            align:"center",
+            dataIndex: 'orgCode'
+          },
+          {
+            title:'设备健康指数',
+            align:"center",
+            dataIndex: 'devHealthValue'
+          },
+          {
+            title:'设备在线率',
+            align:"center",
+            dataIndex: 'devOnlineRate'
+          },
+          {
+            title:'设备平均CPU负载率',
+            align:"center",
+            dataIndex: 'devAverCpuRate'
+          },
+          {
+            title:'设备平均内存负载率',
+            align:"center",
+            dataIndex: 'devAverMemRate'
+          },
+          {
+            title:'设备平均磁盘使用率',
+            align:"center",
+            dataIndex: 'devAverDiskRate'
           },
           {
             title: '操作',
@@ -208,11 +187,11 @@
           }
         ],
         url: {
-          list: "/ticket/ticketSlaConf/list",
-          delete: "/ticket/ticketSlaConf/delete",
-          deleteBatch: "/ticket/ticketSlaConf/deleteBatch",
-          exportXlsUrl: "/ticket/ticketSlaConf/exportXls",
-          importExcelUrl: "ticket/ticketSlaConf/importExcel",
+          list: "/cgauto/serveEnv/list",
+          delete: "/cgauto/serveEnv/delete",
+          deleteBatch: "/cgauto/serveEnv/deleteBatch",
+          exportXlsUrl: "/cgauto/serveEnv/exportXls",
+          importExcelUrl: "cgauto/serveEnv/importExcel",
         },
         dictOptions:{},
       }
