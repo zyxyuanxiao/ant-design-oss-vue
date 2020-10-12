@@ -21,7 +21,7 @@
     props: {
       title: {
         type: String,
-        default: '尚 禾 信 息',
+        default: '奉 贤 公 安',
         required: false
       },
       showTitle: {
