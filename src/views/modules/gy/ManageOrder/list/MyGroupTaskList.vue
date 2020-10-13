@@ -194,26 +194,26 @@ export default {
     this.initList()
   },
   methods: {
-    onExpand(expanded, record) {
-      if (expanded) {
-        this.expandedKeys = []
-        this.detail(record.processInstanceId)
-        this.onExpandedRowsChange(record)
-      } else {
-        this.expandedKeys = []
-      }
-    },
-    onExpandedRowsChange(rows) {
-      this.expandedKeys.push(rows.processInstanceId)
-      console.log(this.expandedKeys)
-    },
-    detail(id) {
-      console.log('id=' + id)
-      getAction(this.url.detail, { id: id }).then((res) => {
-        this.innerData = res.result.data
-        this.innerColumns = res.result.columns
-      })
-    },
+    // onExpand(expanded, record) {
+    //   if (expanded) {
+    //     this.expandedKeys = []
+    //     this.detail(record.processInstanceId)
+    //     this.onExpandedRowsChange(record)
+    //   } else {
+    //     this.expandedKeys = []
+    //   }
+    // },
+    // onExpandedRowsChange(rows) {
+    //   this.expandedKeys.push(rows.id)
+    //   console.log(this.expandedKeys)
+    // },
+    // detail(id) {
+    //   console.log('id=' + id)
+    //   getAction(this.url.detail, { id: id }).then((res) => {
+    //     this.innerData = res.result.data
+    //     this.innerColumns = res.result.columns
+    //   })
+    // },
     //
     init(url) {
       getAction(url, {}, 'GET').then((data) => {
@@ -233,11 +233,11 @@ export default {
       //   onOk: function(){
       putAction(that.url.claim, params).then((res) => {
         if (res.success) {
-          that.$message.success(res.message)
+          // that.$message.success(res.message)
           this.getProcessNodeInfo(record)
           // that.loadData();
         } else {
-          that.$message.warning(res.message)
+          // that.$message.warning(res.message)
           that.loadData()
         }
       })
@@ -252,8 +252,8 @@ export default {
       httpAction(this.url.roleDegisnList, {}, 'GET').then((data) => {
         this.typeList = data.result
       })
-    },
-  },
+    }
+  }
 }
 </script>
 <style lang="less" scoped>
