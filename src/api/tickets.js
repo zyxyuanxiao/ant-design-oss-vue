@@ -215,3 +215,31 @@ export function getInsertBatch () {
     data: '{}'
   })
 }
+
+/**
+ * 改派工单
+ * @param data 工单数据
+ * @param apiKey 参数
+ */
+export function reassignOrder (data, apiKey) {
+  return axios({
+    url: '/api/itsm/reassign',
+    method: 'POST',
+    params: { apikey: apiKey },
+    data
+  })
+}
+/**
+ * 下载文件 用于excel导出
+ * @param url
+ * @param parameter
+ * @returns {*}
+ */
+export function downTicketsFile(data){
+  return axios({
+    url: '/api/itsm/db/exportTicket',
+    data: data,
+    method:'POST' ,
+    responseType: 'blob'
+  })
+}

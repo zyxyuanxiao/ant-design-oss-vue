@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { login, logout, phoneLogin, thirdLogin } from "@/api/login"
-import { ACCESS_TOKEN,USER_ROLES,USER_DEPARTS, USER_NAME,USER_INFO,USER_AUTH,SYS_BUTTON_AUTH,UI_CACHE_DB_DICT_DATA } from "@/store/mutation-types"
+import { ACCESS_TOKEN,USER_ROLES,USER_DEPARTS,USER_DEPARTROLE,USER_GROUP, USER_NAME,USER_INFO,USER_AUTH,SYS_BUTTON_AUTH,UI_CACHE_DB_DICT_DATA } from "@/store/mutation-types"
 import { welcome } from "@/utils/util"
 import { queryPermissionsByUser } from '@/api/api'
 import { getAction,postAction } from '@/api/manage'
@@ -10,6 +10,8 @@ const user = {
     token: '',
     rolesA: [],
     departs: [],
+    departRole: [],
+    reassignGroup: [], // 同组数据
     username: '',
     realname: '',
     welcome: '',
@@ -27,13 +29,17 @@ const user = {
       state.realname = realname
       state.welcome = welcome
     },
-    SET_DEPARTS: (state, roles) => {
-      // alert(roles)
+    SET_DEPARTS: (state, departs) => {
+      state.departs = departs
+    },
+    SET_ROLES: (state, roles) => {
       state.rolesA = roles
     },
-    SET_ROLES: (state, departs) => {
-      // alert(roles)
-      state.departs = departs
+    SET_DEPARTROLE: (state, departRole) => {
+      state.departRole = departRole
+    },
+    SET_GROUP: (state, reassignGroup) => {
+      state.reassignGroup = reassignGroup
     },
     SET_AVATAR: (state, avatar) => {
       state.avatar = avatar
@@ -77,20 +83,26 @@ const user = {
       return new Promise((resolve, reject) => {
         login(userInfo).then(response => {
           if(response.code == '200'){
-            const result = response.result
-            const userInfo = result.userInfo
-            const userRoles = result.roles
-            const userDeparts = result.departs
+            let result = response.result
+            let userInfo = result.userInfo
+            let userRoles = result.roles
+            let userDeparts = result.departs
+            let userDepartRole = result.deptRole
+            let reassignGroup = result.reassignGroup
             Vue.ls.set(ACCESS_TOKEN, result.token, 7 * 24 * 60 * 60 * 1000)
             Vue.ls.set(USER_NAME, userInfo.username, 7 * 24 * 60 * 60 * 1000)
             Vue.ls.set(USER_INFO, userInfo, 7 * 24 * 60 * 60 * 1000)
             Vue.ls.set(USER_ROLES, userRoles, 7 * 24 * 60 * 60 * 1000)
             Vue.ls.set(USER_DEPARTS, userDeparts, 7 * 24 * 60 * 60 * 1000)
+            Vue.ls.set(USER_DEPARTROLE, userDepartRole, 7 * 24 * 60 * 60 * 1000)
+            Vue.ls.set(USER_GROUP, reassignGroup, 7 * 24 * 60 * 60 * 1000)
             Vue.ls.set(UI_CACHE_DB_DICT_DATA, result.sysAllDictItems, 7 * 24 * 60 * 60 * 1000)
             commit('SET_TOKEN', result.token)
             commit('SET_INFO', userInfo)
             commit('SET_ROLES', result.roles)
             commit('SET_DEPARTS', result.departs)
+            commit('SET_DEPARTROLE', result.deptRole)
+            commit('SET_GROUP', result.reassignGroup)
             commit('SET_NAME', { username: userInfo.username,realname: userInfo.realname, welcome: welcome() })
             commit('SET_AVATAR', userInfo.avatar)
             resolve(response)

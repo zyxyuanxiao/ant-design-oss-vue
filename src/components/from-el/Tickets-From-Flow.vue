@@ -96,11 +96,17 @@
               {{item.btnName}}
             </a-button>
           </div>
-          <div style="padding: 15px 10px;" v-if="operation === 'details'">
+          <div style="padding: 15px 10px;" v-if="saveShow">
             <a-button type="primary" block @click="updateFeedback('formVal')">保存</a-button>
           </div>
           <!--v-if="operation === 'details'"-->
-          <div style="padding: 15px 10px;" v-show="allotShow">
+          <div style="padding: 15px 10px;" v-if="reassignShow">
+            <a-button type="primary" block @click="handleChange()">改派</a-button>
+          </div>
+          <div style="padding: 15px 10px;" v-if="saveShow">
+            <a-button type="primary" block @click="handleClose()">关闭</a-button>
+          </div>
+          <!--<div style="padding: 15px 10px;" v-show="allotShow">
             <a-select style="width: 80px;height: 35px;" placeholder="更多" @change="handleChange">
               <a-select-option value="reassign">
                 改派
@@ -109,40 +115,15 @@
                 挂起
               </a-select-option>
             </a-select>
-          </div>
+          </div>-->
         </div>
         <div style="display: flex;justify-content:center" v-show="!allotShow">
           <div style="padding: 15px 10px;" v-if="operation === 'details'">
             <a-button type="primary" block @click="signTickets()">签收</a-button>
           </div>
-          <div style="padding: 15px 10px;" v-if="operation === 'details'">
-            <a-button type="primary" block @click="updateFeedback('formVal')">保存</a-button>
-          </div>
-          <!--v-if="operation === 'details'"-->
-          <div style="padding: 15px 10px;" v-show="allotShow">
-            <a-select style="width: 80px;height: 35px;" placeholder="更多" @change="handleChange">
-              <a-select-option value="reassign">
-                改派
-              </a-select-option>
-              <a-select-option value="putUp">
-                挂起
-              </a-select-option>
-            </a-select>
-          </div>
         </div>
       </div>
     </a-spin>
-    <a-modal v-model="visible" title="工单改派" ok-text="确认" cancel-text="取消" @ok="hideModal">
-      <a-form-model ref="ruleForm">
-        <a-row :gutter="24">    
-          <a-col :xl="24" :lg="24" :md="24" :sm="24">
-            <a-form-model-item label="指定改派" prop="description">            
-              <a-input placeholder="请输入处理人" v-model="userName"/>
-            </a-form-model-item>
-          </a-col>
-        </a-row>
-      </a-form-model>
-    </a-modal>
   </div>
 </template>
 
@@ -162,11 +143,12 @@ import attachfileTest from './from-item/From-Upload'
 import decimalsTest from './from-item/From-Decimals'
 import tableTest from './from-item/From-Table'
 import { mapGetters } from 'vuex'
+import { reassignOrder } from '../../api/tickets'
 
 export default {
   name: 'Tickets-From',
-  props: ['formFiles', 'formVal', 'formIndex', 'submitBtn','spinningText',
-    'allotShow', 'operation', 'spinnings', 'flowList', 'isPermission'],
+  props: ['formFiles', 'formVal', 'formIndex', 'submitBtn', 'spinningText',
+    'allotShow', 'saveShow', 'reassignShow', 'operation', 'spinnings', 'flowList', 'isPermission'],
   data () {
     return {
       labelCol: {
@@ -190,7 +172,8 @@ export default {
       isShowFlow: true,
       loading: false,
       visible: false,
-      userName: ' 我的描述文案是自定义的。。。'
+      userName: '',
+      groupId: ''
     }
   },
   mounted () {
@@ -198,13 +181,28 @@ export default {
   methods: {
     ...mapGetters(['userInfo']),
     submitForm (formName, item) {
-      this.$refs[formName].validate(valid => {
+      let self = this
+      self.$refs[formName].validate(valid => {
         if (valid) {
-          if (Array.isArray(this.formVal.fkjl) && this.formVal.fkjl.length === 0) {
-            this.$message.error('反馈记录请填写完整！')
+          let fk = this.formVal.fkjl
+          if (((Array.isArray(fk) && fk.length === 0) || fk === '') && !this.saveShow) {
+            self.$message.error('反馈记录请填写完整！')
             return
           }
-          this.$emit('click', item)
+          // 判断如果是设备报备的话 将状态改成报备状态
+          // suncor 93dbe9df4a484c41ae3962583c8b79d2 || bd5667bdfe384d978094e2c304fee4d2
+          // 宝山现场 755dbdc2fbeb4d36807bc38ff0dbe019 || 0fa29993092d4908bdb8b12551b224bc
+          if (item.route_id === '93dbe9df4a484c41ae3962583c8b79d2' || item.route_id === '0fa29993092d4908bdb8b12551b224bc') {
+            self.$confirm({
+              title: '您确定需要报备吗?',
+              onOk () {
+                self.formVal.orderSate = 'bb'
+                self.$emit('click', item)
+              }
+            })
+            return
+          }
+          self.$emit('click', item)
         } else {
           console.log('error submit!!')
           return false
@@ -212,8 +210,7 @@ export default {
       })
     },
     handleChange (value) {
-      this.visible = true
-      console.log(value)
+      this.$emit('reassignTickets')
     },
     updateFeedback (formName) {
       this.$refs[formName].validate(valid => {
@@ -228,14 +225,11 @@ export default {
     signTickets () {
       this.$emit('signTickets')
     },
+    handleClose() {
+      this.$emit('closeTickets')
+    },
     onUpLoad (fileList) {
       this.$emit('uploadFile', fileList)
-    },
-    hideModal () {
-      this.$message.success('改派成功！')
-      setTimeout(() => {
-        location.reload()
-      }, 600)
     },
     isShowData () {
       this.isShow = !this.isShow
@@ -249,6 +243,11 @@ export default {
       if (code === 'fkjl') {
         this.formVal.orderSate = 'yfk'
       }
+    },
+    filterOption (input, option) {
+      return (
+        option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+      )
     }
   },
   watch: {},

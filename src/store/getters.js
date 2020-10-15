@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { USER_INFO,USER_ROLES,USER_DEPARTS, ENHANCE_PRE } from "@/store/mutation-types"
+import { USER_INFO,USER_ROLES,USER_DEPARTS,USER_DEPARTROLE,USER_GROUP, ENHANCE_PRE } from "@/store/mutation-types"
 const getters = {
   device: state => state.app.device,
   theme: state => state.app.theme,
@@ -7,6 +7,8 @@ const getters = {
   token: state => state.user.token,
   rolesA: state => {state.user.rolesA = Vue.ls.get(USER_ROLES); return state.user.rolesA},
   departs: state => {state.user.departs = Vue.ls.get(USER_DEPARTS); return state.user.departs},
+  departRole: state => {state.user.departRole = Vue.ls.get(USER_DEPARTROLE); return state.user.departRole},
+  reassignGroup: state => {state.user.reassignGroup = Vue.ls.get(USER_GROUP); return state.user.reassignGroup},
   avatar: state => {state.user.avatar = Vue.ls.get(USER_INFO).avatar; return state.user.avatar},
   username: state => state.user.username,
   nickname: state => {state.user.realname = Vue.ls.get(USER_INFO).realname; return state.user.realname},
