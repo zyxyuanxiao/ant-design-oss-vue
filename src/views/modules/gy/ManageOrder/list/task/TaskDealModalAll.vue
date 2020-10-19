@@ -11,8 +11,7 @@
     style="top: 20%;bottom:20%"
     :footer="null"
     @cancel="handleModalCancel">
-
-    <a-tab>
+    <a-card>
 
       <div style="width: 100%;padding: 10px;z-index:10;background:rgb(244,244,244)">
         <!-- 处理意见 -->
@@ -45,7 +44,7 @@
           </template>
         </div>
       </div>
-    </a-tab>
+    </a-card>
   </a-modal>
 </template>
 
@@ -54,54 +53,29 @@
   import Vue from 'vue'
   import TaskModule from './form/TaskModule'
   import ProcessModule from './form/ProcessModule'
-  import { getAction, httpAction } from '@/api/manage'
+  import { getAction, postAction } from '@/api/manage'
   import { initDictOptions } from '@/components/dict/JDictSelectUtil'
   import DynamicLink from './form/DynamicLink.vue';
   import { isURL } from '@/utils/validate'
   import { ACCESS_TOKEN } from '@/store/mutation-types'
-  import { postAction } from '../../../../../../api/manage';
 
   export default {
-    name: 'TaskDealModalAll',
+    name: 'TaskDealModal1',
     components: {
       DynamicLink,
       TaskModule,
       ProcessModule
     },
-    // computed: {
-    //   isComp: function () {
-    //     this.model.taskId = this.formData.taskId
-    //     this.getProcessTaskTransInfo(this.formData)
-    //     var TOKEN = Vue.ls.get(ACCESS_TOKEN);
-    //     var DOMAIN_URL = window._CONFIG['domianURL'];
-    //     var TASKID = this.formData.taskDefKey;
-    //     var URL = (this.path || '').replace(/{{([^}}]+)?}}/g, (s1, s2) => eval(s2)); // URL支持{{ window.xxx }}占位符变量
-    //     // console.log("isComp组件名称：",URL);
-    //     if (isURL(URL)) {
-    //       this.iframeUrl = URL;
-    //       return false;
-    //     }
-    //     return true;
-    //   }
-    // },
-    // watch: {
-    //   // iframeUrl: function (newVal,oldVal) {
-    //   //   if (newVal) {
-    //   //     this.$message.warning(newVal)
-    //   //     setTimeOut(() => {this.hiddenButtom()},1000)
-    //   //   }
-    //   // }
-    // },
     data() {
       return {
         remarksDictOptions: [],
         url: {
           getProcessTaskTransInfo: '/act/task/getProcessTaskTransInfo',
-          processCompleteAll: '/moreFilter/completeAll',
+          processComplete: '/moreFilter/completeAll',
           upload: window._CONFIG['domianURL'] + '/sys/common/upload'
         },
         loading: false,
-        title: '批量办理流程',
+        title: '流程办理',
         visible: false,
         bodyStyle: {
           padding: '0',
@@ -124,16 +98,26 @@
           nextUserId: '',
           ccUserIds: '',
           ccUserRealNames: '',
-          fileList: '',
-          ids: []
+          fileList: ''
         },
-        ids: []
+        taskIds: []
       }
     },
     created() {
       // alert('111')
     },
     methods: {
+      // 隐藏表单中提交
+      // hiddenButtom () {
+      //   window.setTimeout(() => {
+      //     var iframe = document.getElementById('ifrmae');//获取那个iframe，也可以bai用$('#iframe')[0]替代
+      //     var iframeWindow = iframe.contentWindow;//获取iframe里的duwindow对象
+      //     var ifr_document = iframe.contentWindow.document;//iframe中的文档内容
+      //     var bList = ifr_document.getElementsByClassName('el-button--small')
+      //     bList[0].style.visibility = 'hidden'
+      //   }, 800)
+      // },
+      // 关闭模态框
       handleModalCancel() {
         this.visible = false
       },
@@ -148,8 +132,8 @@
             this.remarksDictOptions = res.result;
           }
         });
-        this.ids = ids;
-        console.log('ids=' + ids)
+        this.taskIds = ids;
+        console.log('taskIds=' + this.taskIds)
       },
       completeProcess() {
         this.visible = false;
@@ -170,49 +154,59 @@
         })
       },
       handleProcessComplete(nextnode) {
-        // const that = this;
-        // var iframe = document.getElementById('ifrmae');//获取那个iframe，也可以bai用$('#iframe')[0]替代
-        // var iframeWindow = iframe.contentWindow;//获取iframe里的duwindow对象
-        // var ifr_document = iframe.contentWindow.document;//iframe中的文档内容
-        // var bList = ifr_document.getElementsByClassName('el-button--small')
-        // bList[bList.length - 1].click()
-
-        this.model.fileList = JSON.stringify(this.fileList)
+        const that = this;
         if (!this.model.reason || this.model.reason.length == 0) {
           this.model.reason = '同意'
         }
         if (nextnode) {
           this.model.nextnode = nextnode;
         }
-
-        this.model.ids = this.ids
-
-        postAction(this.model.processCompleteAll, this.model).then((res) => {
-          if (res.result.success > 0) {
-            this.$message.success('已成功办理' + res.result.success + '条流程工单')
+        var method = 'post';
+        // this.$confirm({
+        //   title: "提示",
+        //   content: "确认提交审批吗?",
+        //   onOk: function(){
+        that.loading = true;
+        that.model.fileList = JSON.stringify(that.fileList)
+        let models = []
+        for (let i = 0; i < this.taskIds.length; i++) {
+          let model = {
+            taskId: this.taskIds[i],
+            nextnode: this.model.nextnode,
+            nextCodeCount: this.model.nextCodeCount,
+            reason: this.model.reason,
+            processModel: this.model.processModel,
+            rejectModelNode: this.model.rejectModelNode,
+            nextUserName: this.model.nextUserName,
+            nextUserId: this.model.nextUserId,
+            ccUserIds: this.model.ccUserIds,
+            ccUserRealNames: this.model.ccUserRealNames,
+            fileList: this.model.fileList
           }
+          models.push(model)
+        }
+        console.log(models)
+        postAction(this.url.processComplete, models).then((res) => {
+          if (res.success) {
+            this.$message.success(res.message);
+          } else {
+            this.$message.error(res.message);
+          }
+          this.completeProcess();
         })
-
-        // for (let i = 0; i < that.ids.length; i++) {
-        //   this.model.taskId = that.ids[i];
-        //   var method = 'post';
-        //   // this.$confirm({
-        //   //   title: "提示",
-        //   //   content: "确认提交审批吗?",
-        //   //   onOk: function(){
-        //
-        //   that.model.fileList = JSON.stringify(that.fileList)
-        //   httpAction(that.url.processComplete, that.model, method).then((res) => {
-        //     if (res.success) {
-        //       counts.push(that.ids[i])
-        //       console.log(counts)
-        //     }
-        //   }).finally(() => {
-        //     //that.close();
-        //   })
-        // }
-
+        // httpAction(that.url.processComplete, that.model, method).then((res) => {
+        //   if (res.success) {
+        //     that.$message.success(res.message);
+        //     // that.$emit('complete');
+        //     that.completeProcess()
+        //   } else {
+        //     that.$message.warning(res.message);
         //   }
+        // }).finally(() => {
+        //   that.loading = false;
+        //   //that.close();
+        // })
+        // //   }
         // });
       }
     }

@@ -54,7 +54,6 @@
               <!-- @change="onChange" -->
               <a-range-picker
                 :show-time="{format: 'YYYY-MM-DD HH:mm:ss'}"
-                @change="onChange"
                 style="width:100%;"
                 v-model="item.value"></a-range-picker>
             </a-form-item>
@@ -171,6 +170,7 @@
             <div
               v-if="item.value"
             >
+
               {{item.title}} : {{item.value}}
             </div>
           </div>

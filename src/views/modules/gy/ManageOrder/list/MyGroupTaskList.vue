@@ -45,12 +45,12 @@
 
     <!-- table区域-begin -->
     <div>
-      <a-table
-        :expandedRowKeys="expandedKeys"
+      <!-- :expandedRowKeys="expandedKeys"
         @expand="onExpand"
         :expandRowByClick="true"
         :expandIconAsCell="false"
-        :expandIconColumnIndex="-1"
+        :expandIconColumnIndex="-1"-->
+      <a-table
         ref="table"
         size="middle"
         bordered
@@ -74,13 +74,13 @@
         <span slot="bpmBizTitle" slot-scope="text">
           <j-ellipsis :value="text" :length="15" />
         </span>
-        <a-table
-          rowKey="id"
-          slot="expandedRowRender"
-          :columns="innerColumns"
-          :data-source="innerData"
-          :pagination="false"
-        ></a-table>
+        <!--<a-table-->
+          <!--rowKey="id"-->
+          <!--slot="expandedRowRender"-->
+          <!--:columns="innerColumns"-->
+          <!--:data-source="innerData"-->
+          <!--:pagination="false"-->
+        <!--&gt;</a-table>-->
       </a-table>
     </div>
     <!-- table区域-end -->
