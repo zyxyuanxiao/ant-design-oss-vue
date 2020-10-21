@@ -40,7 +40,7 @@
                               v-else-if="item.type === 'int'"></integer-test>
                 <multi-row-test v-model="formVal[item.code]" :item="item"
                                 v-else-if="item.type === 'multiRowText'"></multi-row-test>
-                <attachfile-test :item="item" v-else-if="item.type === 'attachfile'"
+                <attachfile-test v-model="formVal[item.code]" :item="item" v-else-if="item.type === 'attachfile'"
                                  @onUpLoad="onUpLoad"></attachfile-test>
                 <decimals-test v-model="formVal[item.code]" :item="item"
                                v-else-if="item.type === 'double'"></decimals-test>
@@ -96,15 +96,15 @@
               {{item.btnName}}
             </a-button>
           </div>
-          <div style="padding: 15px 10px;" v-if="saveShow">
+          <!--<div style="padding: 15px 10px;" v-if="saveShow">
             <a-button type="primary" block @click="updateFeedback('formVal')">保存</a-button>
-          </div>
+          </div>-->
           <!--v-if="operation === 'details'"-->
           <div style="padding: 15px 10px;" v-if="reassignShow">
-            <a-button type="primary" block @click="handleChange()">改派</a-button>
+            <a-button type="primary" block @click="handleChange()">改派工单</a-button>
           </div>
           <div style="padding: 15px 10px;" v-if="saveShow">
-            <a-button type="primary" block @click="handleClose()">关闭</a-button>
+            <a-button type="primary" block @click="handleClose()">关闭工单</a-button>
           </div>
           <!--<div style="padding: 15px 10px;" v-show="allotShow">
             <a-select style="width: 80px;height: 35px;" placeholder="更多" @change="handleChange">
@@ -144,6 +144,7 @@ import decimalsTest from './from-item/From-Decimals'
 import tableTest from './from-item/From-Table'
 import { mapGetters } from 'vuex'
 import { reassignOrder } from '../../api/tickets'
+import consts from '../../utils/consts'
 
 export default {
   name: 'Tickets-From',
@@ -173,7 +174,8 @@ export default {
       loading: false,
       visible: false,
       userName: '',
-      groupId: ''
+      groupId: '',
+      CONST: consts,
     }
   },
   mounted () {
@@ -192,7 +194,7 @@ export default {
           // 判断如果是设备报备的话 将状态改成报备状态
           // suncor 93dbe9df4a484c41ae3962583c8b79d2 || bd5667bdfe384d978094e2c304fee4d2
           // 宝山现场 755dbdc2fbeb4d36807bc38ff0dbe019 || 0fa29993092d4908bdb8b12551b224bc
-          if (item.route_id === '93dbe9df4a484c41ae3962583c8b79d2' || item.route_id === '0fa29993092d4908bdb8b12551b224bc') {
+          if (item.route_id === this.CONST.ROUTER.wcbb || item.route_id === this.CONST.ROUTER.ncbb) {
             self.$confirm({
               title: '您确定需要报备吗?',
               onOk () {

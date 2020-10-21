@@ -154,7 +154,7 @@
                 <a-select
                   showSearch
                   mode="multiple"
-                  :options="orderSateList"
+                  :options="CONST.ORDERSTATELIST"
                   :filterOption="filterOption"
                   v-model="formData.orderSate"
                   placeholder="请选择工单状态"
@@ -203,11 +203,21 @@
                 <a-select
                   showSearch
                   mode="multiple"
-                  :options="orderTypeList"
+                  :options="CONST.ORDERTYPELIST"
                   :filterOption="filterOption"
                   v-model="formData.gdfl"
                   placeholder="请选择工单类型"
                   allowClear
+                />
+              </a-form-model-item>
+            </a-col>
+            <a-col :xl="6" :lg="8" :md="8" :sm="24">
+              <a-form-model-item label="逾期状态" prop="yqpd">
+                <a-select
+                  :options="CONST.OVERDUE"
+                  :filterOption="filterOption"
+                  v-model="formData.yqpd"
+                  placeholder="请选择逾期状态"
                 />
               </a-form-model-item>
             </a-col>
@@ -269,17 +279,17 @@
           >
             <template slot="status" slot-scope="status">
               <a-tag v-if="item.value === status +''" :color="item.color"
-                     v-for="item in orderSateList"> {{item.label}}
+                     v-for="item in CONST.ORDERSTATELIST"> {{item.label}}
               </a-tag>
             </template>
             <template slot="overdue" slot-scope="overdue">
               <a-tag v-if="item.value === overdue +''" :color="item.color"
-                     v-for="item in overdueList"> {{item.label}}
+                     v-for="item in CONST.OVERDUE"> {{item.label}}
               </a-tag>
             </template>
             <template slot="type" slot-scope="type">
               <span v-if="item.value === type +''" :color="item.color"
-                    v-for="item in orderTypeList"> {{item.label}}
+                    v-for="item in CONST.ORDERTYPELIST"> {{item.label}}
               </span>
             </template>
             <template slot="executors" slot-scope="executors, record">
@@ -458,8 +468,8 @@
 <script>
 import {
   getTicketsList, getTicketsDetails, getModelList,
-  getModelDetails, saveWorkOrder, handleOrder, updateTickets,
-  uploadFileByTicketId, getTicketTodoCountByUser, getTicketsProcess,downTicketsFile,
+  getModelDetails, saveWorkOrder, handleOrder, updateTickets,updataDzOnlineStatus,
+  uploadFileByTicketId, getTicketTodoCountByUser, getTicketsProcess, downTicketsFile,
   getMytodoList, getUserGroup, getTicketAllCountByUser, judgmentTickets, reassignOrder
 } from '../../api/tickets'
 import JEllipsis from '@/components/jeecg/JEllipsis'
@@ -470,6 +480,7 @@ import TicketsModelType from './../tickets/modules/TicketsModelType'
 import { getSelectTime } from '../../utils/util'
 import { mapGetters } from 'vuex'
 import moment from 'moment/moment'
+import consts from '../../utils/consts'
 
 export default {
   name: 'TicketsListView',
@@ -506,6 +517,7 @@ export default {
         xl: { span: 20 },
         lg: { span: 15 }
       },
+      CONST: consts,
       rolesList: [],
       widthModel: '85%',
       workTypeList: [],
@@ -677,6 +689,7 @@ export default {
         createTime: [],
         flowNo: '',
         gdfl: [],
+        yqpd: undefined,
         bxlx: [],
         IP: '',
         dd: '',
@@ -690,77 +703,6 @@ export default {
         sfmgs: undefined
       },
       formFileds: [],
-      orderSateList: [
-        {
-          value: 'wcl',
-          label: '未处理',
-          color: 'rgb(73,171,222)'
-        },
-        {
-          label: '未签收',
-          value: 'wjs',
-          color: 'rgb(98,112,193)'
-        },
-        {
-          value: 'wfk',
-          label: '未反馈',
-          color: 'rgb(239,139,32)'
-        },
-        {
-          value: 'yfk',
-          label: '已反馈',
-          color: 'rgb(5,209,227)'
-        },
-        {
-          value: 'js',
-          label: '结束',
-          color: 'rgb(163,162,162)'
-        },
-        {
-          value: 'ywc',
-          label: '已完成',
-          color: 'rgb(69, 195, 88)'
-        },
-        {
-          value: 'bb',
-          label: '报备',
-          color: 'rgb(245,50,145)'
-        }
-      ],
-      overdueList: [
-        {
-          value: 'yq',
-          label: '已逾期',
-          color: 'rgb(246,46,46)'
-        },
-        {
-          value: 'zc',
-          label: '正常',
-          color: 'rgb(69, 195, 88)'
-        }
-      ],
-      orderTypeList: [
-        {
-          'label': '摄像机类',
-          'value': 'sxjl'
-        },
-        {
-          'label': '服务器类',
-          'value': 'fwql'
-        },
-        {
-          'label': '网络类',
-          'value': 'wll'
-        },
-        {
-          'label': '动环类',
-          'value': 'dhl'
-        },
-        {
-          'label': '其他类',
-          'value': 'qtl'
-        }
-      ],
       acceptanceList: [
         {
           'label': '是',
@@ -890,9 +832,19 @@ export default {
       }
       // sungcor 判断在离线/图像 router_id   1e91970928454a0aaf70dfab60821e14
       // 宝山现场 判断在离线/图像 router_id  1bdaabd3e65e44e1b756fbc5bfcb708e
-      if (item.route_id === '1bdaabd3e65e44e1b756fbc5bfcb708e' && this.formVal.gzpd === 'lx') {
+      if (item.route_id === this.CONST.ROUTER.wxwc && this.formVal.gzpd === 'lx') {
         this.judgmentTickets(item)
         return
+      }
+      // 公司 管理员审核 361876dfea2a4300a623bd5cbe7f813e
+      // 现场 管理员审核 7243282c435646038fd42eb505a8afba
+      if (this.orderInfo.activity_id === this.CONST.ACTIVITY.sh) {
+        this.formVal.sfht = 'no'
+      }
+      // 公司 内场设备报备 bd5667bdfe384d978094e2c304fee4d2 || 外场设备报备 93dbe9df4a484c41ae3962583c8b79d2 || 工单回退 e015bd378b0c449eafbf07ad71ec867e
+      // 现场 内场设备报备 0fa29993092d4908bdb8b12551b224bc || 外场设备报备 755dbdc2fbeb4d36807bc38ff0dbe019 || 工单回退 2d389949940d458ba3c97c55ae4f87b2
+      if (item.route_id === this.CONST.ROUTER.ncbb || item.route_id === this.CONST.ROUTER.wcbb || item.route_id === this.CONST.ROUTER.gdht) {
+        this.formVal.sfht = 'yes'
       }
       this.handleTickets(item)
     },
@@ -915,7 +867,7 @@ export default {
         }
       }
       this.workForm = this.formVal
-      delete this.workForm.file
+      delete this.workForm.fjtp
       let data = {
         description: this.workForm.ticketDesc,
         form: this.workForm,
@@ -941,15 +893,15 @@ export default {
         console.log(error)
       })
     },
-    handleTickets (item) {
+    async handleTickets (item) {
+      this.images = []
       this.spinning = true
-      this.formFileds.forEach((itemA) => {
-        if (itemA.type === 'attachfile') {
-          if (itemA.conf.default_value.length > 0) {
-            this.images = itemA.conf.default_value
-          }
+      for (const itemB of this.formVal.fjtp) {
+        if (!itemB.hasOwnProperty('url')) {
+          let files = await this.getBase64(itemB)
+          this.images.push(files)
         }
-      })
+      }
       let handleRules = {
         route_id: item.route_id
       }
@@ -958,8 +910,9 @@ export default {
           [item.nextActivityId]: {}
         }
       }
+
       this.workForm = this.formVal
-      delete this.workForm.file
+      delete this.workForm.fjtp
       let data = {
         activity_id: this.orderInfo.activity_id,
         handle_type: 1,
@@ -988,11 +941,18 @@ export default {
         console.log(error)
       })
     },
+    updataDzOnlineStatus(ip){
+      updataDzOnlineStatus(ip).then(response => {
+      }).catch(error => {
+        console.log(error)
+      })
+    },
     judgmentTickets (item) {
       this.spinning = true
       this.spinningText = '正在检测中。。。'
       judgmentTickets(this.ip).then(response => {
         if (response.result) {
+          this.updataDzOnlineStatus(this.ip)
           this.formVal.gzwcpd = 'zx'
           this.handleTickets(item)
           return
@@ -1041,7 +1001,7 @@ export default {
       }
       this.spinningShow = true
       this.workForm = this.formVal
-      delete this.workForm.file
+      delete this.workForm.fjtp
       let data = {
         activity_id: this.orderInfo.activity_id,
         handle_type: 1,
@@ -1101,7 +1061,7 @@ export default {
         }
       })
       this.workForm = this.formVal
-      delete this.workForm.file
+      delete this.workForm.fjtp
       let data = {
         ticket_id: this.orderInfo.ticketId,
         form: this.workForm
@@ -1150,12 +1110,12 @@ export default {
           this.formFileds.forEach((itemA, index) => {
             if (itemA.type === 'attachfile') {
               if (this.orderInfo.files) {
-                this.orderInfo.files.forEach((item) => {
+                this.orderInfo.files.forEach((item, indexA) => {
                   url = this.imgUrl + item
                   this.imgs.push({
                     url: url,
-                    uid: index + 20,
-                    name: 'image' + index + '.png',
+                    uid: indexA + (10 + 6),
+                    name: 'image' + indexA + '.png',
                     status: 'done'
                   })
                 })
@@ -1177,8 +1137,6 @@ export default {
             if (itemA.conf.default_value === '') {
               itemA.conf.default_value = []
             }
-          } else if (itemA.code === 'sgdw') {
-            localStorage.setItem('sgdw', itemA.conf.default_value)
           }
           this.reassGroup = this.reassignGroup()
           this.$set(this.formVal, itemA.code, itemA.conf.default_value)
@@ -1244,8 +1202,6 @@ export default {
             if (itemA.conf.default_value === '') {
               itemA.conf.default_value = []
             }
-          } else if (itemA.code === 'sgdw') {
-            localStorage.setItem('sgdw', itemA.conf.default_value)
           }
           this.$set(this.formVal, itemA.code, itemA.conf.default_value)
           this.$set(this.formIndex, itemA.code, index)
@@ -1281,7 +1237,10 @@ export default {
       // this.visible = true
     },
     reassignChange () {
+      this.groupId = ''
       this.visibleGp = true
+      let groupObj = this.reassGroup.find(item => item.name === this.formVal.detd)
+      if (groupObj) this.groupId = groupObj.id
     },
     signTickets () {
       let upData = {
@@ -1320,7 +1279,8 @@ export default {
       console.log(this.reassGroup.find((item) => item.id === this.groupId))
       let groupName = this.reassGroup.find((item) => item.id === this.groupId)
       let upDate = {
-        fpgs: groupName.name
+        fpgs: groupName.name,
+        orderSate: 'wjs'
       }
       let apiKey = this.userInfo().apikey
       reassignOrder(params, apiKey).then(response => {
@@ -1437,12 +1397,24 @@ export default {
       this.conductorGroup = []
       let uyunId = this.userInfo().uyunid
       let rolesB = this.rolesA()
-
+      // 公司 管理员审核 361876dfea2a4300a623bd5cbe7f813e
+      // 现场 管理员审核 7243282c435646038fd42eb505a8afba
+      if (this.orderInfo.activity_id === this.CONST.ACTIVITY.sh) {
+        if (this.formVal.sfht === 'no') {
+          // 公司 回退外场 a1a5eb72e88a44ddb710c784a3e54994
+          // 现场 回退外场 a4ed84c27c544fea8d0967ad0de79d01
+          this.submitBtn = this.submitBtn.filter((item) => item.route_id !== this.CONST.ROUTER.htwc)
+        } else {
+          // 公司 审核通过 0bd853dbe934403ba7d8d2efa41822e6
+          // 现场 审核通过 83f70b3ec1e64e5ea3d6950b3eea61ab
+          this.submitBtn = this.submitBtn.filter((item) => item.route_id !== this.CONST.ROUTER.shtg)
+        }
+      }
       let executor = undefined
       if (executors !== '' && executors != null && executors.length > 0) {
         executor = executors.find((item) => uyunId === item && this.formVal.orderSate !== 'js')
       }
-      let executionGroup = undefined
+      let executionGroup = []
       if (executionGroups != null && executionGroups.length > 0) {
         executionGroup = executionGroups.filter((item) => rolesB.indexOf(item) > -1 && this.formVal.orderSate !== 'js')
       }
@@ -1453,12 +1425,12 @@ export default {
       // 判断工单状态为未签收并且是内场或者外场实施办理环节，如都满足则显示签收按钮
       // sungcor 内场 df6c26bedae34a7dae2396ec1dac14f5  外场 4ee67d3f2b2a4f65a73775e5525e3867
       // 宝山现场  内场 8cba08cbb2514352ae75f5f324c91cb0  外场 aecd9044de5448a3bccbc0cdaad36041
-      this.allotShow = !(this.formVal.orderSate === 'wjs' && (this.orderInfo.activity_id === '8cba08cbb2514352ae75f5f324c91cb0' || this.orderInfo.activity_id === 'aecd9044de5448a3bccbc0cdaad36041'))
+      this.allotShow = !(this.formVal.orderSate === 'wjs' && (this.orderInfo.activity_id === this.CONST.ACTIVITY.wc || this.orderInfo.activity_id === this.CONST.ACTIVITY.nc))
       this.isPermission = executor || executionGroup
       // sungcor  361876dfea2a4300a623bd5cbe7f813e || 4ee67d3f2b2a4f65a73775e5525e3867
       // 宝山现场   7243282c435646038fd42eb505a8afba || aecd9044de5448a3bccbc0cdaad36041
-      this.saveShow = this.isPermission && this.orderInfo.activity_id === '7243282c435646038fd42eb505a8afba'
-      this.reassignShow = this.isPermission && this.orderInfo.activity_id === 'aecd9044de5448a3bccbc0cdaad36041'
+      this.saveShow = this.isPermission && this.orderInfo.activity_id === this.CONST.ACTIVITY.sh
+      this.reassignShow = this.isPermission && this.orderInfo.activity_id === this.CONST.ACTIVITY.wc
       let isEdit = this.isPermission ? !this.allotShow : true
       this.formFileds.forEach((itemA) => {
         this.$set(itemA, 'disabled', isEdit)
@@ -1645,7 +1617,6 @@ export default {
       if ((Array.isArray(departObj) && departObj.length > 0) && departObj) {
         departName = departObj[0].departName
       }
-      console.log(departName)
       this.departName = departName // 保存部门名称在统计时使用
       localStorage.setItem('departName', this.departName)
       let departRole = this.departRole()
@@ -1654,7 +1625,6 @@ export default {
         departRoleNames.push(item.name)
       })
       this.departRoleNames = departRoleNames
-      console.log(departRole)
       if (this.activeKey === '1') {
         let dataArr = []
         dataArr = [
@@ -1727,6 +1697,14 @@ export default {
     },
     selectChangeGroup () {
       this.$refs.groupIdList.blur()
+    },
+    getBase64 (file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.onload = () => resolve(reader.result)
+        reader.onerror = error => reject(error)
+      })
     }
   },
   created () {

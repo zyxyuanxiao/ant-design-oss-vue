@@ -65,6 +65,10 @@ const ORDERTYPELIST= [
     'value': 'fwql'
   },
   {
+    'label': '移杆类',
+    'value': 'ygl'
+  },
+  {
     'label': '网络类',
     'value': 'wll'
   },
@@ -78,9 +82,49 @@ const ORDERTYPELIST= [
   }
 ]
 
+// 公司环境
+/* const ACTIVITY = {
+  ks: '40a358d5447b42ca9f2f7f77cbb38407', // 开始
+  js: '6b5c87b89d624422a44d1c1e9adbd23f', // 结束
+  sh: '361876dfea2a4300a623bd5cbe7f813e', // 管理员审核
+  nc: 'df6c26bedae34a7dae2396ec1dac14f5', // 内场
+  wc: '4ee67d3f2b2a4f65a73775e5525e3867' // 外场
+} */
+
+// 现场环境
+const ACTIVITY = {
+  ks: '40a358d5447b42ca9f2f7f77cbb38407', // 开始
+  js: '6b5c87b89d624422a44d1c1e9adbd23f', // 结束
+  sh: '7243282c435646038fd42eb505a8afba', // 管理员审核
+  nc: '8cba08cbb2514352ae75f5f324c91cb0', // 内场
+  wc: 'aecd9044de5448a3bccbc0cdaad36041' // 外场
+}
+
+// 公司环境
+// const ROUTER = {
+//   wcbb: '93dbe9df4a484c41ae3962583c8b79d2', // 外场设备报备
+//   ncbb: 'bd5667bdfe384d978094e2c304fee4d2', // 内场设备报备
+//   wxwc: '1e91970928454a0aaf70dfab60821e14', // 维修完成
+//   gdht: 'e015bd378b0c449eafbf07ad71ec867e', // 工单回退
+//   htwc: 'a1a5eb72e88a44ddb710c784a3e54994', // 回退外场
+//   shtg: '0bd853dbe934403ba7d8d2efa41822e6' // 审核通过
+// }
+
+// 现场环境
+const ROUTER = {
+  wcbb: '755dbdc2fbeb4d36807bc38ff0dbe019', // 外场设备报备
+  ncbb: '0fa29993092d4908bdb8b12551b224bc', // 内场设备报备
+  wxwc: '1bdaabd3e65e44e1b756fbc5bfcb708e', // 维修完成
+  gdht: '2d389949940d458ba3c97c55ae4f87b2', // 工单回退
+  htwc: 'a4ed84c27c544fea8d0967ad0de79d01', // 回退外场
+  shtg: '83f70b3ec1e64e5ea3d6950b3eea61ab' // 审核通过
+}
+
 export default {
   WORKLEVEL,
   ORDERSTATELIST,
   ORDERTYPELIST,
-  OVERDUE
+  OVERDUE,
+  ROUTER,
+  ACTIVITY
 }

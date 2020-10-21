@@ -4,7 +4,6 @@ import { axios } from '@/utils/request'
 /**
  * 获取工单数据
  * @param data 参数
- * @param params 参数
  */
 export function getTicketsList (data) {
   return axios({
@@ -17,7 +16,7 @@ export function getTicketsList (data) {
 /**
  * 获取我的待办
  * @param data 参数
- * @param params 参数
+ * @param param 参数
  */
 export function getMytodoList (data, param) {
   return axios({
@@ -56,7 +55,7 @@ export function getModelList (apiKey) {
 
 /**
  * 根据modeIds 获取流程列表数据
- * @param modelIds 模型id
+ * @param data 模型数据
  * @param apiKey 参数
  */
 export function getFlowListByModeId (data, apiKey) {
@@ -180,8 +179,9 @@ export function judgmentTickets (ip) {
 }
 
 /**
- * 根据ticketId 上传附件图片
- * @param data 图片内容
+ * @param data 图片内容 base64编码格式
+ * @param apiKey 秘钥
+ * @returns {*}
  */
 export function uploadFileByTicketId (data, apiKey) {
   return axios({
@@ -194,7 +194,7 @@ export function uploadFileByTicketId (data, apiKey) {
 
 /**
  * 获取工单流程
- * @param query 根据ticketId获取流程
+ * @param ticketId 根据ticketId获取流程
  */
 export function getTicketsProcess (ticketId) {
   return axios({
@@ -206,13 +206,26 @@ export function getTicketsProcess (ticketId) {
 
 /**
  * 同步工单字典值
- * @param query 根据登录用户名获取
  */
 export function getInsertBatch () {
   return axios({
     url: '/sys/dictItem/insertBatch',
     method: 'post',
     data: '{}'
+  })
+}
+
+/**
+ * 下载文件 用于excel导出
+ * @param data 参数
+ * @returns {*}
+ */
+export function downTicketsFile(data){
+  return axios({
+    url: '/api/itsm/db/exportTicket',
+    data: data,
+    method:'POST' ,
+    responseType: 'blob'
   })
 }
 
@@ -229,17 +242,15 @@ export function reassignOrder (data, apiKey) {
     data
   })
 }
+
 /**
- * 下载文件 用于excel导出
- * @param url
- * @param parameter
- * @returns {*}
+ * 判断工单数据在线后修改状态
+ * @param ip 地址
  */
-export function downTicketsFile(data){
+export function updataDzOnlineStatus (ip) {
   return axios({
-    url: '/api/itsm/db/exportTicket',
-    data: data,
-    method:'POST' ,
-    responseType: 'blob'
+    url: '/api/itsm/updataDzOnlineStatus',
+    method: 'GET',
+    params: { ip: ip }
   })
 }
